@@ -1,0 +1,20 @@
+
+#index page
+GET     /              @controllers.RequestController.index()
+
+#web-app
+#GET      /app           controllers.Application.app(teamInviteCode: String ,teamGoal: String, myID: String, myNickName: String, isAdmin: Boolean)
+# web-app loader for Normal User
+#POST     /join         controllers.Application.joinTeam()
+
+# web-app loader for Admin
+#POST     /create         controllers.Application.createTeam()
+
+#for 404 page(인덱스를 통하지 않고 팀생성 로직이 실행되려 할때 동작)
+#GET     /create   controllers.ErrorPages.show404()
+
+# Map static resources from the /public folder to the /assets URL path
+#GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# for web socket
+#GET     /chat            controllers.Socket.chat
