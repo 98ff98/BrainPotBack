@@ -5,11 +5,15 @@ import java.util.concurrent.TimeUnit
 import akka.actor.ActorSystem
 import com.google.inject.Inject
 import models.{AutoTeamRemover, TeamManager}
+import play.Logger
 import play.api._
+import play.api.data.Form
+import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.db.DBApi
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
 class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi) extends Controller {
@@ -27,14 +31,33 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi) exten
     Ok(views.html.index())
   }
 
-  def joinTeam = Action{
-    Ok(views.html.index())
+  def joinTeam = Action { implicit request =>
+    val receivedData = joinTeamDataForm.bindFromRequest()
+    receivedData.fold(
+      hasErrors => {
+        Logger.error("회원가입 폼을 받던 도중에 에러발생")
+        println(hasErrors)
+        Redirect("/")
+      },
+      data => {
+
+      }
+    )
   }
 
   def createTeam = Action {
     Ok(views.html.index())
   }
 
+  def app = Action {
+    Ok(views.html.index())
+  }
+
+  val joinTeamDataForm = Form(
+    mapping(
+      "nickname" -> nonEmptyText(1,10),
+      "inviteCode" -> nonEmptyText(5,5)
+    )(JoinTeamDataSet.apply)(JoinTeamDataSet.unapply _))
 
 }
 
