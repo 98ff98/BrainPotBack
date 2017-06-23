@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import com.google.inject.Inject
-import models.{AutoTeamRemover, TeamManager}
+import models.{AutoTeamRemover, TeamManager, UserManager}
 import play.Logger
 import play.api._
 import play.api.data.Form
@@ -16,7 +16,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
-class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi) extends Controller {
+class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamManager: TeamManager, userManager: UserManager) extends Controller {
   { // 10분마다 오래된 팀들을 자동으로 삭제한다.
     val scheduler = actorSystem.scheduler
     val runnableTask = new AutoTeamRemover(new TeamManager(dBApi))
@@ -40,7 +40,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi) exten
         Redirect("/")
       },
       data => {
-
+        val createdUserID = Future{userManager.}
       }
     )
   }
