@@ -13,34 +13,39 @@ import scala.concurrent.Future
 class UserManager @Inject()(dbApi: DBApi){
   private val db = dbApi.database("default")
 
-  def addNormalUser(nickname: String, teamID: Int) : Boolean =  db.withConnection{ implicit  connection =>
+  def addNormalUser(nickname: String, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
-      createUniqueID() match {
-        case Some(n) =>
-        case None => return false
+      val createdID = createUniqueID()
+      createdID match {
+        case None => return None
       }
-      SQL("CALL `ADD_NORMAL_USER`({id}, {teamID}, {nickname})").on('id -> createdID, 'nickname -> nickname).executeUpdate()
-      true
+      SQL("CALL `ADD_NORMAL_USER`({id}, {teamID}, {nickname})").on('id -> createdID.get, 'nickname -> nickname).executeUpdate()
+      Some(createdID.get)
     }
     catch {
       case e: Exception => Logger.error("Job Failed : method addNormalUser()")
         e.printStackTrace()
-        false
+        None
     }
   }
 
-  def addAdminUser(nickname: String, teamID: Int) : Boolean =  db.withConnection{ implicit  connection =>
+  def addAdminUser(nickname: String, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
-      SQL("CALL `ADD_ADMIN_USER`({id, {nickname}})").on('id -> teamID, 'nickname -> nickname).executeUpdate()
-      true
+      val createdID = createUniqueID()
+      createdID match {
+        case None => return None
+      }
+      SQL("CALL `ADD_ADMIN_USER`({id}, {teamID}, {nickname})").on('id -> createdID.get, 'nickname -> nickname).executeUpdate()
+      Some(createdID.get)
     }
     catch {
       case e: Exception => Logger.error("Job Failed : method addAdminlUser()")
         e.printStackTrace()
-        false
+        None
     }
   }
 
+  //현재 BrainPot에 존재하지 않는 유일한 ID값을 생성한다.
   def createUniqueID() : Option[Int] = db.withConnection{ implicit connection =>
     try {
       val ran = new Random()

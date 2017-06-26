@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import com.google.inject.Inject
 import models.{AutoTeamRemover, TeamManager, UserManager}
 import play.Logger
-import play.api._
+import play.api.{Logger, _}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.db.DBApi
@@ -40,7 +40,23 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
         Redirect("/")
       },
       data => {
-        val createdUserID = Future{userManager.}
+        try{
+          val teamID = teamManager.findTeamByCode(data.inviteCode)
+          teamID match {
+            case None => Redirect("/")
+          }
+          val createdUserID = userManager.addAdminUser(data.nickname, teamID.get)
+          createdUserID match {
+            case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+            case None => Redirect("/")
+          }
+        }
+        catch {
+          case e: Exception => Logger.error("Job Failed : method joinmTeam()")
+            e.printStackTrace()
+            Redirect("/")
+        }
+
       }
     )
   }

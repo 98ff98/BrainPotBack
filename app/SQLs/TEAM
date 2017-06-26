@@ -2,9 +2,6 @@ CREATE DATABASE `BRAINPOT`;
 USE `BRAINPOT`;
 
 
-
-
-
 CREATE TABLE `TEAM` (
     `ID` INT NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,
     `OWNER` INT NOT NULL,
@@ -17,25 +14,11 @@ CREATE TABLE `TEAM` (
     KEY `IDX_INVITECODE`(`INVITECODE`)
 );
 
-
-
-
-
 # 테스트 데이터 입력
 INSERT INTO `TEAM`(`OWNER`, `GOAL`, `STATUS`,`INVITECODE`, `CREATEDTIME`) VALUES (1, '저녁식사2', 0,'D12K2', 11);
 
-
-
-
-
 #데이터 검색
 SELECT * FROM `TEAM`;
-
-
-
-
-
-
 
 #실제 적용할 스토어드 프로시저
 DELIMITER @@;
@@ -50,22 +33,11 @@ CREATE PROCEDURE `ADD_TEAM`(IN `OWNER` INT, IN `GOAL` VARCHAR(100), IN `INVITECO
 
 DELIMITER ;
 
-
-
-
 #스토어드 프로시저 호출
 CALL `ADD_TEAM`(0, '저녁에 무엇을 먹어야 하는가', 'GASM2');
 
-
-
-
-
 #3일 이상 된 팀들을 삭제하는 쿼리
 DELETE FROM `TEAM` WHERE `CREATEDTIME` <= (UNIX_TIMESTAMP() - 259200);
-
-
-
-
 
 #위 쿼리를 프로시저 화
 DELIMITER @@;
@@ -82,10 +54,6 @@ DELIMITER ;
 
 CALL `CLEAR_OLD_TEAMS`();
 
-
-
-
-
 #주어진 문자열을 초대코드를 가지고 있는 팀이 있는지 여부 확인하기 위한 스토어드 프로시저
 DELIMITER @@;
 
@@ -100,15 +68,6 @@ DELIMITER ;
 
 #프로시저 호출
 CALL `FIND_TEAM_BY_INVITECODE`('D22K2');
-
-
-
-
-
-
-
-
-
 
 #### DANGER!! ####
 
