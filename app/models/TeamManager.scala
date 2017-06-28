@@ -1,5 +1,6 @@
 package models
 
+import java.util.Random
 import javax.inject.Inject
 
 import anorm.{SQL, SqlParser}
@@ -7,9 +8,8 @@ import play.api.Logger
 import play.api.db.DBApi
 
 
-class TeamManager @Inject() (dbApi: DBApi) {
+class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")
-
   def callCLEAR_OLD_TEAMS(): Unit = {
     db.withConnection { implicit collection =>
       SQL("CALL `CLEAR_OLD_TEAMS`()").executeUpdate()
@@ -40,5 +40,43 @@ class TeamManager @Inject() (dbApi: DBApi) {
         None
     }
 
+  }
+
+  //받은 정보를 바탕으로 팀을 생성하고,
+  //생성한 방의 방장의 고유 ID를 반환한다.
+  def createTeam(nickname: String, goal: String) : Option[Int] = db.withConnection{ implicit connection =>
+    val userManager = new  UserManager(dbApi)
+    val createdTeamID = createUniqueTeamID()
+    createdTeamID match {
+      case None => return None
+    }
+    val createdAdminID = userManager.createUniqueID()
+    createdAdminID match {
+      case None => return None
+    }
+
+    userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
+      case None => return None
+    }
+
+  }
+
+  def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>
+    try {
+      val ran = new Random()
+      val createdID = ran.nextInt()
+      val duplicatedUser = SQL("CALL `CHECK_TEAM`({createdID})").on('createdID -> createdID).as(SqlParser.int("OWNER") *)
+      //만약 생성한 ID가 중복이 아니라면
+      if(duplicatedUser.isEmpty){
+        return Some(createdID)
+      }
+      //생성한 ID가 중복이였다면 재귀호출해서 다시 생성절차를 거친다.
+      createUniqueTeamID()
+    }
+    catch {
+      case e: Exception => Logger.error("Job Failed : method createUniqueID()")
+        e.printStackTrace()
+        None
+    }
   }
 }

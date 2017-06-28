@@ -6,7 +6,6 @@ import akka.actor.ActorSystem
 import com.google.inject.Inject
 import models.{AutoTeamRemover, TeamManager, UserManager}
 import play.Logger
-import play.api.{Logger, _}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.db.DBApi
@@ -45,7 +44,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
           teamID match {
             case None => Redirect("/")
           }
-          val createdUserID = userManager.addAdminUser(data.nickname, teamID.get)
+          val createdUserID = userManager.addNormalUser(data.nickname, teamID.get)
           createdUserID match {
             case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
             case None => Redirect("/")
@@ -61,20 +60,22 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )
   }
 
-  def createTeam = Action {
-    Ok(views.html.index())
-  }
 
   def app = Action {
     Ok(views.html.index())
   }
+
 
   val joinTeamDataForm = Form(
     mapping(
       "nickname" -> nonEmptyText(1,10),
       "inviteCode" -> nonEmptyText(5,5)
     )(JoinTeamDataSet.apply)(JoinTeamDataSet.unapply _))
-
+  val createTeamDataForm = Form(
+    mapping(
+      "nickname" -> nonEmptyText(1,10),
+      "goal" -> nonEmptyText(1,100)
+    )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
 }
 
 

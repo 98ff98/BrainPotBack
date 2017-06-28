@@ -29,14 +29,10 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
-  def addAdminUser(nickname: String, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
+  def addAdminUser(nickname: String, userID: Int, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
-      val createdID = createUniqueID()
-      createdID match {
-        case None => return None
-      }
-      SQL("CALL `ADD_ADMIN_USER`({id}, {teamID}, {nickname})").on('id -> createdID.get, 'nickname -> nickname).executeUpdate()
-      Some(createdID.get)
+      SQL("CALL `ADD_ADMIN_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'nickname -> nickname).executeUpdate()
+      Some(userID)
     }
     catch {
       case e: Exception => Logger.error("Job Failed : method addAdminlUser()")
