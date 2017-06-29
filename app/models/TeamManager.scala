@@ -4,12 +4,17 @@ import java.util.Random
 import javax.inject.Inject
 
 import anorm.{SQL, SqlParser}
+import org.apache.commons.lang3.RandomStringUtils
 import play.api.Logger
 import play.api.db.DBApi
+
+import scala.concurrent.Future
 
 
 class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")
+  //랜덤 초대 코드 생성에 사용항 문자 리스트
+  val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
   def callCLEAR_OLD_TEAMS(): Unit = {
     db.withConnection { implicit collection =>
       SQL("CALL `CLEAR_OLD_TEAMS`()").executeUpdate()
@@ -58,7 +63,8 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
       case None => return None
     }
-
+    val doAsync = Future{ SQL("CALL `ADD_TEAM`({OWNER}, {GOAL}, {INVITECODE})").on('OWNER -> createdAdminID.get, 'GOAL -> goal).executeUpdate() }
+    createdAdminID
   }
 
   def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>
@@ -78,5 +84,14 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
         e.printStackTrace()
         None
     }
+  }
+
+  def createUniqueInviteCode : Option[String] = db.withConnection{ implicit connection =>
+    val createdUniqueInviteCode = RandomStringUtils.random(5, charList)
+    val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
+    if(duplicatedTeamList.isEmpty)
+      return Some(createdUniqueInviteCode)
+    else
+      return None
   }
 }

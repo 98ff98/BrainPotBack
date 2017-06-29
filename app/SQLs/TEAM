@@ -83,6 +83,7 @@ CALL `CHECK_TEAM`(7);
 #프로시저 호출
 CALL `FIND_TEAM_BY_INVITECODE`('D22K2');
 
+
 #### DANGER!! ####
 
 DROP TABLE `TEAM`;
