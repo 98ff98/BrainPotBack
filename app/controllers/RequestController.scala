@@ -30,6 +30,32 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     Ok(views.html.test())
   }
 
+  def createTeam = Action { implicit request =>
+    val receivedData = createTeamDataForm.bindFromRequest()
+    receivedData.fold(
+      hasErrors => {
+        Logger.error("방 생성 폼을 받던 도중에 에러발생")
+        println(hasErrors)
+        Redirect("/")
+      },
+      data => {
+        try{
+          val createdUserID = teamManager.createTeam(data.nickname, data.goal)
+          createdUserID match {
+            case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+            case None => Redirect("/")
+          }
+        }
+        catch {
+          case e: Exception => Logger.error("Job Failed : method joinmTeam()")
+            e.printStackTrace()
+            Redirect("/")
+        }
+
+      }
+    )
+  }
+
   def joinTeam = Action { implicit request =>
     val receivedData = joinTeamDataForm.bindFromRequest()
     receivedData.fold(
@@ -72,10 +98,11 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
       "NICKNAME" -> nonEmptyText(1,10),
       "CODE" -> nonEmptyText(5,5)
     )(JoinTeamDataSet.apply)(JoinTeamDataSet.unapply _))
+
   val createTeamDataForm = Form(
     mapping(
-      "nickname" -> nonEmptyText(1,10),
-      "goal" -> nonEmptyText(1,100)
+      "NICKNAME" -> nonEmptyText(1,10),
+      "TOPIC" -> nonEmptyText(1,100)
     )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
 }
 

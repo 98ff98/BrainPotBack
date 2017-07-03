@@ -52,8 +52,9 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   //생성한 방의 방장의 고유 ID를 반환한다.
   def createTeam(nickname: String, goal: String) : Option[Int] = db.withConnection{ implicit connection =>
     val userManager = new  UserManager(dbApi)
-    val createdTeamID = createUniqueTeamID()
+    lazy val createdTeamID = createUniqueTeamID()
     lazy val createdAdminID = userManager.createUniqueID()
+    lazy val createdInviteCode = createUniqueInviteCode()
 
     createdTeamID match {
       case Some(n) => //Nothing to do
@@ -63,12 +64,17 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
       case Some(n) => //Nothing to do
       case None => return None
     }
+    createdInviteCode match {
+      case Some(n) => //Nothing to do
+      case None => return None
+    }
 
+    SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> createdTeamID.get, 'OWNER -> createdAdminID.get, 'GOAL -> goal, 'INVITECODE -> createdInviteCode.get).executeUpdate()
     userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
       case Some(n) => //Nothing to do
       case None => return None
     }
-    val doAsync = Future{ SQL("CALL `ADD_TEAM`({OWNER}, {GOAL}, {INVITECODE})").on('OWNER -> createdAdminID.get, 'GOAL -> goal).executeUpdate() }
+
     createdAdminID
   }
 
@@ -91,7 +97,7 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     }
   }
 
-  def createUniqueInviteCode : Option[String] = db.withConnection{ implicit connection =>
+  def createUniqueInviteCode() : Option[String] = db.withConnection{ implicit connection =>
     val createdUniqueInviteCode = RandomStringUtils.random(5, charList)
     val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
     if(duplicatedTeamList.isEmpty)

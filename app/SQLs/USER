@@ -54,3 +54,5 @@ CALL `ADD_USER`(1, 7, 'HYERI7');
 
 #### DANGER!! ####
 DROP TABLE `USER`;
+
+DELETE FROM `USER`;
