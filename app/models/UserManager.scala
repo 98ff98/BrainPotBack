@@ -17,9 +17,10 @@ class UserManager @Inject()(dbApi: DBApi){
     try {
       val createdID = createUniqueID()
       createdID match {
+        case Some(n) => //Nothing to do
         case None => return None
       }
-      SQL("CALL `ADD_NORMAL_USER`({id}, {teamID}, {nickname})").on('id -> createdID.get, 'nickname -> nickname).executeUpdate()
+      SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> createdID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
       Some(createdID.get)
     }
     catch {
@@ -31,7 +32,7 @@ class UserManager @Inject()(dbApi: DBApi){
 
   def addAdminUser(nickname: String, userID: Int, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
-      SQL("CALL `ADD_ADMIN_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'nickname -> nickname).executeUpdate()
+      SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
       Some(userID)
     }
     catch {

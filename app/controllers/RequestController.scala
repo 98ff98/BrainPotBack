@@ -18,7 +18,7 @@ import scala.concurrent.duration.Duration
 class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamManager: TeamManager, userManager: UserManager) extends Controller {
   { // 10분마다 오래된 팀들을 자동으로 삭제한다.
     val scheduler = actorSystem.scheduler
-    val runnableTask = new AutoTeamRemover(new TeamManager(dBApi))
+    val runnableTask = new AutoTeamRemover(new TeamManager(dBApi, new UserManager(dBApi)))
     implicit val executor = actorSystem.dispatcher
     scheduler.schedule(
       initialDelay = Duration(300, TimeUnit.SECONDS),
@@ -27,14 +27,14 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
   }
 
   def index = Action {
-    Ok(views.html.index())
+    Ok(views.html.test())
   }
 
   def joinTeam = Action { implicit request =>
     val receivedData = joinTeamDataForm.bindFromRequest()
     receivedData.fold(
       hasErrors => {
-        Logger.error("회원가입 폼을 받던 도중에 에러발생")
+        Logger.error("방 접속 폼을 받던 도중에 에러발생")
         println(hasErrors)
         Redirect("/")
       },
@@ -42,11 +42,12 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
         try{
           val teamID = teamManager.findTeamByCode(data.inviteCode)
           teamID match {
+            case Some(n) => //Nothing to do
             case None => Redirect("/")
           }
           val createdUserID = userManager.addNormalUser(data.nickname, teamID.get)
           createdUserID match {
-            case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+            case Some(n) => Redirect("/aspp").withCookies(Cookie("BrainPotLogin", n + ""))
             case None => Redirect("/")
           }
         }
@@ -68,8 +69,8 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
 
   val joinTeamDataForm = Form(
     mapping(
-      "nickname" -> nonEmptyText(1,10),
-      "inviteCode" -> nonEmptyText(5,5)
+      "NICKNAME" -> nonEmptyText(1,10),
+      "CODE" -> nonEmptyText(5,5)
     )(JoinTeamDataSet.apply)(JoinTeamDataSet.unapply _))
   val createTeamDataForm = Form(
     mapping(

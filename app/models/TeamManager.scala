@@ -8,6 +8,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.api.Logger
 import play.api.db.DBApi
 
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 
 
@@ -52,15 +53,19 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   def createTeam(nickname: String, goal: String) : Option[Int] = db.withConnection{ implicit connection =>
     val userManager = new  UserManager(dbApi)
     val createdTeamID = createUniqueTeamID()
+    lazy val createdAdminID = userManager.createUniqueID()
+
     createdTeamID match {
+      case Some(n) => //Nothing to do
       case None => return None
     }
-    val createdAdminID = userManager.createUniqueID()
     createdAdminID match {
+      case Some(n) => //Nothing to do
       case None => return None
     }
 
     userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
+      case Some(n) => //Nothing to do
       case None => return None
     }
     val doAsync = Future{ SQL("CALL `ADD_TEAM`({OWNER}, {GOAL}, {INVITECODE})").on('OWNER -> createdAdminID.get, 'GOAL -> goal).executeUpdate() }

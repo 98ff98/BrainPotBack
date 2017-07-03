@@ -36,7 +36,7 @@ CREATE PROCEDURE `ADD_TEAM`(IN `OWNER` INT, IN `GOAL` VARCHAR(100), IN `INVITECO
 DELIMITER ;
 
 #스토어드 프로시저 호출
-CALL `ADD_TEAM`(0, '저녁에 무엇을 먹어야 하는가', 'GASM2');
+CALL `ADD_TEAM`(0, '저녁에 무엇을 먹어야 하는가', '12345');
 
 #3일 이상 된 팀들을 삭제하는 쿼리
 DELETE FROM `TEAM` WHERE `CREATEDTIME` <= (UNIX_TIMESTAMP() - 259200);
