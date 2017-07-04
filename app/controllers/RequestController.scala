@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.ActorSystem
 import com.google.inject.Inject
-import models.{AutoTeamRemover, TeamManager, UserManager}
+import models._
 import play.Logger
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
@@ -21,8 +21,8 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     val runnableTask = new AutoTeamRemover(new TeamManager(dBApi, new UserManager(dBApi)))
     implicit val executor = actorSystem.dispatcher
     scheduler.schedule(
-      initialDelay = Duration(300, TimeUnit.SECONDS),
-      interval = Duration(300, TimeUnit.SECONDS),
+      initialDelay = Duration(900, TimeUnit.SECONDS),
+      interval = Duration(900, TimeUnit.SECONDS),
       runnable = runnableTask)
   }
 
@@ -88,7 +88,13 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
   }
 
 
-  def app = Action {
+  def app = Action { request =>
+    val userCookie = request.cookies.get("BrainPotLogin")
+    userCookie match{
+      case Some(cookie) =>
+      case None => Redirect("/").withCookies(Cookie("ALERT", "10001", Some(60)))
+    }
+
     Ok(views.html.index())
   }
 
@@ -106,6 +112,6 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
 }
 
-
+case class AppLoadDataSet(userData: User, teamData: Team)
 case class CreateTeamDataSet(nickname: String, goal: String)
 case class JoinTeamDataSet(nickname: String, inviteCode: String)

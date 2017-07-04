@@ -9,6 +9,7 @@ import play.api.db.DBApi
 
 import scala.concurrent.Future
 
+case class User(id: Int, teamID: Int, nickname: String)
 
 class UserManager @Inject()(dbApi: DBApi){
   private val db = dbApi.database("default")
@@ -40,6 +41,14 @@ class UserManager @Inject()(dbApi: DBApi){
         e.printStackTrace()
         None
     }
+  }
+
+  def findUserByID(id: Int) : Boolean = db.withConnection{ implicit connection =>
+    val duplicatedUser = SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *)
+    if(duplicatedUser.isEmpty){
+      return false
+    }
+    return true
   }
 
   //현재 BrainPot에 존재하지 않는 유일한 ID값을 생성한다.

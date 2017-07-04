@@ -11,6 +11,8 @@ import play.api.db.DBApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 
+//팀의 정보를 담는 케이스 클래스
+case class Team(id: Int, owner: Int, goal: String, status: Int, inviteCode: String)
 
 class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")

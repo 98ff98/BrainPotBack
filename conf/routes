@@ -3,7 +3,7 @@
 GET     /              @controllers.RequestController.index()
 
 #web-app
-#GET      /app           controllers.Application.app(teamInviteCode: String ,teamGoal: String, myID: String, myNickName: String, isAdmin: Boolean)
+GET      /app           controllers.RequestController.app()
 
 # web-app loader for Normal User
 POST     /join         @controllers.RequestController.joinTeam()
