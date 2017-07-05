@@ -1,1 +1,25 @@
-@()
+@(implicit webSocketConnectionData: RequestHeader, appLoadDataSet: AppLoadDataSet)
+<!DOCTYPE html>
+<html lang="ko-kr">
+    <head>
+        <meta charset="UTF-8">
+        <title>app Test</title>
+    </head>
+    <body>
+       <h3>유저 정보</h3>
+       <p>
+           <a>유저 ID         : @appLoadDataSet.userData.id </a><br>
+           <a>유저 소속 팀 ID : @appLoadDataSet.userData.teamID </a><br>
+           <a>유저 닉네임     : @appLoadDataSet.userData.nickname </a><br>
+       </p>
+
+        <h3>팀 정보</h3>
+        <p>
+            <a>팀 ID           : @appLoadDataSet.teamData.id </a><br>
+            <a>팀 목표         : @appLoadDataSet.teamData.goal </a><br>
+            <a>팀 초대코드     : @appLoadDataSet.teamData.inviteCode </a><br>
+            <a>팀 방장         : @appLoadDataSet.teamData.owner </a><br>
+            <a>팀 상태         : @appLoadDataSet.teamData.status </a><br>
+        </p>
+    </body>
+</html>

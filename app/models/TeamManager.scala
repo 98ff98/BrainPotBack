@@ -3,12 +3,13 @@ package models
 import java.util.Random
 import javax.inject.Inject
 
-import anorm.{SQL, SqlParser}
+import anorm.SqlParser.get
+import anorm.{RowParser, SQL, SqlParser, ~}
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.Logger
 import play.api.db.DBApi
-
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 import scala.concurrent.Future
 
 //팀의 정보를 담는 케이스 클래스
@@ -18,6 +19,19 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")
   //랜덤 초대 코드 생성에 사용항 문자 리스트
   val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
+
+  //팀 생성 시간을 제외한 팀 데이터를 파싱하는 파서
+  val teamDataParser: RowParser[Team] = {
+      get[Int]("TEAM.ID") ~
+      get[Int]("TEAM.OWNER") ~
+      get[String]("TEAM.GOAL") ~
+      get[Int]("TEAM.STATUS") ~
+      get[String]("TEAM.INVITECODE")  map{
+      case id ~ owner ~ goal ~ status ~ inviteCode =>
+        Team(id, owner, goal, status, inviteCode)
+    }
+  }
+
   def callCLEAR_OLD_TEAMS(): Unit = {
     db.withConnection { implicit collection =>
       SQL("CALL `CLEAR_OLD_TEAMS`()").executeUpdate()
@@ -78,6 +92,25 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     }
 
     createdAdminID
+  }
+
+  //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
+  def getTeamData(id: Int) : Option[Team] = db.withConnection{ implicit connection =>
+    try{
+      val teamData = SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamDataParser *)
+      if(teamData.size > 1){
+        Logger.warn("Critical DB Error Detected : at table `TEAM`")
+        return None
+      }
+      return Some(teamData.head)
+    }
+    catch {
+      case e: Exception => {
+        Logger.error("job failed : method getTeamData")
+        e.printStackTrace()
+        return None
+      }
+    }
   }
 
   def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>

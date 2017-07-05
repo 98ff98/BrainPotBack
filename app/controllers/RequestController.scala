@@ -73,7 +73,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
           }
           val createdUserID = userManager.addNormalUser(data.nickname, teamID.get)
           createdUserID match {
-            case Some(n) => Redirect("/aspp").withCookies(Cookie("BrainPotLogin", n + ""))
+            case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
             case None => Redirect("/")
           }
         }
@@ -92,10 +92,28 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     val userCookie = request.cookies.get("BrainPotLogin")
     userCookie match{
       case Some(cookie) =>
+      //ALERT 10001 : 잘못된 입장 정보입니다
       case None => Redirect("/").withCookies(Cookie("ALERT", "10001", Some(60)))
     }
 
-    Ok(views.html.index())
+    //DB로 부터 쿠키에서 가져온 ID를 가지고 있는 유저의 정보를 가져온다
+    val userData = userManager.getUserData(userCookie.get.value.toInt)
+    userData match{
+      case Some(data) =>
+      //ALERT 10002 : 유저를 찾을 수 없습니다.
+      case None => Redirect("/").withCookies(Cookie("ALERT", "10002", Some(60)))
+    }
+
+    //DB로 부터 쿠키에서 가져온 ID를 가지고 있는 유저가 속한 팀의 정보를 가져온다
+    val teamData = teamManager.getTeamData(userData.get.teamID)
+    teamData match{
+      case Some(data) =>
+      //ALERT 10003 : 팀을 찾을 수 없습니다.
+      case None => Redirect("/").withCookies(Cookie("ALERT", "10003", Some(60)))
+    }
+
+    //가져온 유저 데이터와 팀 데이터를 app 페이지에 전달한다.
+    Ok(views.html.app(request, AppLoadDataSet(userData.get, teamData.get) ))
   }
 
 
@@ -112,6 +130,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
 }
 
+//app.scala.html 페이지를 로드할 때 필요한 데이터 셋
 case class AppLoadDataSet(userData: User, teamData: Team)
 case class CreateTeamDataSet(nickname: String, goal: String)
 case class JoinTeamDataSet(nickname: String, inviteCode: String)

@@ -52,6 +52,19 @@ CALL `CHECK_ID`(1);
 #스토어드 프로시저 호출
 CALL `ADD_USER`(1, 7, 'HYERI7');
 
+DELIMITER @@;
+CREATE PROCEDURE `GET_USER_DATA`(IN `ID` INT)
+
+    BEGIN
+        SELECT * FROM `USER` WHERE USER.ID = `ID`;
+
+    END @@;
+
+DELIMITER ;
+
+#위 프로시저를 호출
+CALL `GET_USER_DATA`(1080332383);
+
 #### DANGER!! ####
 DROP TABLE `USER`;
 
