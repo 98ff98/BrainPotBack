@@ -16,7 +16,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
 class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamManager: TeamManager, userManager: UserManager) extends Controller {
-  { // 10분마다 오래된 팀들을 자동으로 삭제한다.
+  { // 30분마다 오래된 팀들을 자동으로 삭제한다.
     val scheduler = actorSystem.scheduler
     val runnableTask = new AutoTeamRemover(new TeamManager(dBApi, new UserManager(dBApi)))
     implicit val executor = actorSystem.dispatcher
@@ -87,7 +87,6 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )
   }
 
-
   def app = Action { request =>
     val userCookie = request.cookies.get("BrainPotLogin")
     userCookie match{
@@ -116,7 +115,6 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     Ok(views.html.app(request, AppLoadDataSet(userData.get, teamData.get) ))
   }
 
-
   val joinTeamDataForm = Form(
     mapping(
       "NICKNAME" -> nonEmptyText(1,10),
@@ -131,6 +129,6 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
 }
 
 //app.scala.html 페이지를 로드할 때 필요한 데이터 셋
-case class AppLoadDataSet(userData: User, teamData: Team)
+case class AppLoadDataSet(userData: UserData, teamData: TeamData)
 case class CreateTeamDataSet(nickname: String, goal: String)
 case class JoinTeamDataSet(nickname: String, inviteCode: String)

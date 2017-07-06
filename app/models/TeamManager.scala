@@ -10,10 +10,11 @@ import play.api.Logger
 import play.api.db.DBApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import scala.collection.mutable
 import scala.concurrent.Future
 
 //팀의 정보를 담는 케이스 클래스
-case class Team(id: Int, owner: Int, goal: String, status: Int, inviteCode: String)
+case class TeamData(id: Int, owner: Int, goal: String, status: Int, inviteCode: String)
 
 class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")
@@ -21,14 +22,14 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
 
   //팀 생성 시간을 제외한 팀 데이터를 파싱하는 파서
-  val teamDataParser: RowParser[Team] = {
+  val teamDataParser: RowParser[TeamData] = {
       get[Int]("TEAM.ID") ~
       get[Int]("TEAM.OWNER") ~
       get[String]("TEAM.GOAL") ~
       get[Int]("TEAM.STATUS") ~
       get[String]("TEAM.INVITECODE")  map{
       case id ~ owner ~ goal ~ status ~ inviteCode =>
-        Team(id, owner, goal, status, inviteCode)
+        TeamData(id, owner, goal, status, inviteCode)
     }
   }
 
@@ -95,7 +96,7 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   }
 
   //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
-  def getTeamData(id: Int) : Option[Team] = db.withConnection{ implicit connection =>
+  def getTeamData(id: Int) : Option[TeamData] = db.withConnection{ implicit connection =>
     try{
       val teamData = SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamDataParser *)
       if(teamData.size > 1){
@@ -139,5 +140,18 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
       return Some(createdUniqueInviteCode)
     else
       return None
+  }
+}
+
+object TeamManager{
+  private var users : mutable.HashMap[Int, mutable.ListBuffer[User]] = mutable.HashMap() //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
+
+  def addUser(user: User, teamID : Int) : Boolean = {
+    val userList = this.users.get(teamID)
+    userList match {
+      case Some(list) =>
+      case None => return false
+    }
+
   }
 }
