@@ -144,14 +144,25 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
 }
 
 object TeamManager{
-  private var users : mutable.HashMap[Int, mutable.ListBuffer[User]] = mutable.HashMap() //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
-
+  private var users : mutable.HashMap[Int, List[User]] = mutable.HashMap() //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
+  //유저를 팀 유저 리스트에 추가한다.
   def addUser(user: User, teamID : Int) : Boolean = {
     val userList = this.users.get(teamID)
     userList match {
-      case Some(list) =>
-      case None => return false
+      case Some(list) => {
+        this.users.synchronized{
+          val tempList = user :: this.users(teamID)
+          this.users += (teamID -> tempList)
+          true
+        }
+      }
+      case None => false
     }
 
+  }
+
+  //해당 팀에 있는 모든 유저들에게 메세지를 전달한다
+  def broadcast(teamID : Int, msg: String) : Unit = {
+    this.users(teamID) foreach( user => user.actorRef !  msg)
   }
 }
