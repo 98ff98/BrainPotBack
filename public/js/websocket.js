@@ -20,8 +20,25 @@ var socket = {
 				case "join_user" :
 					UserInfo.add(json);
 					break;
+				case "left_user" :
+					UserInfo.remove(json);
+					break;
 				case "chat" :
 					chat.write(json);
+					break;
+				case "init" : 
+					break;
+				case "draw" :
+					break;
+				case "node_add" :
+					break;
+				case "node_update_content" :
+					break;
+				case "node_update_loc" :
+					break;
+				case "node_add_comment" :
+					break;
+				case "remove" :
 					break;
 			}
 		}

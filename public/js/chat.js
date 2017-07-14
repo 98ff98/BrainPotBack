@@ -15,7 +15,7 @@ var chat = {
 	}
 };
 
-
+//<summary>control function define</summary>
 $("#brain_chatField").keydown(function (event) {
     if (event.key === "Enter")
         chatSend();

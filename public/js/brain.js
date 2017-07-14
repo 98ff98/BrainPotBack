@@ -7,10 +7,7 @@ $(document).ready(function () {
     $(".modal").css("width", "35%");
 
     //<summary>event define</summary>
-    $(".user_list_item").click(function () {
-        $("#modal_kick").modal('open');
-    });
-
+    
     $("#menu_next").click(function () {
         level++;
         init(level);
@@ -56,4 +53,16 @@ $(document).ready(function () {
 
         $("#upload_json").val(undefined);
     });
+
+    //<summary> function define </summary>
+    function toast(text) {
+        Materialize.toast(text, 4000);
+    }
+
+    //웹 페이지를 탈출할 때 발동
+    function exit () {
+        $(window).unload(function() {
+            UserInfo.left(myID);
+        });
+    }
 });

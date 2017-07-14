@@ -98,10 +98,6 @@
                 <!-- 유저 목록 -->
             <ul id="user_list" class="dropdown-content font-noto-regular">
                 <li class="user_list_item"><a href="#!">호날두</a></li>
-                <li class="user_list_item"><a href="#!">메시</a></li>
-                <li class="user_list_item"><a href="#!">호나우지뉴</a></li>
-                <li class="user_list_item"><a href="#!">즐라탄</a></li>
-                <li class="user_list_item"><a href="#!">카시야스</a></li>
             </ul>
 
             <div class="nav-content">
@@ -410,6 +406,7 @@
             <!-- scripts -->
         <script src="@routes.Assets.at("js/screen.js")"></script>
         <script src="@routes.Assets.at("js/websocket.js")"></script>
+        <script src="@routes.Assets.at("js/userinfo.js")"></script>
         <script src="@routes.Assets.at("js/chat.js")"></script>
         <script src="@routes.Assets.at("js/mindmap.js")"></script>
         <script src="@routes.Assets.at("js/drawing.js")"></script>
@@ -419,33 +416,6 @@
         <script>
         //<summary>브레인스토밍 작업 초기화</summary>
         var level = 1; //현재 진행 레벨
-        var UserInfo = {
-            list: [],
-            add: (json) => {
-                var user = {
-                    id: json.id,
-                    nickname: json.nickname
-                };
-
-                UserInfo.list.push(user);
-            },
-            join : () => {
-                var json = {
-                    event : "join_user",
-                    team : teamID,
-                    id: myID,
-                    nickname: myNickname,
-                }
-
-                socket.send(json);
-            },
-            delete: (id) => {
-
-            }
-        }
-
-        //내 정보 입장
-        UserInfo.join();
 
         init(level);
 
