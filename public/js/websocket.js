@@ -17,6 +17,9 @@ var socket = {
 			json = JSON.parse(json);
 			
 			switch (json.event) {
+				case "join_user" :
+					UserInfo.add(json);
+					break;
 				case "chat" :
 					chat.write(json);
 					break;
