@@ -35,7 +35,8 @@ var UserInfo = {
             event : "left_user",
             team : teamID,
             id: id,
-            nickname: myNickname
+            nickname: myNickname,
+            isAdmin : isAdmin (id)
         };
 
         socket.send(json);
@@ -49,3 +50,22 @@ var UserInfo = {
 //내 정보 입장
 UserInfo.join();
 
+//<summary> event function define </summary>
+$("#user_list").click(function () {
+    $("#user_list").empty();
+
+    for (var i = 0; i < UserInfo.list.length; i++) {
+        $("#user_list").append(
+            '<li class="user_list_item" data-id='
+            + '"'
+            + UserInfo.list[i].id
+            + '"'
+            +'><a href="#!">'
+            + UserInfo.list[i].nickname
+            + '</a></li>');
+    }
+});
+
+$(".user_list_item").click(function () {
+    $("#modal_kick").modal('open');
+});
