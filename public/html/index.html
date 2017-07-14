@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>브레인 팟. 최고의 협업 시스템</title>
+
+    <!-- CSS -->
+    <style>
+        #container_main {
+            background-image: url('https://s3.ap-northeast-2.amazonaws.com/brainpot/image/background.jpg');
+            background-size: cover;
+            width: 100%;
+            height: 700px;
+        }
+
+    </style>
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="shortcut icon" type="image/png" href="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/brainGay.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 네비게이션 -->
+    <nav>
+        <div class="nav-wrapper">
+            <div class="container">
+                <a href="#" class="brand-logo">Brain Pot</a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="" class="font-noto-regular">시작하기</a></li>
+                    <li><a href="#container_2" class="font-noto-regular">서비스</a></li>
+                    <li><a href="" class="font-noto-regular">도움말</a></li>
+                </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li><a href="" class="font-noto-regular">시작하기</a></li>
+                    <li><a href="#container_2" class="font-noto-regular">서비스</a></li>
+                    <li><a href="" class="font-noto-regular">도움말</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- container 1 -->
+    <!--
+    <div>
+        <div id="container_main" class="center-align">
+            
+            <img id="icon_main" src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/brainGay.png" />
+            <p id="title_main">브레인 팟</p>
+            <p id="description_main">지금 바로 친구, 직장동료와 함께 협업하세요.</p>
+            <button id="btn_create" class="btn">방 만들기</button>
+            <button id="btn_join" class="btn">입장하기</button>
+
+        </div>
+    </div>
+-->
+
+    <!-- container 1 -->
+    <div id="container_1" class="slider">
+        <ul class="slides">
+            <li>
+                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/background1.jpg">
+                <div class="caption center-align">
+                    <h3>This is our big Tagline!</h3>
+                    <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                </div>
+            </li>
+            <li>
+                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/background2.jpg">
+                <div class="caption left-align">
+                    <h3>Left Aligned Caption</h3>
+                    <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                </div>
+            </li>
+            <li>
+                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/background3.jpg">
+                <div class="caption right-align">
+                    <h3>Right Aligned Caption</h3>
+                    <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                </div>
+            </li>
+            <li>
+                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/background4.jpg">
+                <div class="caption center-align">
+                    <h3>This is our big Tagline!</h3>
+                    <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                </div>
+            </li>
+        </ul>
+        <div id="start_buttons" class="row center">
+            <a class="btn-large waves-effect waves-light font-noto-medium" href="#modal_create">방 만들기</a>
+            <a class="btn-large waves-effect waves-light font-noto-medium" href="#modal_join">입장 하기</a>
+        </div>
+    </div>
+
+    <!-- container 2 -->
+    <div id="container_2" class="container center-align">
+        <div class="row">
+            <div class="col s12">
+                <h2 class="font-noto-medium">실시간 협업 서비스</h2>
+                <br>
+                <br>
+                <p class="font-noto-light">브레인 팟은 고등학생 2명이 제작한</p>
+                <p class="font-noto-light">실시간 온라인 브레인스토밍 협업 서비스입니다.</p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="col l4 s12">
+                <img class="icon" src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/icon/ic_people.png" />
+                <h5 class="font-noto-medium">실시간</h5>
+                <p class="font-noto-light">브레인 팟은 여러 인원이 동시 참여할 수 있는 실시간 협업 기능을 무료로 제공합니다.</p>
+            </div>
+            <div class="col l4 s12">
+                <img class="icon" src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/icon/ic_create.png" />
+                <h5 class="font-noto-medium">시각적 도구</h5>
+                <p class="font-noto-light">마인드 맵, 그림판, 채팅 등의 기능을 이용하여 더욱 시각적인 회의가 가능합니다.</p>
+            </div>
+            <div class="col l4 s12">
+                <img class="icon" src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/icon/ic_flash.png" />
+                <h5 class="font-noto-medium">빠른 접근</h5>
+                <p class="font-noto-light">회원가입 필요 없이 닉네임 입력만으로 서비스를 빠르게 이용할 수 있습니다.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row" style="margin-bottom:0px">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Made by</h5>
+                    <a class="grey-text text-lighten-4" href="https://github.com/SpiralMoon">Front-End developer Spiral Moon</a><br>
+                    <a class="grey-text text-lighten-4" href="https://github.com/scala-in">Back-End developer scala-in</a>
+                </div>
+                <div class="row l6 s12 right">
+                    <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/dsm.png" width="96">
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                ⓒ 2017 Copyright Team LightHouse
+            </div>
+        </div>
+    </footer>
+
+    <!-- 방만들기 모달 -->
+    <div id="modal_create" class="modal">
+        <div class="modal-content">
+            <h4 class="center font-noto-medium">브레인스토밍 회의방 생성</h4>
+            <div class="divider"></div>
+            <form class="row col s12">
+                <div class="input-field col s6">
+                    <input id="form_nickname" name="NICKNAME" type="text" class="validate font-noto-regular" maxlength="10" data-length="10">
+                    <label for="form_nickname">닉네임</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="form_topic" name="TOPIC" type="text" class="validate font-noto-regular" maxlength="30" data-length="30">
+                    <label for="form_topic">토론 주제</label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer font-noto-light">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">입장</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+        </div>
+    </div>
+
+    <!-- 입장하기 모달 -->
+    <div id="modal_join" class="modal ">
+        <div class="modal-content">
+            <h4 class="center font-noto-medium">브레인스토밍 회의방에 입장</h4>
+            <div class="divider"></div>
+            <form class="row col s12">
+                <div class="input-field col s6">
+                    <input id="form_nickname" name="NICKNAME" type="text" class="validate font-noto-regular" maxlength="10" data-length="10">
+                    <label for="form_nickname">닉네임</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="form_code" name="CODE" type="text" class="validate font-noto-regular" maxlength="5" data-length="5">
+                    <label for="form_code">초대코드</label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer font-noto-light">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">입장</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+        </div>
+    </div>
+
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <script src="../js/index.js"></script>
+    <script src="../js/screen.js"></script>
+</body>
+
+</html>

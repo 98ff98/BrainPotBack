@@ -1,0 +1,79 @@
+$(document).ready(function () {
+    //<summary>initialize</summary>
+    $(".modal").modal();
+    $(".button-collapse").sideNav();
+
+    //<summary>resize</summary>
+    $(".modal").css("width", "35%");
+
+    //<summary>event define</summary>
+    $(".user_list_item").click(function () {
+        $("#modal_kick").modal('open');
+    });
+
+    $("#menu_next").click(function () {
+        level++;
+        init(level);
+    });
+
+    $("#menu_capture").click(function () {
+        html2canvas($("#brain_field_" + level), {
+            onrendered: function (canvas) {
+                var img = canvas.toDataURL();
+                window.open(img, "_blank");
+            }
+        });
+    });
+
+    //json 다운로드 (데이터 세이브)
+    $("#menu_save").click(function () {
+        var obj = brainField.model.toJson();
+        console.log(obj);
+        var writer = new FileWriter();
+    });
+
+    //json 업로드 (데이터 로드)
+    $("#upload_json").bind("change", function (event) {
+        //파일을 업로드 하지 않은 경우
+        if ($("#upload_json").val() == undefined)
+            return;
+
+        var file = event.target.files;
+
+        for (var i = 0, f; f = file[i]; i++) {
+            var reader = new FileReader();
+
+            reader.onload = (function (theFile) {
+                return function (event) {
+                    //TODO 서버로 json 데이터 전송
+                    var obj = JSON.parse(event.target.result);
+                    brainField.model = go.Model.fromJson(obj);
+                }
+            })(f);
+
+            reader.readAsBinaryString(f);
+        }
+
+        $("#upload_json").val(undefined);
+    });
+
+    $("#brain_chatField").keydown(function (event) {
+        if (event.key === "Enter")
+            chatSend();
+    });
+
+    $("#chat_send").click(function (event) {
+        chatSend();
+    });
+
+    //<summary>function define</summary>
+    function chatSend() {
+        //빈 텍스트 필터링
+        if ($("#brain_chatField").val() === "")
+            return;
+
+        //TODO 서버로 채팅 데이터 전송
+        console.log($("#brain_chatField").val());
+        $("#brain_chatField").val("");
+    }
+});
