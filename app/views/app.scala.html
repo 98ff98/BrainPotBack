@@ -410,6 +410,7 @@
             <!-- scripts -->
         <script src="@routes.Assets.at("js/screen.js")"></script>
         <script src="@routes.Assets.at("js/websocket.js")"></script>
+        <script src="@routes.Assets.at("js/userinfo.js")"></script>
         <script src="@routes.Assets.at("js/chat.js")"></script>
         <script src="@routes.Assets.at("js/mindmap.js")"></script>
         <script src="@routes.Assets.at("js/drawing.js")"></script>
@@ -419,33 +420,6 @@
         <script>
         //<summary>브레인스토밍 작업 초기화</summary>
         var level = 1; //현재 진행 레벨
-        var UserInfo = {
-            list: [],
-            add: (json) => {
-                var user = {
-                    id: json.id,
-                    nickname: json.nickname
-                };
-
-                UserInfo.list.push(user);
-            },
-            join : () => {
-                var json = {
-                    event : "join_user",
-                    team : teamID,
-                    id: myID,
-                    nickname: myNickname,
-                }
-
-                socket.send(join);
-            }
-            delete: (id) => {
-
-            }
-        }
-
-        //내 정보 입장
-        UserInfo.join();
 
         init(level);
 
