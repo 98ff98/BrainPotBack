@@ -429,13 +429,23 @@
 
                 UserInfo.list.push(user);
             },
+            join : () => {
+                var json = {
+                    event : "join_user",
+                    team : teamID,
+                    id: myID,
+                    nickname: myNickname,
+                }
+
+                socket.send(join);
+            }
             delete: (id) => {
 
             }
         }
 
-        //<summary>자신의 데이터 저장</summary>
-        UserInfo.add({ id : myID, nickname : myNickname});
+        //내 정보 입장
+        UserInfo.join();
 
         init(level);
 

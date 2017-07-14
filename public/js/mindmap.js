@@ -98,6 +98,9 @@ var MindMap = {
 
         //아이디어 위치 변경 리스너
         brainField.addDiagramListener("SelectionMoved", function (event) {
+            var id = myID;
+            var team = teamID;
+
             var rootX = brainField.findNodeForKey(0).location.x;
             var obj = event.subject.Ka.value.vf.Nd;
             var key = obj.key; //위치를 변경한 노드의 키값
@@ -132,7 +135,7 @@ var MindMap = {
                 "class": "go.TreeModel",
                 "nodeDataArray": [{
                     "key": 0,
-                    "text": "Mind Map", //중앙 text
+                    "text": teamTopic, //중앙 text
                     "loc": "0 0"
         }]
             };
