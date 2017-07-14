@@ -392,6 +392,25 @@
             </div>
         </div>
 
+        <script>
+        //스칼라 템플릿에서 넘어오는 데이터를 저장하는 부분
+
+        //웹 소켓 연결 데이터
+        var tempWebSocket = new WebSocket("@routes.WebSocketController.webSocketConn.webSocketURL()");
+
+        //팀 관련 데이터
+        var teamID = @appLoadDataSet.teamData.id
+        var teamTopic = "@appLoadDataSet.teamData.goal"
+        var teamInviteCode = "@appLoadDataSet.teamData.inviteCode"
+        var teamAdminID = @appLoadDataSet.teamData.owner
+        var teamInit = @appLoadDataSet.teamData.status
+
+        //유저(본인) 관련 데이터
+        var myID = @appLoadDataSet.userData.id
+        var myNickname = "@appLoadDataSet.userData.nickname"
+
+        </script>
+
             <!-- library scripts -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.10/go-debug.js"></script>
@@ -404,46 +423,32 @@
             <!-- scripts -->
         <script src="@routes.Assets.at("js/screen.js")"></script>
         <script src="@routes.Assets.at("js/websocket.js")"></script>
+        <script src="@routes.Assets.at("js/chat.js")"></script>
         <script src="@routes.Assets.at("js/mindmap.js")"></script>
         <script src="@routes.Assets.at("js/drawing.js")"></script>
         <script src="@routes.Assets.at("js/meaning.js")"></script>
         <script src="@routes.Assets.at("js/grouping.js")"></script>
         <script src="@routes.Assets.at("js/brain.js")"></script>
         <script>
-            //스칼라 템플릿에서 넘어오는 데이터를 저장하는 부분
-
-            //웹 소켓 연결 데이터
-            var tempWebSocket = new WebSocket("@routes.WebSocketController.webSocketConn.webSocketURL()");
-
-            //팀 관련 데이터
-            var teamID = @appLoadDataSet.teamData.id
-            var teamTopic = "@appLoadDataSet.teamData.goal"
-            var teamInviteCode = "@appLoadDataSet.teamData.inviteCode"
-            var teamAdminID = @appLoadDataSet.teamData.owner
-            var teamInit = @appLoadDataSet.teamData.status
-
-            //유저(본인) 관련 데이터
-            var myID = @appLoadDataSet.userData.id
-            var myNickname = "@appLoadDataSet.userData.nickname"
-
-        </script>
-        <script>
         //<summary>브레인스토밍 작업 초기화</summary>
         var level = 1; //현재 진행 레벨
         var UserInfo = {
-                    list: [],
-                    add: (json) => {
-                    var user = {
-                        id: json.id,
-                        nickname: json.nickname
-                    };
+            list: [],
+            add: (json) => {
+                var user = {
+                    id: json.id,
+                    nickname: json.nickname
+                };
 
-        UserInfo.list.push(user);
-        },
-        delete: (id) => {
+                UserInfo.list.push(user);
+            },
+            delete: (id) => {
 
+            }
         }
-        }
+
+        //<summary>자신의 데이터 저장</summary>
+        UserInfo.add({ id : myID, nickname : myNickname});
 
         init(level);
 
