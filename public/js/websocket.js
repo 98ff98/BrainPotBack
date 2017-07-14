@@ -14,7 +14,7 @@ var socket = {
 		}
 
 		socket.websocket.onmessage = function (json) {
-			json = JSON.parse(json);
+			json = JSON.parse(json.data);
 			
 			switch (json.event) {
 				case "join_user" :

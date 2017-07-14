@@ -11,10 +11,10 @@ import play.api.db.DBApi
 
 import scala.concurrent.Future
 
-//웹소켓 통신때 유저를 표현하기 위한 케이스 클래스
-case class User(userData: UserData, actorRef: ActorRef)
-//순수하게 유저관련 정보만 표현하는 케이스 클래스
+
+//유저관련 정보를 표현하는 케이스 클래스
 case class UserData(id: Int, teamID: Int, nickname: String)
+
 
 class UserManager @Inject()(dbApi: DBApi){
   private val db = dbApi.database("default")
@@ -29,6 +29,7 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
+  //방장이 아닌 유저를 DB에 추가하는 메소드
   def addNormalUser(nickname: String, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
       val createdID = createUniqueID()
@@ -46,6 +47,7 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
+  //방장을 DB에 추가하는 메소드
   def addAdminUser(nickname: String, userID: Int, teamID: Int) : Option[Int] =  db.withConnection{ implicit  connection =>
     try {
       SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
@@ -58,6 +60,7 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
+  //해당 ID를 가진 유저의 정보를 DB에서 가져오는 메소드
   def findUserByID(id: Int) : Boolean = db.withConnection{ implicit connection =>
     val duplicatedUser = SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *)
     if(duplicatedUser.isEmpty){

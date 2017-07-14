@@ -26,10 +26,12 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
       runnable = runnableTask)
   }
 
+  //인덱스 페이지에 접속하려 할 때 호출되는 메소드
   def index = Action {
     Ok(views.html.index())
   }
 
+  //방을 새로 생성하려는 POST 요청을 처리하는 메소드
   def createTeam = Action { implicit request =>
     val receivedData = createTeamDataForm.bindFromRequest()
     receivedData.fold(
@@ -40,9 +42,11 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
       },
       data => {
         try{
+          //방을 생성한다.
           val createdUserID = teamManager.createTeam(data.nickname, data.goal)
           createdUserID match {
             case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+             //방 생성 실패시에 인덱스 페이지로 리다이어렉트 시킨다.
             case None => Redirect("/")
           }
         }
@@ -56,6 +60,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )
   }
 
+  //팀 입장 POST 요청을 처리하는 메소드
   def joinTeam = Action { implicit request =>
     val receivedData = joinTeamDataForm.bindFromRequest()
     receivedData.fold(
@@ -66,14 +71,20 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
       },
       data => {
         try{
+          //유저가 입장하려는 팀이 존재하는 팀인지 확인한다.
           val teamID = teamManager.findTeamByCode(data.inviteCode)
           teamID match {
             case Some(n) => //Nothing to do
+            //존재하지 않는 팀에 입장하려한다면 인덱스 페이지로 리다이어렉트 시킨다.
             case None => Redirect("/")
           }
+          //해당 유저의 정보가 유효한지 확인한다.
           val createdUserID = userManager.addNormalUser(data.nickname, teamID.get)
           createdUserID match {
-            case Some(n) => Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+            case Some(n) => {
+              Redirect("/app").withCookies(Cookie("BrainPotLogin", n + ""))
+            }
+            //해당 유저의 정보가 유효하지 않다면 인덱스 페이지로 리다이어렉트 시킨다.
             case None => Redirect("/")
           }
         }
@@ -87,7 +98,9 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     )
   }
 
+  //웹 어플리케이션 로드시에 호출된다.
   def app = Action { request =>
+    //해당 유저가 정상적인 방법으로 앱에 접속을 시도하는지 판단한다.
     val userCookie = request.cookies.get("BrainPotLogin")
     userCookie match{
       case Some(cookie) =>
@@ -128,9 +141,15 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
       "NICKNAME" -> nonEmptyText(1,10),
       "TOPIC" -> nonEmptyText(1,100)
     )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
+
 }
 
-//app.scala.html 페이지를 로드할 때 필요한 데이터 셋
+
+//app.scala.html 페이지를 로드할 때 필요한 데이터를 담는 케이스 클래스
 case class AppLoadDataSet(userData: UserData, teamData: TeamData)
+
+//방 생성에 필요한 데이터를 담는 케이스 클래스
 case class CreateTeamDataSet(nickname: String, goal: String)
+
+//방 입장에 필요한 데이터를 담는 케이스 클래스
 case class JoinTeamDataSet(nickname: String, inviteCode: String)

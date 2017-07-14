@@ -3,10 +3,11 @@ package models
 import java.util.Random
 import javax.inject.Inject
 
+import akka.actor.ActorRef
 import anorm.SqlParser.get
 import anorm.{RowParser, SQL, SqlParser, ~}
 import org.apache.commons.lang3.RandomStringUtils
-import play.api.Logger
+import play.Logger
 import play.api.db.DBApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
@@ -114,6 +115,7 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     }
   }
 
+  //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 정수형 키를 생성한다.
   def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>
     try {
       val ran = new Random()
@@ -133,6 +135,7 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     }
   }
 
+  //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 5자리의 초대코드를 생성한다.
   def createUniqueInviteCode() : Option[String] = db.withConnection{ implicit connection =>
     val createdUniqueInviteCode = RandomStringUtils.random(5, charList)
     val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
@@ -143,26 +146,40 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   }
 }
 
+
+
 object TeamManager{
-  private var users : mutable.HashMap[Int, List[User]] = mutable.HashMap() //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
+  //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
+  private var users : mutable.HashMap[Int, List[(Int, ActorRef)]] = mutable.HashMap()
+
   //유저를 팀 유저 리스트에 추가한다.
-  def addUser(user: User, teamID : Int) : Boolean = {
+  def addUser(userID: Int, teamID : Int, actorRef: ActorRef) : Boolean = {
     val userList = this.users.get(teamID)
     userList match {
+      //해당 팀의 유저리스트가 존재한다면
       case Some(list) => {
         this.users.synchronized{
-          val tempList = user :: this.users(teamID)
-          this.users += (teamID -> tempList)
+          val tempList = (userID, actorRef) :: this.users(teamID)
+          this.users(teamID) = tempList
+          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
           true
         }
       }
-      case None => false
+      //해당 팀의 유저리스트가 존재하지 않느다면
+      case None => {
+        this.users.synchronized{
+          this.users += (teamID -> List{(userID, actorRef)})
+          Logger.debug("팀 추가작동, 팀ID:" + teamID)
+          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          true
+        }
+      }
     }
 
   }
 
   //해당 팀에 있는 모든 유저들에게 메세지를 전달한다
   def broadcast(teamID : Int, msg: String) : Unit = {
-    this.users(teamID) foreach( user => user.actorRef !  msg)
+    this.users(teamID).foreach( data => data._2 !  msg)
   }
 }
