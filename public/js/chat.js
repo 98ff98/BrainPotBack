@@ -13,4 +13,33 @@ var chat = {
 
 		$("#brain_chatList").append(html);
 	}
+};
+
+
+$("#brain_chatField").keydown(function (event) {
+    if (event.key === "Enter")
+        chatSend();
+});
+
+$("#chat_send").click(function (event) {
+    chatSend();
+});
+
+//<summary>function define</summary>
+function chatSend() {
+    //빈 텍스트 필터링
+    if ($("#brain_chatField").val() === "")
+        return;
+
+    //TODO 서버로 채팅 데이터 전송
+    var json = {
+    	event : "chat",
+    	team : teamID,
+    	id : myID,
+    	nickname : myNickname,
+    	message : $("#brain_chatField").val()
+    };
+
+    socket.send(json);
+    $("#brain_chatField").val("");
 }
