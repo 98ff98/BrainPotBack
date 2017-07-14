@@ -56,4 +56,9 @@ $(document).ready(function () {
 
         $("#upload_json").val(undefined);
     });
+
+    //<summary> function define </summary>
+    function toast(text) {
+        Materialize.toast(text, 4000);
+    }
 });

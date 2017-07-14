@@ -14,11 +14,14 @@ var socket = {
 		}
 
 		socket.websocket.onmessage = function (json) {
-			json = JSON.parse(json);
+			json = JSON.parse(json.data);
 			
 			switch (json.event) {
 				case "join_user" :
 					UserInfo.add(json);
+					break;
+				case "left_user" :
+					UserInfo.remove(json);
 					break;
 				case "chat" :
 					chat.write(json);
