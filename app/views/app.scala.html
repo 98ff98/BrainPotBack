@@ -1,25 +1,488 @@
 @(implicit webSocketConnectionData: RequestHeader, appLoadDataSet: AppLoadDataSet)
 <!DOCTYPE html>
-<html lang="ko-kr">
-    <head>
-        <meta charset="UTF-8">
-        <title>app Test</title>
-    </head>
-    <body>
-       <h3>유저 정보</h3>
-       <p>
-           <a>유저 ID         : @appLoadDataSet.userData.id </a><br>
-           <a>유저 소속 팀 ID : @appLoadDataSet.userData.teamID </a><br>
-           <a>유저 닉네임     : @appLoadDataSet.userData.nickname </a><br>
-       </p>
+<html>
 
-        <h3>팀 정보</h3>
-        <p>
-            <a>팀 ID           : @appLoadDataSet.teamData.id </a><br>
-            <a>팀 목표         : @appLoadDataSet.teamData.goal </a><br>
-            <a>팀 초대코드     : @appLoadDataSet.teamData.inviteCode </a><br>
-            <a>팀 방장         : @appLoadDataSet.teamData.owner </a><br>
-            <a>팀 상태         : @appLoadDataSet.teamData.status </a><br>
-        </p>
+    <head>
+        <meta charset="utf-8">
+        <title>방 제목</title>
+
+            <!-- CSS -->
+        <style>
+        body {
+            overflow: hidden;
+        }
+
+        #brain_field_1,
+        #brain_field_2,
+        #brain_field_3,
+        #brain_field_4 {
+            height: 560px;
+        }
+
+        #brain_field_4 {
+            overflow: auto;
+        }
+
+        #brain_chatList {
+            overflow: auto;
+            height: 274px;
+        }
+
+        #menu {
+            position: fixed;
+            bottom: 40px
+        }
+
+        #palette>area {
+            cursor: pointer;
+        }
+
+        #menu_comment {
+            display: none;
+            z-index: 3;
+            position: absolute;
+            right: 70px;
+            bottom: 10px;
+            width: 400px;
+        }
+
+        #menu_comment_btn {
+            position: absolute;
+            right: 70px;
+            bottom: 10px;
+        }
+
+        #vote_field {
+            z-index: 2;
+            left: 10%;
+            width: 80%;
+        }
+
+    </style>
+
+        <link rel="stylesheet" href="@routes.Assets.at("css/font.css")">
+        <link rel="shortcut icon" type="image/png" href="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/brainGay.png" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+
+    <body>
+            <!-- 네비게이션 -->
+        <nav class="nav-extended">
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo center waves-effect waves-light font-noto-medium">방 제목</a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li>
+                        <a href="#" class="dropdown-button font-noto-regular" data-activates="user_list">
+                            <i class="material-icons left">supervisor_account</i> 참가인원
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#modal_code" class="font-noto-regular">
+                            <i class="material-icons left">person_add</i> 초대코드
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#modal_exit" class="font-noto-regular">
+                            <i class="material-icons left">exit_to_app</i> 나가기
+                        </a>
+                    </li>
+                </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li><a href="#modal_code" class="font-noto-regular">초대코드</a></li>
+                    <li><a href="#modal_exit" class="font-noto-regular">나가기</a></li>
+                </ul>
+            </div>
+
+                <!-- 유저 목록 -->
+            <ul id="user_list" class="dropdown-content font-noto-regular">
+                <li class="user_list_item"><a href="#!">호날두</a></li>
+                <li class="user_list_item"><a href="#!">메시</a></li>
+                    <!--            <li class="divider"></li>-->
+                <li class="user_list_item"><a href="#!">호나우지뉴</a></li>
+                <li class="user_list_item"><a href="#!">즐라탄</a></li>
+                <li class="user_list_item"><a href="#!">카시야스</a></li>
+            </ul>
+
+            <div class="nav-content">
+                <div class="container">
+                    <ul class="tabs tabs-transparent tabs-fixed-width">
+                        <li class="tab font-noto-light"><a href="#brain_field_1">1단계 : 아이디어 발상</a></li>
+                        <li class="tab font-noto-light"><a href="#brain_field_2">2단계 : 아이디어 그룹화</a></li>
+                        <li class="tab font-noto-light"><a href="#brain_field_3">3단계 : 그룹 의미부여, 병합</a></li>
+                        <li class="tab font-noto-light"><a href="#brain_field_4">4단계 : 최종결정</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="row">
+            <div class="col s3">
+                    <!-- Grey navigation panel -->
+                <div class="col s12 z-depth-2 center-align">
+                    <div id="brain_palette">
+                        <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/img_palette.gif" usemap="#palette">
+                        <map id="palette" name="palette">
+                            <area  shape="poly" coords="63,0,72,4,72,15,63,19,54,15,54,4" data-color="#003366">
+                            <area  shape="poly" coords="81,0,90,4,90,15,81,19,72,15,72,4" data-color="#336699">
+                            <area  shape="poly" coords="99,0,108,4,108,15,99,19,90,15,90,4" data-color="#3366CC">
+                            <area  shape="poly" coords="117,0,126,4,126,15,117,19,108,15,108,4" data-color="#003399">
+                            <area  shape="poly" coords="135,0,144,4,144,15,135,19,126,15,126,4" data-color="#000099">
+                            <area  shape="poly" coords="153,0,162,4,162,15,153,19,144,15,144,4" data-color="#0000CC">
+                            <area  shape="poly" coords="171,0,180,4,180,15,171,19,162,15,162,4" data-color="#000066">
+                            <area  shape="poly" coords="54,15,63,19,63,30,54,34,45,30,45,19" data-color="#006666">
+                            <area  shape="poly" coords="72,15,81,19,81,30,72,34,63,30,63,19" data-color="#006699">
+                            <area  shape="poly" coords="90,15,99,19,99,30,90,34,81,30,81,19" data-color="#0099CC">
+                            <area  shape="poly" coords="108,15,117,19,117,30,108,34,99,30,99,19" data-color="#0066CC">
+                            <area  shape="poly" coords="126,15,135,19,135,30,126,34,117,30,117,19" data-color="#0033CC">
+                            <area  shape="poly" coords="144,15,153,19,153,30,144,34,135,30,135,19" data-color="#0000FF">
+                            <area  shape="poly" coords="162,15,171,19,171,30,162,34,153,30,153,19" data-color="#3333FF">
+                            <area  shape="poly" coords="180,15,189,19,189,30,180,34,171,30,171,19" data-color="#333399">
+                            <area  shape="poly" coords="45,30,54,34,54,45,45,49,36,45,36,34" data-color="#669999">
+                            <area  shape="poly" coords="63,30,72,34,72,45,63,49,54,45,54,34" data-color="#009999">
+                            <area  shape="poly" coords="81,30,90,34,90,45,81,49,72,45,72,34" data-color="#33CCCC">
+                            <area  shape="poly" coords="99,30,108,34,108,45,99,49,90,45,90,34" data-color="#00CCFF">
+                            <area  shape="poly" coords="117,30,126,34,126,45,117,49,108,45,108,34" data-color="#0099FF">
+                            <area  shape="poly" coords="135,30,144,34,144,45,135,49,126,45,126,34" data-color="#0066FF">
+                            <area  shape="poly" coords="153,30,162,34,162,45,153,49,144,45,144,34" data-color="#3366FF">
+                            <area  shape="poly" coords="171,30,180,34,180,45,171,49,162,45,162,34" data-color="#3333CC">
+                            <area  shape="poly" coords="189,30,198,34,198,45,189,49,180,45,180,34" data-color="#666699">
+                            <area  shape="poly" coords="36,45,45,49,45,60,36,64,27,60,27,49" data-color="#339966">
+                            <area  shape="poly" coords="54,45,63,49,63,60,54,64,45,60,45,49" data-color="#00CC99">
+                            <area  shape="poly" coords="72,45,81,49,81,60,72,64,63,60,63,49" data-color="#00FFCC">
+                            <area  shape="poly" coords="90,45,99,49,99,60,90,64,81,60,81,49" data-color="#00FFFF">
+                            <area  shape="poly" coords="108,45,117,49,117,60,108,64,99,60,99,49" data-color="#33CCFF">
+                            <area  shape="poly" coords="126,45,135,49,135,60,126,64,117,60,117,49" data-color="#3399FF">
+                            <area  shape="poly" coords="144,45,153,49,153,60,144,64,135,60,135,49" data-color="#6699FF">
+                            <area  shape="poly" coords="162,45,171,49,171,60,162,64,153,60,153,49" data-color="#6666FF">
+                            <area  shape="poly" coords="180,45,189,49,189,60,180,64,171,60,171,49" data-color="#6600FF">
+                            <area  shape="poly" coords="198,45,207,49,207,60,198,64,189,60,189,49" data-color="#6600CC">
+                            <area  shape="poly" coords="27,60,36,64,36,75,27,79,18,75,18,64" data-color="#339933">
+                            <area  shape="poly" coords="45,60,54,64,54,75,45,79,36,75,36,64" data-color="#00CC66">
+                            <area  shape="poly" coords="63,60,72,64,72,75,63,79,54,75,54,64" data-color="#00FF99">
+                            <area  shape="poly" coords="81,60,90,64,90,75,81,79,72,75,72,64" data-color="#66FFCC">
+                            <area  shape="poly" coords="99,60,108,64,108,75,99,79,90,75,90,64" data-color="#66FFFF">
+                            <area  shape="poly" coords="117,60,126,64,126,75,117,79,108,75,108,64" data-color="#66CCFF">
+                            <area  shape="poly" coords="135,60,144,64,144,75,135,79,126,75,126,64" data-color="#99CCFF">
+                            <area  shape="poly" coords="153,60,162,64,162,75,153,79,144,75,144,64" data-color="#9999FF">
+                            <area  shape="poly" coords="171,60,180,64,180,75,171,79,162,75,162,64" data-color="#9966FF">
+                            <area  shape="poly" coords="189,60,198,64,198,75,189,79,180,75,180,64" data-color="#9933FF">
+                            <area  shape="poly" coords="207,60,216,64,216,75,207,79,198,75,198,64" data-color="#9900FF">
+                            <area  shape="poly" coords="18,75,27,79,27,90,18,94,9,90,9,79" data-color="#006600">
+                            <area  shape="poly" coords="36,75,45,79,45,90,36,94,27,90,27,79" data-color="#00CC00">
+                            <area  shape="poly" coords="54,75,63,79,63,90,54,94,45,90,45,79" data-color="#00FF00">
+                            <area  shape="poly" coords="72,75,81,79,81,90,72,94,63,90,63,79" data-color="#66FF99">
+                            <area  shape="poly" coords="90,75,99,79,99,90,90,94,81,90,81,79" data-color="#99FFCC">
+                            <area  shape="poly" coords="108,75,117,79,117,90,108,94,99,90,99,79" data-color="#CCFFFF">
+                            <area  shape="poly" coords="126,75,135,79,135,90,126,94,117,90,117,79" data-color="#CCCCFF">
+                            <area  shape="poly" coords="144,75,153,79,153,90,144,94,135,90,135,79" data-color="#CC99FF">
+                            <area  shape="poly" coords="162,75,171,79,171,90,162,94,153,90,153,79" data-color="#CC66FF">
+                            <area  shape="poly" coords="180,75,189,79,189,90,180,94,171,90,171,79" data-color="#CC33FF">
+                            <area  shape="poly" coords="198,75,207,79,207,90,198,94,189,90,189,79" data-color="#CC00FF">
+                            <area  shape="poly" coords="216,75,225,79,225,90,216,94,207,90,207,79" data-color="#9900CC">
+                            <area  shape="poly" coords="9,90,18,94,18,105,9,109,0,105,0,94" data-color="#003300">
+                            <area  shape="poly" coords="27,90,36,94,36,105,27,109,18,105,18,94" data-color="#009933">
+                            <area  shape="poly" coords="45,90,54,94,54,105,45,109,36,105,36,94" data-color="#33CC33">
+                            <area  shape="poly" coords="63,90,72,94,72,105,63,109,54,105,54,94" data-color="#66FF66">
+                            <area  shape="poly" coords="81,90,90,94,90,105,81,109,72,105,72,94" data-color="#99FF99">
+                            <area  shape="poly" coords="99,90,108,94,108,105,99,109,90,105,90,94" data-color="#CCFFCC">
+                            <area  shape="poly" coords="117,90,126,94,126,105,117,109,108,105,108,94" data-color="#FFFFFF">
+                            <area  shape="poly" coords="135,90,144,94,144,105,135,109,126,105,126,94" data-color="#FFCCFF">
+                            <area  shape="poly" coords="153,90,162,94,162,105,153,109,144,105,144,94" data-color="#FF99FF">
+                            <area  shape="poly" coords="171,90,180,94,180,105,171,109,162,105,162,94" data-color="#FF66FF">
+                            <area  shape="poly" coords="189,90,198,94,198,105,189,109,180,105,180,94" data-color="#FF00FF">
+                            <area  shape="poly" coords="207,90,216,94,216,105,207,109,198,105,198,94" data-color="#CC00CC">
+                            <area  shape="poly" coords="225,90,234,94,234,105,225,109,216,105,216,94" data-color="#660066">
+                            <area  shape="poly" coords="18,105,27,109,27,120,18,124,9,120,9,109" data-color="#336600">
+                            <area  shape="poly" coords="36,105,45,109,45,120,36,124,27,120,27,109" data-color="#009900">
+                            <area  shape="poly" coords="54,105,63,109,63,120,54,124,45,120,45,109" data-color="#66FF33">
+                            <area  shape="poly" coords="72,105,81,109,81,120,72,124,63,120,63,109" data-color="#99FF66">
+                            <area  shape="poly" coords="90,105,99,109,99,120,90,124,81,120,81,109" data-color="#CCFF99">
+                            <area  shape="poly" coords="108,105,117,109,117,120,108,124,99,120,99,109" data-color="#FFFFCC">
+                            <area  shape="poly" coords="126,105,135,109,135,120,126,124,117,120,117,109" data-color="#FFCCCC">
+                            <area  shape="poly" coords="144,105,153,109,153,120,144,124,135,120,135,109" data-color="#FF99CC">
+                            <area  shape="poly" coords="162,105,171,109,171,120,162,124,153,120,153,109" data-color="#FF66CC">
+                            <area  shape="poly" coords="180,105,189,109,189,120,180,124,171,120,171,109" data-color="#FF33CC">
+                            <area  shape="poly" coords="198,105,207,109,207,120,198,124,189,120,189,109" data-color="#CC0099">
+                            <area  shape="poly" coords="216,105,225,109,225,120,216,124,207,120,207,109" data-color="#993399">
+                            <area  shape="poly" coords="27,120,36,124,36,135,27,139,18,135,18,124" data-color="#333300">
+                            <area  shape="poly" coords="45,120,54,124,54,135,45,139,36,135,36,124" data-color="#669900">
+                            <area  shape="poly" coords="63,120,72,124,72,135,63,139,54,135,54,124" data-color="#99FF33">
+                            <area  shape="poly" coords="81,120,90,124,90,135,81,139,72,135,72,124" data-color="#CCFF66">
+                            <area  shape="poly" coords="99,120,108,124,108,135,99,139,90,135,90,124" data-color="#FFFF99">
+                            <area  shape="poly" coords="117,120,126,124,126,135,117,139,108,135,108,124" data-color="#FFCC99">
+                            <area  shape="poly" coords="135,120,144,124,144,135,135,139,126,135,126,124" data-color="#FF9999">
+                            <area  shape="poly" coords="153,120,162,124,162,135,153,139,144,135,144,124" data-color="#FF6699">
+                            <area  shape="poly" coords="171,120,180,124,180,135,171,139,162,135,162,124" data-color="#FF3399">
+                            <area  shape="poly" coords="189,120,198,124,198,135,189,139,180,135,180,124" data-color="#CC3399">
+                            <area  shape="poly" coords="207,120,216,124,216,135,207,139,198,135,198,124" data-color="#990099">
+                            <area  shape="poly" coords="36,135,45,139,45,150,36,154,27,150,27,139" data-color="#666633">
+                            <area  shape="poly" coords="54,135,63,139,63,150,54,154,45,150,45,139" data-color="#99CC00">
+                            <area  shape="poly" coords="72,135,81,139,81,150,72,154,63,150,63,139" data-color="#CCFF33">
+                            <area  shape="poly" coords="90,135,99,139,99,150,90,154,81,150,81,139" data-color="#FFFF66">
+                            <area  shape="poly" coords="108,135,117,139,117,150,108,154,99,150,99,139" data-color="#FFCC66">
+                            <area  shape="poly" coords="126,135,135,139,135,150,126,154,117,150,117,139" data-color="#FF9966">
+                            <area  shape="poly" coords="144,135,153,139,153,150,144,154,135,150,135,139" data-color="#FF6666">
+                            <area  shape="poly" coords="162,135,171,139,171,150,162,154,153,150,153,139" data-color="#FF0066">
+                            <area  shape="poly" coords="180,135,189,139,189,150,180,154,171,150,171,139" data-color="#CC6699">
+                            <area  shape="poly" coords="198,135,207,139,207,150,198,154,189,150,189,139" data-color="#993366">
+                            <area  shape="poly" coords="45,150,54,154,54,165,45,169,36,165,36,154" data-color="#999966">
+                            <area  shape="poly" coords="63,150,72,154,72,165,63,169,54,165,54,154" data-color="#CCCC00">
+                            <area  shape="poly" coords="81,150,90,154,90,165,81,169,72,165,72,154" data-color="#FFFF00">
+                            <area  shape="poly" coords="99,150,108,154,108,165,99,169,90,165,90,154" data-color="#FFCC00">
+                            <area  shape="poly" coords="117,150,126,154,126,165,117,169,108,165,108,154" data-color="#FF9933">
+                            <area  shape="poly" coords="135,150,144,154,144,165,135,169,126,165,126,154" data-color="#FF6600">
+                            <area  shape="poly" coords="153,150,162,154,162,165,153,169,144,165,144,154" data-color="#FF5050">
+                            <area  shape="poly" coords="171,150,180,154,180,165,171,169,162,165,162,154" data-color="#CC0066">
+                            <area  shape="poly" coords="189,150,198,154,198,165,189,169,180,165,180,154" data-color="#660033">
+                            <area  shape="poly" coords="54,165,63,169,63,180,54,184,45,180,45,169" data-color="#996633">
+                            <area  shape="poly" coords="72,165,81,169,81,180,72,184,63,180,63,169" data-color="#CC9900">
+                            <area  shape="poly" coords="90,165,99,169,99,180,90,184,81,180,81,169" data-color="#FF9900">
+                            <area  shape="poly" coords="108,165,117,169,117,180,108,184,99,180,99,169" data-color="#CC6600">
+                            <area  shape="poly" coords="126,165,135,169,135,180,126,184,117,180,117,169" data-color="#FF3300">
+                            <area  shape="poly" coords="144,165,153,169,153,180,144,184,135,180,135,169" data-color="#FF0000">
+                            <area  shape="poly" coords="162,165,171,169,171,180,162,184,153,180,153,169" data-color="#CC0000">
+                            <area  shape="poly" coords="180,165,189,169,189,180,180,184,171,180,171,169" data-color="#990033">
+                            <area  shape="poly" coords="63,180,72,184,72,195,63,199,54,195,54,184" data-color="#663300">
+                            <area  shape="poly" coords="81,180,90,184,90,195,81,199,72,195,72,184" data-color="#996600">
+                            <area  shape="poly" coords="99,180,108,184,108,195,99,199,90,195,90,184" data-color="#CC3300">
+                            <area  shape="poly" coords="117,180,126,184,126,195,117,199,108,195,108,184" data-color="#993300">
+                            <area  shape="poly" coords="135,180,144,184,144,195,135,199,126,195,126,184" data-color="#990000">
+                            <area  shape="poly" coords="153,180,162,184,162,195,153,199,144,195,144,184" data-color="#800000">
+                            <area  shape="poly" coords="171,180,180,184,180,195,171,199,162,195,162,184" data-color="#993333">
+                        </map>
+                    </div>
+                </div>
+                <div class="col s12 z-depth-2 font-noto-regular">
+                    <div id="brain_chatList">
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p>채팅목록</p>
+                        <p class="right-align">채팅목록</p>
+                    </div>
+                </div>
+                <div class="col s12 z-depth-2">
+                    <div class="input-field col s10">
+                        <input id="brain_chatField" type="text" class="validate font-noto-regular">
+                        <label for="brain_chatField" class="font-noto-regular">여기에 채팅을 입력하세요.</label>
+                    </div>
+                    <div class="input-field col s2">
+                        <a id="chat_send" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">send</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s9">
+                    <!-- Teal page content  -->
+                <div id="brain_field_1" class="col s12 z-depth-2">First brain field</div>
+                <div id="brain_field_2" class="col s12 z-depth-2">Second brain field</div>
+                <div id="brain_field_3" class="col s12 z-depth-2">Third brain field</div>
+                <div id="brain_field_4" class="col s12 z-depth-2">Fourth brain field
+                    <!-- 투표 -->
+                    <ul id="vote_field" class="collection with-header">
+                        <li class="collection-header">
+                            <h4 class="font-noto-bold">투표 제목</h4>
+                        </li>
+                        <li class="collection-item avatar">
+                            <span class="title">Alivin</span>
+                        </li>
+                        <li class="collection-item">Alvin</li>
+                        <li class="collection-item">Alvin</li>
+                        <li class="collection-item">Alvin</li>
+                        <li class="collection-item">Alvin</li>
+                        <li class="collection-item">Alvin</li>
+                    </ul>
+                </div>
+                <div id="menu" class="fixed-action-btn vertical click-to-toggle">
+                    <a class="btn-floating btn-large red waves-effect waves-light">
+                        <i class="material-icons">menu</i>
+                    </a>
+                    <ul>
+                        <li><a id="menu_draw" class="btn-floating waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
+                        <li><a id="menu_postit" class="btn-floating waves-effect waves-light"><i class="material-icons">note</i></a></li>
+                        <li>
+                            <form action="#">
+                                <div class="file-field input-field">
+                                    <div class="btn-floating waves-effect waves-light">
+                                        <i class="material-icons">publish</i>
+                                        <input id="upload_json" type="file" accept=".json">
+                                    </div>
+                                </div>
+                            </form>
+                        </li>
+                        <li><a id="menu_save" class="btn-floating waves-effect waves-light"><i class="material-icons">get_app</i></a></li>
+                        <li><a id="menu_capture" class="btn-floating waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
+                        <li><a id="menu_next" class="btn-floating waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
+                    </ul>
+                </div>
+                    <!-- 의미부여 -->
+                <div id="menu_comment" class="row">
+                    <div class="input-field col s9">
+                        <input disabled id="comment" type="text" class="validate font-noto-regular">
+                        <label id="comment_label" for="comment" class="font-noto-regular">먼저, 의미를 부여할 의견을 선택하세요.</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- 초대코드 모달 -->
+        <div id="modal_code" class="modal">
+            <div class="modal-content">
+                <h4 class="font-noto-medium">초대코드</h4>
+                <div class="divider"></div>
+                <p class="font-noto-light">아래 생성된 코드를 타인에게 알리세요. 아래 코드를 이용하여 다른 사람과 같이 협업할 수 있습니다.</p>
+                <h5 class="center font-noto-bold">TEST1</h5>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">닫기</a>
+            </div>
+        </div>
+
+            <!-- 퇴장 모달 -->
+        <div id="modal_exit" class="modal">
+            <div class="modal-content">
+                <h4 class="font-noto-medium">나가기</h4>
+                <div class="divider"></div>
+                <p class="font-noto-light">브레인스토밍을 그만두고 퇴장합니다. 만약 내가 방장이라면 타인에게 권한이 양도됩니다.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">나가기</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+            </div>
+        </div>
+
+            <!-- 추방 모달 -->
+        <div id="modal_kick" class="modal">
+            <div class="modal-content">
+                <h4 class="font-noto-medium">추방</h4>
+                <div class="divider"></div>
+                <p class="font-noto-light">해당 유저를 강제로 추방합니다.</p>
+                <p class="font-noto-light">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">추방</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+            </div>
+        </div>
+
+            <!-- 투표 개설 모달 -->
+        <div id="modal_vote" class="modal">
+            <div class="modal-content">
+                <h4 class="font-noto-medium">투표 개설</h4>
+                <div class="divider"></div>
+                <p class="font-noto-light">이번 회의의 최종 결정을 내릴 시간입니다. 중복 투표를 허용하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">네</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">아니오</a>
+            </div>
+        </div>
+
+            <!-- library scripts -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.10/go-debug.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+        <script src="https://s3.ap-northeast-2.amazonaws.com/brainpot/JS/library/GeometryReshapingTool.js"></script>
+        <script src="https://s3.ap-northeast-2.amazonaws.com/brainpot/JS/library/FreehandDrawingTool.js"></script>
+        <script src="https://s3.ap-northeast-2.amazonaws.com/brainpot/JS/library/DragCreatingTool.js"></script>
+        <script src="https://s3.ap-northeast-2.amazonaws.com/brainpot/JS/library/html2canvas.js"></script>
+
+            <!-- scripts -->
+        <script src="@routes.Assets.at("js/screen.js")"></script>
+        <script src="@routes.Assets.at("js/websocket.js")"></script>
+        <script src="@routes.Assets.at("js/mindmap.js")"></script>
+        <script src="@routes.Assets.at("js/drawing.js")"></script>
+        <script src="@routes.Assets.at("js/meaning.js")"></script>
+        <script src="@routes.Assets.at("js/grouping.js")"></script>
+        <script src="@routes.Assets.at("js/brain.js")"></script>
+        <script>
+            //스칼라 템플릿에서 넘어오는 데이터를 저장하는 부분
+
+            //웹 소켓 연결 데이터
+            var tempWebSocket = new WebSocket("@routes.WebSocketController.webSocketConn.webSocketURL()");
+
+            //팀 관련 데이터
+            var teamID = @appLoadDataSet.teamData.id
+            var teamTopic = "@appLoadDataSet.teamData.goal"
+            var teamInviteCode = "@appLoadDataSet.teamData.inviteCode"
+            var teamAdminID = @appLoadDataSet.teamData.owner
+            var teamInit = @appLoadDataSet.teamData.status
+
+            //유저(본인) 관련 데이터
+            var myID = @appLoadDataSet.userData.id
+            var myNickname = "@appLoadDataSet.userData.nickname"
+
+        </script>
+        <script>
+        //<summary>브레인스토밍 작업 초기화</summary>
+        var level = 1; //현재 진행 레벨
+        var UserInfo = {
+                    list: [],
+                    add: (json) => {
+                    var user = {
+                        id: json.id,
+                        nickname: json.nickname
+                    };
+
+        UserInfo.list.push(user);
+        },
+        delete: (id) => {
+
+        }
+        }
+
+        init(level);
+
+        function init(level) {
+            switch (level) {
+                case 1:
+                    MindMap.init("brain_field_1");
+                    Drawing.init();
+                    break;
+                case 2:
+                    var nodeData = brainField.model.toJson();
+                    nodeData = JSON.parse(nodeData);
+
+                    $("ul.tabs").tabs("select_tab", "brain_field_2");
+                    Grouping.init("brain_field_2", function() {
+                        Grouping.methods.mindMapToGrouping(nodeData);
+                    });
+                    Drawing.init();
+                    break;
+                case 3:
+                    var nodeData = brainField.model.toJson();
+                    nodeData = JSON.parse(nodeData);
+
+                    $("ul.tabs").tabs("select_tab", "brain_field_3");
+                    $("#menu_comment").css("display", "inline");
+                    Meaning.init("brain_field_3", function() {
+                        Meaning.methods.groupingToMeaning(nodeData);
+                    });
+                    Drawing.init();
+                    break;
+                case 4:
+                    $("ul.tabs").tabs("select_tab", "brain_field_4");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    </script>
     </body>
+
 </html>

@@ -93,7 +93,7 @@ class WebSocketController {
   implicit val system = ActorSystem("MyActorSystem")
   implicit val materializer = ActorMaterializer()
 
-  def webSocketConn() : Unit = WebSocket.accept[String, String] { request =>
+  def webSocketConn() = WebSocket.accept[String, String] { request =>
     ActorFlow.actorRef( actor => MsgActor.props(actor) )
   }
 }

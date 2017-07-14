@@ -27,7 +27,7 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
   }
 
   def index = Action {
-    Ok(views.html.test())
+    Ok(views.html.index())
   }
 
   def createTeam = Action { implicit request =>
@@ -115,12 +115,14 @@ class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamM
     Ok(views.html.app(request, AppLoadDataSet(userData.get, teamData.get) ))
   }
 
+  //어드민이 아닌 유저가 기존 방에 들어가기 위해서 서버로 전송하는 POST 파라미터를 파싱하는 폼
   val joinTeamDataForm = Form(
     mapping(
       "NICKNAME" -> nonEmptyText(1,10),
       "CODE" -> nonEmptyText(5,5)
     )(JoinTeamDataSet.apply)(JoinTeamDataSet.unapply _))
 
+  //어드민 유저가 방을 생성하기 위해서 서버로 전송하는 POST 파라미터를 파싱하는 폼
   val createTeamDataForm = Form(
     mapping(
       "NICKNAME" -> nonEmptyText(1,10),
