@@ -15,7 +15,12 @@ var socket = {
 
 		socket.websocket.onmessage = function (json) {
 			json = JSON.parse(json);
-			console.log(json);
+			
+			switch (json.event) {
+				case "chat" :
+					chat.write(json);
+					break;
+			}
 		}
 	},
 	send : (json) => {

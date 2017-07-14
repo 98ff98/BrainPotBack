@@ -56,24 +56,4 @@ $(document).ready(function () {
 
         $("#upload_json").val(undefined);
     });
-
-    $("#brain_chatField").keydown(function (event) {
-        if (event.key === "Enter")
-            chatSend();
-    });
-
-    $("#chat_send").click(function (event) {
-        chatSend();
-    });
-
-    //<summary>function define</summary>
-    function chatSend() {
-        //빈 텍스트 필터링
-        if ($("#brain_chatField").val() === "")
-            return;
-
-        //TODO 서버로 채팅 데이터 전송
-        console.log($("#brain_chatField").val());
-        $("#brain_chatField").val("");
-    }
 });
