@@ -11,13 +11,10 @@ import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket
 
 
-
-
 class MsgActor(out: ActorRef) extends Actor {
   //클라이언트와의 웹소켓 연결에서 새로운 메세지가 도착하면 호출된다.
   def receive = {
     case msg: String => {
-      Logger.debug(msg)
       //받은 메세지를 JSON 포맷으로 파싱한다.
       val json = Json.parse(msg)
       //메세지의 "event" 코드에 따라 작업을 처리한다.
@@ -32,8 +29,8 @@ class MsgActor(out: ActorRef) extends Actor {
         //유저 퇴장 메세지를 처리한다.
         //DB 접근 있음
         case "left_user" => {
+          TeamManager.dropUser((json  \ "id").as[Int], (json  \ "team").as[Int])
           TeamManager.broadcast( (json \ "team").as[Int], msg)
-          //TODO
         }
 
         //채팅 메세지를 처리한다.
@@ -100,7 +97,6 @@ class MsgActor(out: ActorRef) extends Actor {
 object MsgActor{
   def props(out: ActorRef) = Props(new MsgActor(out))
 }
-
 
 //클라이언트와의 웹 소켓 연결을 처리하는 클래스
 class WebSocketController {

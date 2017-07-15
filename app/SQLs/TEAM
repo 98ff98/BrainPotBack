@@ -102,6 +102,15 @@ DELIMITER ;
 #위 프로시저를 호출
 CALL `GET_TEAM_DATA`(95305157);
 
+
+#팀의 브레인토밍 진행상황을 다음단계로 넘기는 프로시저
+DELIMITER @@;
+CREATE PROCEDURE `TO_NEXT_INIT`()
+  BEGIN
+    UPDATE `TEAM` SET `STATUS` = `STATUS` + 1;
+  END @@;
+DELIMITER ;
+
 #### DANGER!! ####
 
 DROP TABLE `TEAM`;

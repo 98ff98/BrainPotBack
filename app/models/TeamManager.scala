@@ -24,11 +24,11 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
 
   //팀 생성 시간을 제외한 팀 데이터를 파싱하는 파서
   val teamDataParser: RowParser[TeamData] = {
-      get[Int]("TEAM.ID") ~
+    get[Int]("TEAM.ID") ~
       get[Int]("TEAM.OWNER") ~
       get[String]("TEAM.GOAL") ~
       get[Int]("TEAM.STATUS") ~
-      get[String]("TEAM.INVITECODE")  map{
+      get[String]("TEAM.INVITECODE") map {
       case id ~ owner ~ goal ~ status ~ inviteCode =>
         TeamData(id, owner, goal, status, inviteCode)
     }
@@ -50,10 +50,10 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
       if (teamIDList.size == 1) {
         return Some(teamIDList.head)
       }
-      else if(teamIDList.isEmpty){
+      else if (teamIDList.isEmpty) {
         return None
       }
-      else{
+      else {
         Logger.error("Critical Data Error Detected : Duplicated Team ID !!!")
         return None
       }
@@ -68,8 +68,8 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
 
   //받은 정보를 바탕으로 팀을 생성하고,
   //생성한 방의 방장의 고유 ID를 반환한다.
-  def createTeam(nickname: String, goal: String) : Option[Int] = db.withConnection{ implicit connection =>
-    val userManager = new  UserManager(dbApi)
+  def createTeam(nickname: String, goal: String): Option[Int] = db.withConnection { implicit connection =>
+    val userManager = new UserManager(dbApi)
     lazy val createdTeamID = createUniqueTeamID()
     lazy val createdAdminID = userManager.createUniqueID()
     lazy val createdInviteCode = createUniqueInviteCode()
@@ -86,21 +86,28 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
       case Some(n) => //Nothing to do
       case None => return None
     }
+    try {
+      SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> createdTeamID.get, 'OWNER -> createdAdminID.get, 'GOAL -> goal, 'INVITECODE -> createdInviteCode.get).executeUpdate()
+      userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
+        case Some(n) => //Nothing to do
+        case None => return None
+      }
 
-    SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> createdTeamID.get, 'OWNER -> createdAdminID.get, 'GOAL -> goal, 'INVITECODE -> createdInviteCode.get).executeUpdate()
-    userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
-      case Some(n) => //Nothing to do
-      case None => return None
+      createdAdminID
     }
-
-    createdAdminID
+    catch {
+      case e: Exception => {
+        e.printStackTrace()
+        return None
+      }
+    }
   }
 
   //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
-  def getTeamData(id: Int) : Option[TeamData] = db.withConnection{ implicit connection =>
-    try{
+  def getTeamData(id: Int): Option[TeamData] = db.withConnection { implicit connection =>
+    try {
       val teamData = SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamDataParser *)
-      if(teamData.size > 1){
+      if (teamData.size > 1) {
         Logger.warn("Critical DB Error Detected : at table `TEAM`")
         return None
       }
@@ -116,13 +123,13 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   }
 
   //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 정수형 키를 생성한다.
-  def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>
+  def createUniqueTeamID(): Option[Int] = db.withConnection { implicit connection =>
     try {
       val ran = new Random()
       val createdID = ran.nextInt()
       val duplicatedUser = SQL("CALL `CHECK_TEAM`({createdID})").on('createdID -> createdID).as(SqlParser.int("OWNER") *)
       //만약 생성한 ID가 중복이 아니라면
-      if(duplicatedUser.isEmpty){
+      if (duplicatedUser.isEmpty) {
         return Some(createdID)
       }
       //생성한 ID가 중복이였다면 재귀호출해서 다시 생성절차를 거친다.
@@ -136,17 +143,36 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   }
 
   //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 5자리의 초대코드를 생성한다.
-  def createUniqueInviteCode() : Option[String] = db.withConnection{ implicit connection =>
+  def createUniqueInviteCode(): Option[String] = db.withConnection { implicit connection =>
     val createdUniqueInviteCode = RandomStringUtils.random(5, charList)
-    val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
-    if(duplicatedTeamList.isEmpty)
-      return Some(createdUniqueInviteCode)
-    else
-      return None
+    try {
+      val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
+      if (duplicatedTeamList.isEmpty)
+        return Some(createdUniqueInviteCode)
+      else
+        return None
+    }
+    catch {
+      case e: Exception => {
+        e.printStackTrace()
+        return None
+      }
+    }
   }
+
+  //해당 ID를 가진 팀의 진행상황을 다음 단계로 넘긴다.
+  def toNextInit(teamID: Int) : Unit = db.withConnection{ implicit conn =>
+    try{
+      SQL("CALL `TO_NEXT_INIT`({ID})").on('ID -> teamID).executeUpdate()
+    }
+    catch {
+      case e: Exception => {
+        e.printStackTrace()
+      }
+    }
+  }
+
 }
-
-
 
 object TeamManager{
   //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
@@ -176,6 +202,19 @@ object TeamManager{
       }
     }
 
+  }
+
+  //유저를 팀 유저 리스트에서 삭제한다.
+  def dropUser(userID: Int, teamID: Int) : Unit = {
+    try{
+      val tempList = this.users(teamID).filter( user => user._1 != userID)
+      this.users.synchronized{
+        this.users(teamID) = tempList
+      }
+    }
+    catch {
+      case e: Exception => e.printStackTrace()
+    }
   }
 
   //해당 팀에 있는 모든 유저들에게 메세지를 전달한다

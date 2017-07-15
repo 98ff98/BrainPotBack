@@ -52,6 +52,16 @@ CALL `CHECK_ID`(1);
 #스토어드 프로시저 호출
 CALL `ADD_USER`(1, 7, 'HYERI7');
 
+
+#해당 ID를 가진 유저를 DB에서 삭제하는 프로시저
+DELIMITER @@;
+CREATE PROCEDURE `DROP_USER`(IN `USER_ID` INT)
+  BEGIN
+    DELETE FROM `USER` WHERE `ID` = `USER_ID`;
+  END @@;
+
+
+#해당 ID를 가지고 있는 유저의 정보를 조회하는 쿼리문
 DELIMITER @@;
 CREATE PROCEDURE `GET_USER_DATA`(IN `ID` INT)
 

@@ -60,13 +60,31 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
+  //해당 ID를 가진 유저를 DB에서 삭제하는 메소드
+  def dropUser(userID: Int) : Unit = db.withConnection{ implicit conn =>
+    try{
+      SQL("CALL `DROP_USER`({ID})").on('ID -> userID).execute()
+    }
+    catch{
+      case e: Exception => e.printStackTrace()
+    }
+  }
+
   //해당 ID를 가진 유저의 정보를 DB에서 가져오는 메소드
   def findUserByID(id: Int) : Boolean = db.withConnection{ implicit connection =>
-    val duplicatedUser = SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *)
-    if(duplicatedUser.isEmpty){
-      return false
+    try {
+      val duplicatedUser = SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *)
+      if (duplicatedUser.isEmpty) {
+        return false
+      }
+      return true
     }
-    return true
+    catch {
+      case e: Exception => {
+        e.printStackTrace()
+        return false
+      }
+    }
   }
 
   //현재 BrainPot에 존재하지 않는 유일한 ID값을 생성한다.
@@ -107,4 +125,5 @@ class UserManager @Inject()(dbApi: DBApi){
       }
     }
   }
+
 }
