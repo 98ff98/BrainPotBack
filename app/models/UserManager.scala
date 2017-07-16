@@ -126,4 +126,8 @@ class UserManager @Inject()(dbApi: DBApi){
     }
   }
 
+  //사용자가 그린 오브젝트를 DB에 추가한다.
+  //def addPaint() : Unit = { }
+
+
 }

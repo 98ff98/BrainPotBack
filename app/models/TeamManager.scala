@@ -171,7 +171,6 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
       }
     }
   }
-
 }
 
 object TeamManager{

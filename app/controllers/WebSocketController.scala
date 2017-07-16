@@ -2,10 +2,9 @@ package controllers
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.stream.ActorMaterializer
-
 import models.TeamManager
-
 import play.Logger
+import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket

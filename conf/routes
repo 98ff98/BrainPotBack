@@ -12,7 +12,16 @@ POST     /join                   @controllers.RequestController.joinTeam()
 POST     /create                 @controllers.RequestController.createTeam()
 
 # for webSocket Connection
-GET     /webSocket                controllers.WebSocketController.webSocketConn
+GET     /webSocket                controllers.WebSocketController.webSocketConn()
+
+
+
+
+
+
+
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file             controllers.Assets.at(path="/public", file)
