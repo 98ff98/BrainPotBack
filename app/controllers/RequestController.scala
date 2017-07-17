@@ -15,10 +15,10 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
-class RequestController @Inject()(actorSystem: ActorSystem , dBApi: DBApi, teamManager: TeamManager, userManager: UserManager) extends Controller {
+class RequestController @Inject()(actorSystem: ActorSystem , teamManager: TeamManager, userManager: UserManager) extends Controller {
   { // 30분마다 오래된 팀들을 자동으로 삭제한다.
     val scheduler = actorSystem.scheduler
-    val runnableTask = new AutoTeamRemover(new TeamManager(dBApi, new UserManager(dBApi)))
+    val runnableTask = new AutoTeamRemover()
     implicit val executor = actorSystem.dispatcher
     scheduler.schedule(
       initialDelay = Duration(900, TimeUnit.SECONDS),

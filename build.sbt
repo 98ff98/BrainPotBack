@@ -14,7 +14,8 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.play" %% "anorm" % "2.4.0",
   "org.apache.commons" % "commons-lang3" % "3.4",
-  "commons-codec" % "commons-codec" % "1.10"
+  "commons-codec" % "commons-codec" % "1.10",
+  "org.scala-lang.modules" %% "scala-async" % "0.9.5"
 )
 
 

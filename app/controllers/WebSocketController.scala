@@ -2,7 +2,7 @@ package controllers
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.stream.ActorMaterializer
-import models.TeamManager
+import models.{MySQLConnection, TeamManager}
 import play.Logger
 import play.api.db.DB
 import play.api.libs.json.Json
@@ -11,6 +11,9 @@ import play.api.mvc.WebSocket
 
 
 class MsgActor(out: ActorRef) extends Actor {
+  //MySQL default DB에 접근하기 위한 인스턴스
+  val mySQLConnection = new MySQLConnection("default")
+
   //클라이언트와의 웹소켓 연결에서 새로운 메세지가 도착하면 호출된다.
   def receive = {
     case msg: String => {
