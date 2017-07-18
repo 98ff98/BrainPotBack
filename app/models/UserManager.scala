@@ -15,6 +15,7 @@ import scala.concurrent.Future
 //유저관련 정보를 표현하는 케이스 클래스
 case class UserData(id: Int, teamID: Int, nickname: String)
 
+/*
 
 class UserManager @Inject()(dbApi: DBApi){
   private val db = dbApi.database("default")
@@ -129,5 +130,5 @@ class UserManager @Inject()(dbApi: DBApi){
   //사용자가 그린 오브젝트를 DB에 추가한다.
   //def addPaint() : Unit = { }
 
-
 }
+*/

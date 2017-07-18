@@ -16,6 +16,7 @@ import scala.concurrent.Future
 
 //팀의 정보를 담는 케이스 클래스
 case class TeamData(id: Int, owner: Int, goal: String, status: Int, inviteCode: String)
+/*
 
 class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
   private val db = dbApi.database("default")
@@ -156,6 +157,7 @@ class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
     }
   }
 }
+*/
 
 object TeamManager{
   //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
