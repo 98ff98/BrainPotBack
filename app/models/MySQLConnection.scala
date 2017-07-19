@@ -22,57 +22,65 @@ class MySQLConnection(dbName: String) extends PaintConnection with TeamConnectio
   //##### TEAM 테이블 영역 #####
 
   //생성된지 일정 이상의 시간이 지난 팀들을 DB에서 삭제한다.
-  override def clearOldTeams(): Future[Unit] = DB.withConnection(dbName){ implicit conn =>
+  override def clearOldTeams(): Future[Unit] = {
     Future {
-      SQL("CALL `CLEAR_OLD_TEAMS`()").execute()
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `CLEAR_OLD_TEAMS`()").execute()
+      }
       Logger.info("--- Cleared Old Teams ---")
     }
   }
 
   // 해당 문자열을 초대코드로 가지고 있는 팀이 존재하는지 확인하고,
   // 만약 있다면 해당 팀의 ID를 반환한다.
-  override def findTeamByCode(inviteCode: String): Future[Int] = DB.withConnection(dbName){ implicit connection =>
+  override def findTeamByCode(inviteCode: String): Future[Int] = {
     Future {
-      try SQL("CALL `FIND_TEAM_BY_INVITECODE`({INVITE_CODE})").on('INVITE_CODE -> inviteCode).as(SqlParser.int("ID") *).head
+      DB.withConnection(dbName) { implicit conn =>
+        try SQL("CALL `FIND_TEAM_BY_INVITECODE`({INVITE_CODE})").on('INVITE_CODE -> inviteCode).as(SqlParser.int("ID") *).head
+      }
     }
   }
 
   //받은 정보를 바탕으로 팀을 생성하고,
   //생성한 방의 방장의 고유 ID를 반환한다.
-  override def createTeam(nickname: String, goal: String): Future[Int] = DB.withConnection(dbName) { implicit connection =>
+  override def createTeam(nickname: String, goal: String): Future[Int] = {
     //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 정수형 키를 생성한다.
-    def createUniqueTeamID(): Int = DB.withConnection(dbName){ implicit connection =>
+    def createUniqueTeamID(): Int = {
       val ran = new Random()
       val createdID = ran.nextInt()
-      val duplicatedUser = SQL("CALL `CHECK_TEAM`({createdID})").on('createdID -> createdID).as(SqlParser.int("OWNER") *)
-      //만약 생성한 ID가 중복이 아니라면
-      if (duplicatedUser.isEmpty) {
-        return createdID
+      DB.withConnection(dbName) { implicit connection =>
+        val duplicatedUser = SQL("CALL `CHECK_TEAM`({createdID})").on('createdID -> createdID).as(SqlParser.int("OWNER") *)
+        //만약 생성한 ID가 중복이 아니라면
+        if (duplicatedUser.isEmpty) {
+          return createdID
+        }
       }
       //생성한 ID가 중복이였다면 재귀호출해서 다시 생성절차를 거친다.
       createUniqueTeamID()
     }
     //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 5자리의 초대코드를 생성한다.
-    def createUniqueInviteCode(): String = DB.withConnection(dbName){ implicit connection =>
+    def createUniqueInviteCode(): String = {
       val createdInviteCode = RandomStringUtils.random(5, charList)
-      val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdInviteCode).as(SqlParser.int("ID") *)
-      if (duplicatedTeamList.isEmpty)
-        return createdInviteCode
-      else
-        createUniqueInviteCode()
+      DB.withConnection(dbName) { implicit connection =>
+        val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdInviteCode).as(SqlParser.int("ID") *)
+        if (duplicatedTeamList.isEmpty)
+          return createdInviteCode
+      }
+      createUniqueInviteCode()
     }
 
     //방장의 ID를 비동기적으로 반환하는 Future
-    return  Future{
+    Future{
       var teamID = 0 ; var inviteCode = "" ; var adminID = 0
       val createdTeamID = Future( teamID = createUniqueTeamID() )
       val createdInviteCode = Future( inviteCode = createUniqueInviteCode() )
       val createdAdminID = Future( adminID = createUniqueUserID() )
-
       Await.ready(createdTeamID, Duration.Inf)
       Await.ready(createdInviteCode, Duration.Inf)
       Await.ready(createdAdminID, Duration.Inf)
-      SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> teamID, 'OWNER -> adminID, 'GOAL -> goal, 'INVITECODE -> inviteCode).executeUpdate()
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> teamID, 'OWNER -> adminID, 'GOAL -> goal, 'INVITECODE -> inviteCode).executeUpdate()
+      }
       addAdminUser(nickname, adminID, teamID)
       adminID
     }
@@ -80,9 +88,11 @@ class MySQLConnection(dbName: String) extends PaintConnection with TeamConnectio
   }
 
   //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
-  override def getTeamData(id: Int): Future[TeamData] = DB.withConnection(dbName){ implicit connection =>
+  override def getTeamData(id: Int): Future[TeamData] = {
     Future{
-      SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamParser *).head
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamParser *).head
+      }
     }
   }
 
@@ -97,53 +107,65 @@ class MySQLConnection(dbName: String) extends PaintConnection with TeamConnectio
   //##### USER 테이블 영역 #####
 
   //현재 BrainPot에 존재하지 않는 유일한 ID값을 생성한다.
-  override def createUniqueUserID() : Int = DB.withConnection(dbName){ implicit connection =>
+  override def createUniqueUserID() : Int = {
     val ran = new Random()
     val createdID = ran.nextInt()
-    val duplicatedUser = SQL("CALL `CHECK_ID`({createdID})").on('createdID -> createdID).as(SqlParser.int("TEAM") *)
-    //만약 생성한 ID가 중복이 아니라면
-    if (duplicatedUser.isEmpty) {
-      return createdID
+    DB.withConnection(dbName) { implicit conn =>
+      val duplicatedUser = SQL("CALL `CHECK_ID`({createdID})").on('createdID -> createdID).as(SqlParser.int("TEAM") *)
+      //만약 생성한 ID가 중복이 아니라면
+      if (duplicatedUser.isEmpty) {
+        return createdID
+      }
     }
     //생성한 ID가 중복이였다면 재귀호출해서 다시 생성절차를 거친다.
     createUniqueUserID()
   }
 
   //방장을 DB에 추가하는 메소드
-  override def addAdminUser(nickname: String, userID: Int, teamID: Int): Future[Int] = DB.withConnection(dbName){ implicit  connection =>
+  override def addAdminUser(nickname: String, userID: Int, teamID: Int): Future[Int] = {
     Future {
-      SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
+      }
       userID
     }
   }
 
   //방장이 아닌 일반 유저를 DB에 추가하는 메소드
-  override def addNormalUser(nickname: String, teamID: Int): Future[Int] = DB.withConnection(dbName){ implicit  connection =>
+  override def addNormalUser(nickname: String, teamID: Int): Future[Int] = {
     Future{
       val userID = createUniqueUserID()
-      SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `ADD_USER`({id}, {teamID}, {nickname})").on('id -> userID, 'teamID -> teamID, 'nickname -> nickname).executeUpdate()
+      }
       userID
     }
   }
 
   //해당 ID를 가진 유저를 DB에서 삭제하는 메소드
-  override def dropUser(userID: Int): Future[Unit] =DB.withConnection(dbName) { implicit  connection =>
+  override def dropUser(userID: Int): Future[Unit] = {
     Future{
-      SQL("CALL `DROP_USER`({ID})").on('ID -> userID).execute()
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `DROP_USER`({ID})").on('ID -> userID).execute()
+      }
     }
   }
 
   //
-  override def findUserByID(id: Int): Future[Boolean] = DB.withConnection(dbName){ implicit  connection =>
+  override def findUserByID(id: Int): Future[Boolean] = {
     Future{
-      SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *).nonEmpty
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `CHECK_ID`({ID})").on('ID -> id).as(SqlParser.int("TEAM") *).nonEmpty
+      }
     }
   }
 
   //
-  override def getUserData(id: Int): Future[UserData] = DB.withConnection(dbName){ implicit  connection =>
+  override def getUserData(id: Int): Future[UserData] = {
     Future{
-      SQL("CALL `GET_USER_DATA`({ID})").on('ID -> id).as(userParser *).head
+      DB.withConnection(dbName) { implicit conn =>
+        SQL("CALL `GET_USER_DATA`({ID})").on('ID -> id).as(userParser *).head
+      }
     }
   }
 

@@ -73,19 +73,15 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
           //유저가 입장하려는 팀이 존재하는 팀인지 확인한다.
           val teamIDFuture = mySQLConnection.findTeamByCode(data.inviteCode)
           //해당 유저의 정보가 유효한지 확인한다.
-          val userIDFuture = teamIDFuture.map{
+          val userIDFuture = teamIDFuture.flatMap{
             teamID => mySQLConnection.addNormalUser(data.nickname, teamID)
           }
-          var userID : Future[Int] = null
 
           userIDFuture.map{
-            idF => userID = idF
-          }
-
-          userID.map{
             id => Redirect("/app").withCookies(Cookie("BrainPotLogin", id + ""))
           }
         }
+
         catch {
           case e: Exception => Logger.error("Job Failed : Durung Join Team")
             e.printStackTrace()
@@ -108,24 +104,15 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
 
     //DB로 부터 쿠키에서 가져온 ID를 가지고 있는 유저의 정보를 가져온다
     val userDataFuture = mySQLConnection.getUserData(userCookie.get.value.toInt)
-
-    //접속하려는 유저의 데이터와 유저가 속한 팀의 데이터를 조합해 앱 로드 데이터로 반환한다.
-    val loadDataFuture = userDataFuture.map(
+    val loadDataFuture : Future[AppLoadDataSet] = userDataFuture.flatMap{
       ud => {
         mySQLConnection.getTeamData(ud.teamID).map{
-          teamData => AppLoadDataSet(ud, teamData)
+          td => AppLoadDataSet(ud, td)
         }
       }
-    )
-
-    var loadData : Future[AppLoadDataSet] = null
-
-    loadDataFuture.map{
-      data => loadData = data
     }
-
     //가져온 데이터를 app 페이지에 전달한다.
-    loadData.map{
+    loadDataFuture.map{
       data => Ok(views.html.app(request, data))
     }
   }
