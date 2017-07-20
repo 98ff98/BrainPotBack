@@ -15,7 +15,7 @@ import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
 
-class MySQLConnection(dbName: String) extends PaintConnection with TeamConnection with UserConnection{
+class MySQLConnection(dbName: String) extends TeamConnection with UserConnection{
   //랜덤 초대 코드 생성에 사용항 문자 리스트
   private val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
 
@@ -169,27 +169,7 @@ class MySQLConnection(dbName: String) extends PaintConnection with TeamConnectio
     }
   }
 
-
-
-  //##### PAINT 테이블 영역 #####
-
-  //사용자가 그림판에 그린 그림을 DB에 추가한다.
-  //비동기로 동작한다.
-  override def addPaint(): Unit = DB.withConnection(dbName){ implicit conn =>
-    Future{
-      //TODO
-      SQL("").executeUpdate()
-    }
-  }
-
-  //해당 그룹에 속한 모든 그림을 담은 List를 반환한다.
-  //비동기로 동작한다.
-  override def getAllPaints(teamID: Int): Future[ List[Paint] ]  = DB.withConnection(dbName){ implicit conn =>
-    Future {
-      //TODO
-      SQL("").on('ID -> teamID).as(paintParser *)
-    }
-  }
+  //##### TASK 테이블 영역 #####
 
 
 
@@ -214,16 +194,6 @@ class MySQLConnection(dbName: String) extends PaintConnection with TeamConnectio
       get[String]("USER.NICKNAME")  map{
       case id ~ teamID ~ nickname =>
         UserData(id, teamID, nickname)
-    }
-  }
-
-  //PAINT 테이블의 칼럼을 파싱하는 파서
-  private val paintParser : RowParser[Paint] = {
-    get[Int]("PAINT.ID_IN_APP") ~
-    get[Int]("PAINT.OWNERTEAM") ~
-    get[Int]("PAINT.OWNERUSER") ~
-    get[String]("PAINT.CONTENT") map {
-      case id ~ teamID ~ userID ~ content => Paint(id, teamID, userID, content)
     }
   }
 

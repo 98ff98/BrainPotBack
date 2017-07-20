@@ -18,6 +18,7 @@ import scala.concurrent.duration.Duration
 class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
   //"default" DB에 접근하여 여러 작업을 수행하기 위한 커넥터
   val mySQLConnection: MySQLConnection = new MySQLConnection("default")
+  //일정시간마다 자동으로 오래된 팀들을 DB에서 삭제
   { // 30분마다 오래된 팀들을 자동으로 삭제한다.
     val scheduler = actorSystem.scheduler
     val runnableTask = new AutoTeamRemover()
@@ -111,7 +112,7 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
         }
       }
     }
-    //가져온 데이터를 app 페이지에 전달한다.
+    //가져온 데이터를 app 페이지에 전달한다`.
     loadDataFuture.map{
       data => Ok(views.html.app(request, data))
     }
@@ -132,7 +133,6 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
     )(CreateTeamDataSet.apply)(CreateTeamDataSet.unapply _))
 
 }
-
 
 //app.scala.html 페이지를 로드할 때 필요한 데이터를 담는 케이스 클래스
 case class AppLoadDataSet(userData: UserData, teamData: TeamData)
