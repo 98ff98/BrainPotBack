@@ -10,6 +10,20 @@ import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket
 
 
+//클라이언트와의 웹 소켓 연결을 처리하는 클래스
+class WebSocketController {
+  //액터를 사용하기 위한 기본 설정
+  implicit val system = ActorSystem("MyActorSystem")
+  implicit val materializer = ActorMaterializer()
+
+  //웹 소켓 연결 요청을 액터 플로우로 처리한다.
+  //앞으로 해당 클라이언트와의 연결은 props 메소드를 통해서 생성된 액터가 담당한다.
+  def webSocketConn() = WebSocket.accept[String, String] { request =>
+    ActorFlow.actorRef( actor => MsgActor.props(actor) )
+  }
+}
+
+
 class MsgActor(out: ActorRef) extends Actor {
   //MySQL default DB에 접근하기 위한 인스턴스
   val mySQLConnection = new MySQLConnection("default")
@@ -98,17 +112,4 @@ class MsgActor(out: ActorRef) extends Actor {
 //MsgActor의 props를 담당하는 컴패니언 오브젝트
 object MsgActor{
   def props(out: ActorRef) = Props(new MsgActor(out))
-}
-
-//클라이언트와의 웹 소켓 연결을 처리하는 클래스
-class WebSocketController {
-  //액터를 사용하기 위한 기본 설정
-  implicit val system = ActorSystem("MyActorSystem")
-  implicit val materializer = ActorMaterializer()
-
-  //웹 소켓 연결 요청을 액터 플로우로 처리한다.
-  //앞으로 해당 클라이언트와의 연결은 props 메소드를 통해서 생성된 액터가 담당한다.
-  def webSocketConn() = WebSocket.accept[String, String] { request =>
-    ActorFlow.actorRef( actor => MsgActor.props(actor) )
-  }
 }

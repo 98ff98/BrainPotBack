@@ -151,7 +151,7 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
     }
   }
 
-  //
+  //해당 ID를 가진 유저의 정보를 DB에서 가져오는 메소드
   override def findUserByID(id: Int): Future[Boolean] = {
     Future{
       DB.withConnection(dbName) { implicit conn =>
@@ -160,7 +160,7 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
     }
   }
 
-  //
+  //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
   override def getUserData(id: Int): Future[UserData] = {
     Future{
       DB.withConnection(dbName) { implicit conn =>
@@ -169,8 +169,11 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
     }
   }
 
-  //##### TASK 테이블 영역 #####
+  //##### NODE 테이블 영역 #####
 
+
+
+  //##### PAINT 테이블 영역 #####
 
 
   //##### PowParser 영역 #####
