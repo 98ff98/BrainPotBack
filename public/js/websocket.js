@@ -43,15 +43,10 @@ var socket = {
 			}
 		}
 	},
-	// send : (json) => {
-	// 	json = JSON.stringify(json);
-	// 	socket.websocket.send(json);
-	// }
+	send : (json) => {
+		json = JSON.stringify(json);
+		socket.websocket.send(json);
+	}
 };
 
 socket.init();
-
-function send (json) {
-	json = JSON.stringify(json);
-		socket.websocket.send(json);
-}

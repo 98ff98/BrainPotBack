@@ -19,7 +19,7 @@ var UserInfo = {
             nickname: myNickname,
         };
 
-        send(json);
+        socket.send(json);
     },
     //유저 데이터 제거
     remove: (json) => {
@@ -40,7 +40,7 @@ var UserInfo = {
             isAdmin : isAdmin (id)
         };
 
-        send(json);
+        socket.send(json);
     },
     //방장인가
     isAdmin: (id) => {
@@ -49,7 +49,10 @@ var UserInfo = {
 }
 
 //내 정보 입장
+$(document).ready ( function () {
 UserInfo.join();
+});
+
 
 //<summary> event function define </summary>
 $("#user_list").click(function () {
