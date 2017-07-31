@@ -1,212 +1,331 @@
 var Grouping = {
-    init: (fieldName, callback) => {
-        brainField = GO(go.Diagram, fieldName, {
-            allowDrop: true,
-            mouseDrop: function (e) {
-                Grouping.methods.finishDrop(e, null);
-            },
-            layout: GO(go.GridLayout, {
-                wrappingWidth: Infinity,
-                alignment: go.GridLayout.Position,
-                cellSize: new go.Size(1, 1)
-            }),
-            initialContentAlignment: go.Spot.Center,
-            "commandHandler.archetypeGroupData": {
-                isGroup: true,
-                category: "OfNodes"
-            },
-            "undoManager.isEnabled": false
-        });
-
-        brainField.groupTemplateMap.add("OfGroups",
-            GO(go.Group, "Auto", {
-                    background: "transparent",
-                    mouseDragEnter: function (e, grp, prev) {
-                        Grouping.methods.highlightGroup(e, grp, true);
-                    },
-                    mouseDragLeave: function (e, grp, next) {
-                        Grouping.methods.highlightGroup(e, grp, false);
-                    },
-                    computesBoundsAfterDrag: true,
-                    mouseDrop: Grouping.methods.finishDrop,
-                    handlesDragDropForMembers: true,
-                    layout: GO(go.GridLayout, {
-                        wrappingWidth: Infinity,
-                        alignment: go.GridLayout.Position,
-                        cellSize: new go.Size(1, 1),
-                        spacing: new go.Size(4, 4)
-                    })
-                },
-                new go.Binding("background", "isHighlighted", function (h) {
-                    return h ? "rgba(255,0,0,0.2)" : "transparent";
-                }).ofObject(),
-                GO(go.Shape, "Rectangle", {
-                    fill: null,
-                    stroke: "#FFDD33",
-                    strokeWidth: 2
-                }),
-                GO(go.Panel, "Vertical",
-                    GO(go.Panel, "Horizontal", {
-                            stretch: go.GraphObject.Horizontal,
-                            background: "#FFDD33"
-                        },
-                        GO("SubGraphExpanderButton", {
-                            alignment: go.Spot.Right,
-                            margin: 5
-                        }),
-                        GO(go.TextBlock, {
-                                alignment: go.Spot.Left,
-                                editable: true,
-                                margin: 5,
-                                font: "bold 18px sans-serif",
-                                opacity: 0.75,
-                                stroke: "#404040"
-                            },
-                            new go.Binding("text", "text").makeTwoWay())
-                    ),
-                    GO(go.Placeholder, {
-                        padding: 5,
-                        alignment: go.Spot.TopLeft
-                    })
-                )
-            ));
-
-        brainField.groupTemplateMap.add("OfNodes",
-            GO(go.Group, "Auto", {
-                    background: "transparent",
-                    ungroupable: true,
-                    mouseDragEnter: function (e, grp, prev) {
-                        Grouping.methods.highlightGroup(e, grp, true);
-                    },
-                    mouseDragLeave: function (e, grp, next) {
-                        Grouping.methods.highlightGroup(e, grp, false);
-                    },
-                    computesBoundsAfterDrag: true,
-                    mouseDrop: Grouping.methods.finishDrop,
-                    handlesDragDropForMembers: true,
-                    layout: GO(go.GridLayout, {
-                        wrappingColumn: 1,
-                        alignment: go.GridLayout.Position,
-                        cellSize: new go.Size(1, 1),
-                        spacing: new go.Size(4, 4)
-                    })
-                },
-                new go.Binding("background", "isHighlighted", function (h) {
-                    return h ? "rgba(255,0,0,0.2)" : "transparent";
-                }).ofObject(),
-                GO(go.Shape, "Rectangle", {
-                    fill: null,
-                    stroke: "#33D3E5",
-                    strokeWidth: 2
-                }),
-                GO(go.Panel, "Vertical",
-                    GO(go.Panel, "Horizontal", {
-                            stretch: go.GraphObject.Horizontal,
-                            background: "#33D3E5"
-                        },
-                        GO("SubGraphExpanderButton", {
-                            alignment: go.Spot.Right,
-                            margin: 5
-                        }),
-                        GO(go.TextBlock, {
-                                alignment: go.Spot.Left,
-                                editable: true,
-                                margin: 5,
-                                font: "bold 16px sans-serif",
-                                opacity: 0.75,
-                                stroke: "#404040"
-                            },
-                            new go.Binding("text", "text").makeTwoWay())
-                    ),
-                    GO(go.Placeholder, {
-                        padding: 5,
-                        alignment: go.Spot.TopLeft
-                    })
-                )
-            ));
-
-        brainField.nodeTemplate =
-            GO(go.Node, "Auto", {
-                    mouseDrop: function (e, nod) {
-                        Grouping.methods.finishDrop(e, nod.containingGroup);
-                    }
-                },
-                GO(go.Shape, "Rectangle", {
-                        fill: "#ACE600",
-                        stroke: null
-                    },
-                    new go.Binding("fill", "color")),
-                GO(go.TextBlock, {
-                        margin: 5,
-                        editable: true,
-                        font: "bold 13px sans-serif",
-                        opacity: 0.75,
-                        stroke: "#404040"
-                    },
-                    new go.Binding("text", "text").makeTwoWay())
-            );
-
-        if (typeof callback === 'function')
-            callback();
+    width: undefined,
+    height: undefined,
+    list: undefined,
+    control: {
+        selectedNode: undefined,
+        selectionUnableOptions: {
+            bl: false,
+            br: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mt: false,
+            mtr: false,
+            tl: false,
+            tr: false
+        }
     },
     methods: {
-        highlightGroup: (event, group, show) => {
-            if (!group)
-                return;
+        init: (name, data) => {
+            //hide
+            $(".upper-canvas").removeClass("z-depth-2");
 
-            event.handled = true;
+            //create
+            brainField = new f.Canvas(name);
 
-            if (show) {
-                var tool = group.diagram.toolManager.draggingTool;
-                var map = tool.draggedParts || tool.copiedParts;
+            //init
+            Grouping.width = brainField.width;
+            Grouping.height = brainField.height;
+            Grouping.list = brainField._objects;
+            $("#menu2").css("display", "inline");
 
-                if (group.canAddMembers(map.toKeySet())) {
-                    group.isHighlighted = true;
-                    return;
-                }
-            }
-
-            group.isHighlighted = false;
-        },
-        finishDrop: (event, group) => {
-            var ok = (group !== null ?
-                group.addMembers(group.diagram.selection, true) :
-                event.diagram.commandHandler.addTopLevelParts(event.diagram.selection, true));
-
-            if (!ok)
-                event.diagram.currentTool.doCancel();
-        },
-        mindMapToGrouping: (nodeData) => {
-            var key = [];
-
-            nodeData = Drawing.methods.cleanDrawing(nodeData);
-
-            for (var i = 0; i < nodeData.nodeDataArray.length; i++) {
-                if (nodeData.nodeDataArray[i].parent != undefined) { //최상위 루트가 아닌 경우
-                    nodeData.nodeDataArray[i].group = nodeData.nodeDataArray[i].parent;
-                    delete nodeData.nodeDataArray[i].parent;
-                }
-            }
-
-            for (var i = 0; i < nodeData.nodeDataArray.length; i++) {
-                if (key.indexOf(nodeData.nodeDataArray[i].group) == -1)
-                    key.push(nodeData.nodeDataArray[i].group);
-            }
-
-            key.forEach(function (key) {
-                for (var i = 0; i < nodeData.nodeDataArray.length; i++) {
-                    if (key == nodeData.nodeDataArray[i].key) {
-                        nodeData.nodeDataArray[i].isGroup = true;
-                        nodeData.nodeDataArray[i].category = "OfNodes";
+            //<code>convert data mindmap to grouping</code>
+            if (data) {
+                data.forEach(function (item) {
+                    if ((getChild(data, item.key) && item.parent === 0) || item.category === "root") {
+                        item.isGroup = true;
+                        Grouping.methods.createGroup(item);
+                    } else {
+                        item.isGroup = false;
+                        Grouping.methods.createBlock(item);
                     }
+                });
+
+                function getChild(data, objectKey) {
+                    var childs = [];
+
+                    for (var i = 0; i < data.length; i++)
+                        if (data[i].parent !== undefined)
+                            if (data[i].parent === objectKey)
+                                childs.push(data[i]);
+
+                    return (childs.length > 0) ? childs : undefined;
                 }
+            }
+            //<code>load data mindmap to grouping</code>
+
+            //<code>sort node</code>
+            Grouping.methods.createGroupingMode();
+            //<code>sort node</code>
+
+            //<code>object drag and drop</code>
+            brainField.on('mouse:up', function (event) {
+                var object = event.target;
+
+                if (!object)
+                    return;
+
+                else if (object.category === "node" && !object.isGroup)
+                    Grouping.methods.locationCheck(object);
+            });
+            //<code>object drag and drop</code>
+        },
+        createBlock: (object) => {
+            var randomX = Math.floor(Math.random() * Grouping.width - 200) + 1;
+            var randomY = Math.floor(Math.random() * 80) + 720;
+
+            var block = new f.Text(object.text, {
+                key: object.key,
+                parent: object.parent,
+                category: object.category,
+                isGroup: object.isGroup,
+                backgroundColor: "#ACE600",
+                fontSize: 20,
+                fill: "#404040",
+                top: randomY,
+                left: randomX
+            });
+            block.setControlsVisibility(Grouping.control.selectionUnableOptions);
+
+            brainField.add(block);
+        },
+        createGroup: (object) => {
+            var text;
+            var titleBar;
+            var leftBorder;
+            var rightBorder;
+            var bottomBorder;
+
+            if (object.category === "root") {
+
+                titleBar = new f.Rect({
+                    width: Grouping.width,
+                    height: 35
+                });
+                text = new f.Text(object.text, {
+                    fontSize: 20,
+                    top: 6,
+                    left: 6
+                });
+                leftBorder = new f.Rect({
+                    width: 2,
+                    height: 700
+                });
+                rightBorder = new f.Rect({
+                    left: titleBar.width - 2,
+                    width: 2,
+                    height: 700
+                });
+                bottomBorder = new f.Rect({
+                    top: 700,
+                    width: titleBar.width,
+                    height: 2
+                });
+
+                titleBar.fill = "#FFDD33";
+                leftBorder.fill = "#FFDD33";
+                rightBorder.fill = "#FFDD33";
+                bottomBorder.fill = "#FFDD33";
+            } else if (object.category === "node") {
+                titleBar = new f.Rect({
+                    width: 100,
+                    height: 35
+                });
+                text = new f.Text(object.text, {
+                    fontSize: 20,
+                    top: 6,
+                    left: 6
+                });
+                titleBar.width = text.width + (2 * 6);
+                leftBorder = new f.Rect({
+                    width: 2,
+                    height: 75
+                });
+                rightBorder = new f.Rect({
+                    left: titleBar.width - 2,
+                    width: 2,
+                    height: 75
+                });
+                bottomBorder = new f.Rect({
+                    top: 75,
+                    width: titleBar.width,
+                    height: 2
+                });
+
+                titleBar.fill = "#33D3E5";
+                leftBorder.fill = "#33D3E5";
+                rightBorder.fill = "#33D3E5";
+                bottomBorder.fill = "#33D3E5";
+            }
+
+            var group = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
+                key: object.key,
+                parent: object.parent,
+                category: object.category,
+                isGroup: object.isGroup,
+                top: 10
+            });
+            group.setControlsVisibility(Grouping.control.selectionUnableOptions);
+            if (group.category === "root")
+                group.selectable = false;
+
+            brainField.add(group);
+        },
+        createGroupingMode: () => {
+            var node = [];
+            var group = [];
+            var nextTop = 50;
+            var nextLeft = 10;
+            var height = 0;
+
+            Grouping.list.forEach(function (item) {
+                if (item.isGroup && item.parent === 0)
+                    group.push(item);
+                else if (!item.isGroup && item.parent === 0)
+                    node.push(item);
             });
 
-            nodeData.class = "go.GraphLinksModel";
-            nodeData.nodeDataArray[0].isGroup = true;
-            nodeData.nodeDataArray[0].category = "OfGroups";
+            group.forEach(function (item) {
+                var objects = item.getObjects();
+                var childs = Grouping.methods.getChild(item.key);
+                var key = item.key;
+                var category = item.category;
+                var isGroup = item.isGroup;
+                var groupWidth = item.width;
+                var groupHeight = 0;
 
-            brainField.model = go.Model.fromJson(nodeData);
+                var titleBar = objects[0];
+                var text = objects[1];
+                var leftBorder = objects[2];
+                var rightBorder = objects[3];
+                var bottomBorder = objects[4];
+
+                //spot update
+                objects.forEach(function (i) {
+                    i.top = 0;
+                    i.left = 0;
+                });
+
+                titleBar.set({
+                    top: nextTop,
+                    left: nextLeft
+                });
+                text.set({
+                    top: titleBar.top + 6,
+                    left: titleBar.left + 6
+                });
+                leftBorder.set({
+                    top: titleBar.top,
+                    left: titleBar.left
+                });
+                rightBorder.top = titleBar.top;
+                bottomBorder.left = titleBar.left;
+
+                for (var i = 0; i < childs.length; i++) {
+                    childs[i].left = titleBar.left + 6;
+                    childs[i].top = titleBar.top + (titleBar.height + 5) + (childs[i].height + 5) * i;
+
+                    if (groupWidth < childs[i].width)
+
+                        groupWidth = childs[i].width + 5;
+                    groupHeight += (childs[i].height + 5);
+                }
+
+                groupHeight += titleBar.height + 2;
+
+                titleBar.width = groupWidth;
+                leftBorder.height = groupHeight + 2
+                rightBorder.set({
+                    left: titleBar.left + titleBar.width - 2,
+                    height: groupHeight + 2
+                });
+                bottomBorder.set({
+                    top: titleBar.top + leftBorder.height,
+                    width: titleBar.width
+                });
+
+                var node = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
+                    key: key,
+                    isGroup: isGroup,
+                    category: category
+                });
+                node.setControlsVisibility(Grouping.control.selectionUnableOptions);
+                brainField.remove(item);
+                brainField.add(node);
+                brainField.moveTo(node, 1);
+
+                //location
+                nextLeft += node.width + 5;
+                height = (height < groupHeight) ? groupHeight : height;
+
+                if (nextLeft + 100 >= Grouping.width) {
+                    nextLeft = 10;
+                    nextTop += height + 10;
+                }
+            });
+        },
+        resize: (childs) => {
+
+        },
+        locationCheck: (object) => {
+            var objectLoc = point(object); //LT, LB, RT, RB
+            var groupLoc = [];
+            var isArea;
+
+            for (var i = 1; i < Grouping.list.length; i++) {
+                if (Grouping.list[i].isGroup)
+                    groupLoc.push({
+                        location: point(Grouping.list[i]),
+                        key: Grouping.list[i].key
+                    });
+            }
+
+            console.log(objectLoc);
+            console.log(groupLoc);
+
+            function point(object) {
+                var location = [];
+
+                //Left top
+                location.push(new Object({
+                    x: object.left,
+                    y: object.top
+                }));
+
+                //Left bottom
+                location.push(new Object({
+                    x: object.left,
+                    y: object.top + object.height
+                }));
+
+                //Right top
+                location.push(new Object({
+                    x: object.left + object.width,
+                    y: object.top
+                }));
+
+                //Right bottom
+                location.push(new Object({
+                    x: object.left + object.width,
+                    y: object.top + object.height
+                }));
+
+                return location;
+            }
+
+            return;
+        },
+        getChild: (objectKey) => {
+            var childs = [];
+
+            for (var i = 0; i < Grouping.list.length; i++) {
+                if (Grouping.list[i].parent !== undefined)
+                    if (Grouping.list[i].parent === objectKey)
+                        childs.push(Grouping.list[i]);
+            }
+
+            return (childs.length > 0) ? childs : undefined;
         }
     }
 };

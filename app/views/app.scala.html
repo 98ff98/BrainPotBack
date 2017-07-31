@@ -58,16 +58,38 @@
             width: 80%;
         }
 
+        #blind {
+            position: fixed;
+            z-index: 3;
+            background: gray;
+            opacity: 0.8;
+            width: 100%;
+            height: 100%;
+        }
+
+        #progress {
+            position: relative;
+            top: 30%;
+        }
+
     </style>
 
         <link rel="stylesheet" href="@routes.Assets.at("css/font.css")">
         <link rel="shortcut icon" type="image/png" href="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/brainGay.png" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://s3.ap-northeast-2.amazonaws.com/brainpot/CSS/progress.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </head>
 
+    <div id="blind">
+        <div id="progress">
+            <div class="loader"></div>
+            <h3 class="font-noto-light white-text center">대기중입니다.</h3>
+        </div>
+    </div>
+
     <body>
-            <!-- 네비게이션 -->
+        <!-- 네비게이션 -->
         <nav class="nav-extended">
             <div class="nav-wrapper">
                 <a href="#" class="brand-logo center waves-effect waves-light font-noto-medium">@appLoadDataSet.teamData.goal</a>
@@ -95,7 +117,7 @@
                 </ul>
             </div>
 
-                <!-- 유저 목록 -->
+            <!-- 유저 목록 -->
             <ul id="user_list" class="dropdown-content font-noto-regular">
                 <li class="user_list_item"><a href="#!">호날두</a></li>
             </ul>
@@ -297,7 +319,7 @@
                         <li>
                             <form action="#">
                                 <div class="file-field input-field">
-                                    <div class="btn-floating waves-effect waves-light">
+                                    <div class="btn-floating waves-effect waves-light"  id="menu_load">
                                         <i class="material-icons">publish</i>
                                         <input id="upload_json" type="file" accept=".json">
                                     </div>
@@ -417,34 +439,26 @@
         //<summary>브레인스토밍 작업 초기화</summary>
         var level = 1; //현재 진행 레벨
 
-        init(level);
+         $(document).ready(function() {
+            //<summary>브레인스토밍 작업 초기화</summary>
+            init(level);
+            $(".canvas-container").css("position", "absolute");
+        });
 
         function init(level) {
             switch (level) {
                 case 1:
-                    MindMap.init("brain_field_1");
-                    Drawing.init();
+                    MindMap.methods.init("brain_field_1");
                     break;
                 case 2:
-                    var nodeData = brainField.model.toJson();
-                    nodeData = JSON.parse(nodeData);
+                    var data = MindMap.methods.nextLevel();
 
                     $("ul.tabs").tabs("select_tab", "brain_field_2");
-                    Grouping.init("brain_field_2", function() {
-                        Grouping.methods.mindMapToGrouping(nodeData);
-                    });
-                    Drawing.init();
+                    Grouping.methods.init("brain_field_2", data);
                     break;
                 case 3:
-                    var nodeData = brainField.model.toJson();
-                    nodeData = JSON.parse(nodeData);
-
                     $("ul.tabs").tabs("select_tab", "brain_field_3");
                     $("#menu_comment").css("display", "inline");
-                    Meaning.init("brain_field_3", function() {
-                        Meaning.methods.groupingToMeaning(nodeData);
-                    });
-                    Drawing.init();
                     break;
                 case 4:
                     $("ul.tabs").tabs("select_tab", "brain_field_4");

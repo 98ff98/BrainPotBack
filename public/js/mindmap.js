@@ -1,294 +1,684 @@
-var GO = go.GraphObject.make;
+var f = fabric;
 var brainField;
 
 var MindMap = {
-    init: (fieldName) => {
-        brainField = GO(go.Diagram, fieldName, { //옵션 설정
-            initialContentAlignment: go.Spot.Center, //화면 중앙에 생성
-            "commandHandler.copiesTree": false,
-            "commandHandler.deletesTree": false,
-            "draggingTool.dragsTree": true,
-            "undoManager.isEnabled": false,
-            "animationManager.isEnabled": false
-        });
-
-        //마인드맵 템플릿 설정 -> 의견 아래에 밑줄 표시
-        brainField.nodeTemplate = GO(go.Node, "Vertical", {
-                selectionObjectName: "TEXT"
-            }, GO(go.TextBlock, {
-                    name: "TEXT",
-                    minSize: new go.Size(30, 15),
-                    editable: true
-                },
-                new go.Binding("text", "text").makeTwoWay(),
-                new go.Binding("scale", "scale").makeTwoWay(),
-                new go.Binding("font", "font").makeTwoWay()),
-            GO(go.Shape, "LineH", {
-                    stretch: go.GraphObject.Horizontal,
-                    strokeWidth: 3,
-                    height: 3,
-                    portId: "",
-                    fromSpot: go.Spot.LeftRightSides,
-                    toSpot: go.Spot.LeftRightSides
-                },
-                new go.Binding("stroke", "brush"),
-                new go.Binding("fromSpot", "dir", function (param) {
-                    return MindMap.methods.spotConverter(param, true);
-                }),
-                new go.Binding("toSpot", "dir", function (param) {
-                    return MindMap.methods.spotConverter(param, false);
-                })),
-            new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-            new go.Binding("locationSpot", "dir", function (param) {
-                return MindMap.methods.spotConverter(param, false);
-            })
-        );
-
-        //마인드맵 하위 디렉토리 생성 UI 표시
-        brainField.nodeTemplate.selectionAdornmentTemplate = GO(go.Adornment, "Spot",
-            GO(go.Panel, "Auto",
-                GO(go.Shape, {
-                    fill: null,
-                    stroke: "dodgerblue",
-                    strokeWidth: 3
-                }),
-                GO(go.Placeholder, {
-                    margin: new go.Margin(4, 4, 0, 4)
-                })
-            ),
-            GO("Button", { //하위 디렉토리 추가 버튼 UI
-                alignment: go.Spot.Right,
-                alignmentFocus: go.Spot.Left,
-                click: MindMap.methods.addNodeAndLink
-            }, GO(go.TextBlock, "+", {
-                font: "bold 8pt sans-serif" //font
-            })),
-            GO("Button", { //하위 디렉토리 삭제 버튼 UI
-                alignment: go.Spot.Left,
-                alignmentFocus: go.Spot.Right,
-                click: MindMap.methods.removeNodeAndLink
-            }, GO(go.TextBlock, "-", {
-                font: "bold 8pt sans-serif"
-            }))
-        );
-
-        //마인드맵 노드 우클릭 메뉴 (필수 X)
-        //brainField.nodeTemplate.contextMenu = GO(go.Adornment, "Vertical",
-        //    GO("ContextMenuButton",
-        //        GO(go.TextBlock, "Bigger"), {
-        //            click: function (event, object) {
-        //                changeTextSize(object, 1.1);
-        //            }
-        //        }));
-
-        //마인드맵 하위 노드에 색을 부여, 상위 노드의 색을 따라감
-        brainField.linkTemplate = GO(go.Link, {
-            curve: go.Link.Bezier,
-            fromShortLength: -2,
-            toShortLength: -2,
-            selectable: false
-        }, GO(go.Shape, {
-            strokeWidth: 3
-        }, new go.Binding("stroke", "toNode", function (n) {
-            if (n.data.brush) //상위 노드가 있는 경우
-                return n.data.brush;
-            else
-                return "black"; //TODO
-        }).ofObject()));
-
-        //아이디어 위치 변경 리스너
-        brainField.addDiagramListener("SelectionMoved", function (event) {
-            var id = myID;
-            var team = teamID;
-
-            var rootX = brainField.findNodeForKey(0).location.x;
-            var obj = event.subject.Ka.value.vf.Nd;
-            var key = obj.key; //위치를 변경한 노드의 키값
-            var loc = obj.loc; //위치를 변경한 노드의 위치값
-
-            brainField.selection.each(function (node) {
-                if (node.data.parent !== 0)
-                    return;
-                else {
-                    var nodeX = node.location.x;
-
-                    if (rootX < nodeX && node.data.dir !== "right")
-                        MindMap.methods.updateNodeDirection(node, "right");
-                    else if (rootX > nodeX && node.data.dir !== "left")
-                        MindMap.methods.updateNodeDirection(node, "left");
-
-                    MindMap.methods.layoutSort(node);
-                }
-            });
-        });
-
-        //아이디어 수정 리스너
-        brainField.addDiagramListener("TextEdited", function (event) {
-            var obj = event.subject.Bh.Nd;
-            var text = obj.text; //수정된 아이디어 내용
-            var key = obj.key; //수정된 아이디어의 키값
-        });
-
-        // 새로운 마인드맵을 생성하는 초기화 함수
-        function createMindMap() {
-            var newMindMap = {
-                "class": "go.TreeModel",
-                "nodeDataArray": [{
-                    "key": 0,
-                    "text": teamTopic, //중앙 text
-                    "loc": "0 0"
-        }]
-            };
-
-            brainField.model = go.Model.fromJson(newMindMap);
+    keyCount: 0,
+    width: undefined,
+    height: undefined,
+    list: undefined,
+    control: {
+        selectedNode: undefined,
+        ungroupedNode: {
+            rect: undefined,
+            text: undefined,
+            key: undefined,
+            parent: undefined,
+            dir: undefined,
+            leftLine: undefined,
+            rightLine: []
+        },
+        addButton: undefined,
+        removeButton: undefined,
+        selectionUnableOptions: {
+            bl: false,
+            br: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mt: false,
+            mtr: false,
+            tl: false,
+            tr: false
         }
-
-        //initialize
-        createMindMap();
     },
     methods: {
-        addNodeAndLink: (event, object) => {
-            //마인드맵에 새로운 노드(아이디어)를 삽입하는 함수
-            var adornment = object.part;
-            var diagram = adornment.diagram;
-            var rootData = brainField.findNodeForKey(0).data;
-            var currentNode = adornment.adornedPart;
-            var currentData = currentNode.data;
-            var newData;
+        init: (name) => {
+            //hide
+            $(".upper-canvas").removeClass("z-depth-2");
 
-            diagram.startTransaction("Add Node");
-            newData = {
-                text: "idea",
-                dir: currentData.dir,
-                parent: currentData.key
-            };
+            //create
+            brainField = new f.Canvas(name);
 
-            if (rootData == currentData)
-                newData.brush = go.Brush.randomColor(); //"#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
-            else
-                newData.brush = currentData.brush;
+            //init
+            MindMap.width = brainField.width;
+            MindMap.height = brainField.height;
+            MindMap.list = brainField._objects;
 
-            diagram.model.addNodeData(newData);
-            MindMap.methods.layoutSort(currentNode);
-            diagram.commitTransaction("Add Node");
-        },
-        removeNodeAndLink: (event, object) => {
-            //마인드맵에서 특정 노드를 삭제하는 함수
-            var adornment = object.part;
-            var diagram = adornment.diagram;
-            var rootData = brainField.findNodeForKey(0).data;
-            var currentNode = adornment.adornedPart;
-
-            if (rootData == currentNode.data) {
-                alert("최상위 아이디어는 삭제할 수 없습니다.");
-                return;
-            }
-
-            var key = currentNode.data.key;
-            var json = JSON.parse(brainField.model.toJson());
-            var deleteKey = [];
-
-            deleteKey.push(key);
-            diagram.startTransaction("Remove Node");
-
-            json.nodeDataArray.forEach(function (item, index, arr) {
-                if (item.key == deleteKey[0])
-                    arr.splice(index, 1);
+            var text = new f.IText("Mind Map", {
+                fontSize: 18,
+                left: (MindMap.width / 2) - 50,
+                top: (MindMap.height / 2) - 50
             });
 
-            for (var i = 0; i < deleteKey.length; i++) {
-                for (var j = 0; j < json.nodeDataArray.length;) {
-                    if (json.nodeDataArray[j].parent == deleteKey[i]) {
-                        deleteKey.push(json.nodeDataArray[j].key);
-                        json.nodeDataArray.splice(j, 1);
-                    } else
-                        j++;
+            var rect = new f.Rect({
+                width: text.width,
+                height: 4,
+                fill: "black",
+                left: (MindMap.width / 2) - 50,
+                top: (MindMap.height / 2) - 27
+            });
+
+            var root = new f.Group([rect, text], {
+                key: MindMap.keyCount,
+                category: "root",
+                dir: "right",
+                leftLine: [],
+                rightLine: [],
+                lockMovementX: true,
+                lockMovementY: true
+            });
+            MindMap.keyCount++;
+            root.setControlsVisibility(MindMap.control.selectionUnableOptions);
+
+            brainField.add(root);
+            //object select
+            brainField.on("mouse:down", function (event) {
+                var object = event.target;
+
+                MindMap.methods.removeButtons();
+
+                //<code>regrouping</code>
+                if (MindMap.control.ungroupedNode.key)
+                    text.exitEditing();
+
+                if (!object)
+                    return;
+
+                //<code>create add/remove button</code>
+                if (object.category === "node" || object.category === "root") {
+                    var width = object.width;
+                    var top = object.top;
+                    var left = object.left;
+
+                    var removeRect = new f.Rect({
+                        fill: "#EAEAEA",
+                        width: 20,
+                        height: 20,
+                        left: left - 25,
+                        top: top + 4
+                    });
+
+                    var removeText = new f.Text("-", {
+                        fontSize: 30,
+                        left: removeRect.left + 5,
+                        top: top - 4
+                    });
+
+                    var addRect = new f.Rect({
+                        fill: "#EAEAEA",
+                        width: 20,
+                        height: 20,
+                        left: left + width + 5,
+                        top: top + 4
+                    });
+
+                    var addText = new f.Text("+", {
+                        fontSize: 25,
+                        left: addRect.left + 2,
+                        top: top
+                    });
+
+                    var addButton = new f.Group([addRect, addText], {
+                        category: "addButton",
+                        lockMovementX: true,
+                        lockMovementY: true
+                    });
+                    var removeButton = new f.Group([removeRect, removeText], {
+                        category: "removeButton",
+                        lockMovementX: true,
+                        lockMovementY: true
+                    });
+
+                    addButton.setControlsVisibility(MindMap.control.selectionUnableOptions);
+                    removeButton.setControlsVisibility(MindMap.control.selectionUnableOptions);
+
+                    brainField.add(addButton);
+                    brainField.add(removeButton);
+
+                    MindMap.control.addButton = addButton;
+                    MindMap.control.removeButton = removeButton;
+                    MindMap.control.selectedNode = object;
+                }
+                //<code>create add/remove button</code>
+
+                //<code>add button pressed</code>
+                if (object.category === "addButton") {
+                    MindMap.methods.removeButtons();
+                    MindMap.methods.createNode(MindMap.control.selectedNode);
+                }
+                //<code>add button pressed</code>
+
+                //<code>remove button pressed</code>
+                if (object.category === "removeButton") {
+                    MindMap.methods.removeButtons();
+                    MindMap.methods.removeNode(MindMap.control.selectedNode);
+                }
+                //<code>remove button pressed</code>
+            });
+            //object moved
+            brainField.on("mouse:up", function (event) {
+                var object = event.target;
+
+                if (!object)
+                    return;
+
+                //<code>direction sort</code>
+                if (object.category === "node") {
+                    var parentKey = object.parent;
+                    var parent = MindMap.methods.getParent(parentKey);
+
+                    if (parent.category === "root") {
+                        var objectLoc = new Location(object);
+                        var parentLoc = new Location(parent);
+                        var dir = object.dir;
+                        var dirChange;
+
+                        if (objectLoc.x < parentLoc.x) {
+                            dirChange = (dir === "left") ? false : true;
+                            if (dirChange)
+                                MindMap.methods.dirChange(object, "left");
+                        } else if (objectLoc.x > parentLoc.x) {
+                            dirChange = (dir === "right") ? false : true;
+                            if (dirChange)
+                                MindMap.methods.dirChange(object, "right");
+                        }
+
+                        if (dirChange) {
+                            MindMap.methods.layoutSort(object);
+                            MindMap.methods.objectMoving(object);
+                        }
+                    }
+                }
+                //<code>direction sort</code>
+            });
+            //object double click -> text editing mode enter
+            f.util.addListener(brainField.upperCanvasEl, 'dblclick', function (event) {
+                var object = brainField.getActiveObject();
+                var items = [];
+
+                MindMap.methods.removeButtons();
+                MindMap.control.selectedNode = object;
+
+                if (!object)
+                    return;
+
+                if (object.category === "node") {
+                    var left = object.left;
+                    var top = object.top;
+                    var width = object.width;
+
+                    items = object.getObjects();
+
+                    var key = object.key;
+                    var parent = object.parent;
+                    var rect = items[0];
+                    var text = items[1];
+                    var dir = object.dir;
+                    var leftLine = object.leftLine;
+                    var rightLine = object.rightLine;
+
+                    brainField.remove(object);
+
+                    text.left = object.left;
+                    rect.left = object.left;
+                    text.top = object.top;
+                    rect.top = object.top + 20;
+
+                    MindMap.control.ungroupedNode.rect = rect;
+                    MindMap.control.ungroupedNode.text = text;
+                    MindMap.control.ungroupedNode.key = key;
+                    MindMap.control.ungroupedNode.parent = parent;
+                    MindMap.control.ungroupedNode.dir = dir;
+                    MindMap.control.ungroupedNode.leftLine = leftLine;
+                    MindMap.control.ungroupedNode.rightLine = rightLine;
+
+
+                    brainField.add(text);
+                    brainField.add(rect);
+
+                    text.enterEditing();
+                    text.text = "";
+                }
+            });
+            //object moving
+            brainField.on("object:moving", function (event) {
+                var object = event.target;
+                var addButton = MindMap.control.addButton;
+                var removeButton = MindMap.control.removeButton;
+
+                //<code>add / remove button move </code>
+                if (object.category === "node" || object.category === "root") {
+
+                    if (addButton) {
+                        addButton.setLeft(object.left + object.width + 5);
+                        addButton.setTop(object.top);
+                    }
+
+                    if (removeButton) {
+                        removeButton.setLeft(object.left - removeButton.width - 5);
+                        removeButton.setTop(object.top - 4);
+                    }
+
+                    MindMap.methods.objectMoving(object);
+                }
+                //<code>add / remove button move </code>
+            });
+            //text changed
+            brainField.on("text:changed", function (event) {
+                var object = event.target;
+
+                if (!object)
+                    return;
+
+                if (MindMap.control.ungroupedNode.rect)
+                    MindMap.control.ungroupedNode.rect.width = object.width;
+            });
+            //text editing mode exit
+            brainField.on("text:editing:exited", function (event) {
+                var rect = MindMap.control.ungroupedNode.rect;
+                var text = MindMap.control.ungroupedNode.text;
+                var key = MindMap.control.ungroupedNode.key;
+                var parent = MindMap.control.ungroupedNode.parent;
+                var dir = MindMap.control.ungroupedNode.dir;
+                var leftLine = MindMap.control.ungroupedNode.leftLine;
+                var rightLine = MindMap.control.ungroupedNode.rightLine;
+
+                brainField.remove(rect);
+                brainField.remove(text);
+
+                var node = new f.Group([rect, text], {
+                    key: key,
+                    parent: parent,
+                    dir: dir,
+                    category: "node",
+                    leftLine: leftLine,
+                    rightLine: rightLine,
+                });
+                node.isMoving = false;
+                node.scaleX = 1;
+                node.scaleY = 1;
+                node.skewX = 0;
+                node.skewY = 0;
+                node.setControlsVisibility(MindMap.control.selectionUnableOptions);
+
+                console.log(node);
+                brainField.add(node);
+
+                MindMap.control.ungroupedNode = {
+                    rect: undefined,
+                    text: undefined,
+                    key: undefined,
+                    dir: undefined,
+                    parent: undefined,
+                    leftLine: undefined,
+                    rightLine: []
+                };
+            });
+        },
+        removeButtons: () => {
+            if (MindMap.control.addButton) {
+                MindMap.list.forEach(function (item, index) {
+                    if (item === MindMap.control.addButton)
+                        MindMap.list.splice(index, 1);
+                });
+            }
+
+            if (MindMap.control.removeButton) {
+                MindMap.list.forEach(function (item, index) {
+                    if (item === MindMap.control.removeButton)
+                        MindMap.list.splice(index, 1);
+                });
+            }
+        },
+        createNode: (parent) => {
+            var text = new f.IText("idea", {
+                fontSize: 18
+            });
+
+            var rect = new f.Rect({
+                width: text.width,
+                height: 4,
+                top: text.top + 20
+            });
+
+            if (parent.category === "root")
+                rect.fill = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
+            else
+                rect.fill = parent._objects[0].fill;
+
+            var node = new f.Group([rect, text], {
+                top: parent.top,
+                left: parent.left + parent.width + 50,
+                key: MindMap.keyCount,
+                parent: parent.key,
+                category: "node",
+                dir: parent.dir
+            });
+
+            if (node.dir === "right") {
+                node.leftLine = undefined;
+                node.rightLine = [];
+            } else if (node.dir === "left") {
+                node.leftLine = [];
+                node.rightLine = undefined;
+            }
+
+            node.setControlsVisibility(MindMap.control.selectionUnableOptions);
+            MindMap.keyCount++;
+
+            brainField.add(node);
+
+            var parentRightPoint = new RightPoint(parent);
+            var nodeLeftPoint = new LeftPoint(node);
+            var line = new f.Line([parentRightPoint.x, parentRightPoint.y, nodeLeftPoint.x, nodeLeftPoint.y], {
+                category: "line",
+                from: parent.key,
+                to: node.key,
+                fill: rect.fill,
+                stroke: rect.fill,
+                strokeWidth: 4,
+                selectable: false
+            });
+
+            if (parent.dir === "right") {
+                node.leftLine = line;
+                parent.rightLine.push(line);
+            } else if (parent.dir === "left") {
+                node.rightLine = line;
+                parent.leftLine.push(line);
+            }
+
+            brainField.add(line);
+
+            MindMap.methods.layoutSort(parent);
+            MindMap.methods.objectMoving(parent);
+        },
+        removeNode: (object) => {
+            if (object.category === "node") {
+                var keys = [];
+
+                keys.push(object.key);
+                MindMap.methods.removeButtons();
+
+                MindMap.list.forEach(function (item, index) {
+                    if (item.key === keys[0]) {
+                        MindMap.list.splice(index, 1);
+                        return;
+                    }
+                });
+
+                for (var i = 0; i < keys.length; i++)
+                    for (var j = 0; j < MindMap.list.length;) {
+                        if (MindMap.list[j].category === "root") {
+                            j++;
+                            continue;
+                        }
+
+                        if (MindMap.list[j].category === "node") {
+                            if (MindMap.list[j].parent === keys[i]) {
+                                keys.push(MindMap.list[j].key);
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+
+                        if (MindMap.list[j].category === "line") {
+                            if (MindMap.list[j].to === keys[i]) {
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+                    }
+            }
+        },
+        layoutSort: (object) => {
+            var key = object.key;
+            var keys = [];
+
+            keys.push(key);
+
+            var childs = MindMap.methods.getChild(key);
+            sort(object, childs);
+
+            for (var i = 0; i < keys.length; i++)
+                for (var j = 0; j < MindMap.list.length; j++)
+                    if (keys[i] === MindMap.list[j].parent) {
+                        keys.push(MindMap.list[j].key);
+                        sort(MindMap.list[j], MindMap.methods.getChild(MindMap.list[j].key));
+                        //                        MindMap.methods.objectMoving(MindMap.list[j]);
+                    }
+
+            for (var i = 0; i < MindMap.list.length; i++)
+                if (MindMap.list[i].category === "node")
+                    MindMap.methods.objectMoving(MindMap.list[i]);
+
+            function sort(object, childs) {
+                if (!childs)
+                    return;
+
+                var childsCount = childs.length;
+                var isHol = (childsCount % 2 != 0) ? true : false;
+                var half;
+
+                if (object.dir === "right") {
+                    if (isHol) {
+                        half = childsCount / 2 + 1;
+                        childs.forEach(function (item, index) {
+                            item.set({
+                                top: object.top + ((index + 1 - half) * 40) + 20,
+                                left: object.left + object.width + 50
+                            });
+                        });
+                    } else {
+                        half = childsCount / 2;
+                        childs.forEach(function (item, index) {
+                            item.set({
+                                top: object.top + ((index + 1 - half) * 40) - 20,
+                                left: object.left + object.width + 50
+                            });
+                        });
+                    }
+                } else if (object.dir === "left") {
+                    if (isHol) {
+                        half = childsCount / 2 + 1;
+                        childs.forEach(function (item, index) {
+                            item.set({
+                                top: object.top + ((index + 1 - half) * 40) + 20,
+                                left: object.left - object.width - 50
+                            });
+                        });
+                    } else {
+                        half = childsCount / 2;
+                        childs.forEach(function (item, index) {
+                            item.set({
+                                top: object.top + ((index + 1 - half) * 40) - 20,
+                                left: object.left - object.width - 50
+                            });
+                        });
+                    }
+                }
+            }
+        },
+        objectMoving: (object) => {
+            if (object.category === "root") {
+                //TODO
+            } else if (object.category === "node") {
+                if (object.dir === "right") {
+                    if (object.leftLine) {
+                        var parent = MindMap.methods.getParent(object.parent);
+                        var objectPoint = new LeftPoint(object);
+                        var parentPoint = new RightPoint(parent);
+
+                        object.leftLine && object.leftLine.set({
+                            "x1": parentPoint.x,
+                            "y1": parentPoint.y,
+                            "x2": objectPoint.x,
+                            "y2": objectPoint.y
+                        });
+                    }
+
+                    if (object.rightLine.length > 0)
+                        for (var i = 0; i < object.rightLine.length; i++) {
+                            var child = MindMap.methods.getObject(object.rightLine[i].to);
+                            var childPoint = new LeftPoint(child);
+                            var objectPoint = new RightPoint(object);
+
+                            child.leftLine && child.leftLine.set({
+                                "x1": objectPoint.x,
+                                "y1": objectPoint.y,
+                                "x2": childPoint.x,
+                                "y2": childPoint.y
+                            });
+                        }
+                } else if (object.dir === "left") {
+                    if (object.rightLine) {
+                        var parent = MindMap.methods.getParent(object.parent);
+                        var objectPoint = new RightPoint(object);
+                        var parentPoint = new LeftPoint(parent);
+
+                        object.rightLine && object.rightLine.set({
+                            "x1": parentPoint.x,
+                            "y1": parentPoint.y,
+                            "x2": objectPoint.x,
+                            "y2": objectPoint.y
+                        });
+                    }
+
+                    if (object.leftLine.length > 0)
+                        for (var i = 0; i < object.leftLine.length; i++) {
+                            var child = MindMap.methods.getObject(object.leftLine[i].to);
+                            var childPoint = new RightPoint(child);
+                            var objectPoint = new LeftPoint(object);
+
+                            child.rightLine && child.rightLine.set({
+                                "x1": objectPoint.x,
+                                "y1": objectPoint.y,
+                                "x2": childPoint.x,
+                                "y2": childPoint.y
+                            });
+                        }
                 }
             }
 
-            diagram.commitTransaction("Remove Node");
-
-            brainField.model = go.Model.fromJson(json);
+            brainField.renderAll();
         },
-        layoutSort: (node) => {
-            //마인드맵 노드 레이아웃 정렬
-            if (node.data.key === 0) //최상위 루트 노드인 경우
-                MindMap.methods.layoutAll();
-            else {
-                var parts = node.findTreeParts();
-                MindMap.methods.layoutAngle(parts, node.data.dir === "left" ? 180 : 0);
+        dirChange: (object, dir) => {
+            var key = object.key;
+            var keys = [];
+
+            keys.push(key);
+            object.dir = dir;
+            swap(object);
+
+            for (var i = 0; i < keys.length; i++)
+                for (var j = 0; j < MindMap.list.length; j++)
+                    if (MindMap.list[j].category === "node")
+                        if (MindMap.list[j].parent === keys[i]) {
+                            keys.push(MindMap.list[j].key);
+                            MindMap.list[j].dir = dir;
+                            swap(MindMap.list[j]);
+                        }
+
+            function swap(object) {
+                var rightLine = new Object(object.leftLine);
+                var leftLine = new Object(object.rightLine);
+
+                object.leftLine = undefined;
+                object.rightLine = undefined;
+
+                object.leftLine = leftLine;
+                object.rightLine = rightLine;
             }
         },
-        layoutAngle: (parts, angle) => {
-            //마인드맵 초점 조절
-            var layout = go.GraphObject.make(go.TreeLayout, {
-                angle: angle,
-                arrangement: go.TreeLayout.ArrangementFixedRoots,
-                nodeSpacing: 5,
-                layerSpacing: 20,
-                setsPortSpot: false,
-                setsChildPortSpot: false
-            });
-            layout.doLayout(parts);
+        getParent: (parentKey) => {
+            var parent;
+
+            for (var i = 0; i < MindMap.list.length; i++) {
+                if (MindMap.list[i].key === parentKey) {
+                    parent = MindMap.list[i];
+                    break;
+                }
+            }
+
+            return parent;
         },
-        layoutAll: () => {
-            var root = brainField.findNodeForKey(0);
-            var rightWard = new go.Set(go.Part);
-            var leftWard = new go.Set(go.Part);
+        getObject: (objectKey) => {
+            var object;
 
-            if (root == null)
-                return;
+            for (var i = 0; i < MindMap.list.length; i++) {
+                if (MindMap.list[i].key === objectKey) {
+                    object = MindMap.list[i];
+                    break;
+                }
+            }
 
-            brainField.startTransaction("Layout");
-            root.findLinksConnected().each(function (link) {
-                var child = link.toNode;
+            return object;
+        },
+        getChild: (objectKey) => {
+            var childs = [];
 
-                if (child.data.dir === "left") {
-                    leftWard.add(root);
-                    leftWard.add(link);
-                    leftWard.addAll(child.findTreeParts());
-                } else {
-                    rightWard.add(root);
-                    rightWard.add(link);
-                    rightWard.addAll(child.findTreeParts());
+            for (var i = 0; i < MindMap.list.length; i++)
+                if (MindMap.list[i].parent !== undefined)
+                    if (MindMap.list[i].parent === objectKey)
+                        childs.push(MindMap.list[i]);
+
+            return (childs.length > 0) ? childs : undefined;
+        },
+        nextLevel: () => {
+            //<code>data return mindmap to grouping</code>
+            var data = [];
+
+            MindMap.list.forEach(function (item) {
+                if (item.category === "root" || item.category === "node") {
+                    data.push({
+                        category: item.category,
+                        key: item.key,
+                        parent: item.parent,
+                        text: item._objects[1].text
+                    });
                 }
             });
 
-            MindMap.methods.layoutAngle(rightWard, 0);
-            MindMap.methods.layoutAngle(leftWard, 180);
-            brainField.commitTransaction("Layout");
-        },
-        updateNodeDirection: (node, dir) => {
-            var child = node.findTreeChildrenNodes();
-
-            brainField.model.setDataProperty(node.data, "dir", dir);
-
-            while (child.next())
-                MindMap.methods.updateNodeDirection(child.value, dir);
-        },
-        spotConverter: (dir, from) => {
-            if (dir === "left")
-                return (from ? go.Spot.Left : go.Spot.Right);
-            else
-                return (from ? go.Spot.Right : go.Spot.Left);
-        },
-
+            return data;
+        }
     }
 };
 
-var MindMapEvent = {
-    node_add: (json) => {
-        var object = json.node_object;
-    },
-    node_update_content: (json) => {
-        var key = json.key;
-        var text = json.text;
-    },
-    node_update_loc: (json) => {
-        var key = json.key;
-        var loc = json.loc;
-    },
-    remove: (json) => {
-        var key = json.key;
+function Location(object) {
+    var x;
+    var y;
+
+    x = object.left + (object.width / 2);
+    y = object.top + (object.height / 2);
+
+    return {
+        x: x,
+        y: y
     }
-};
+}
+
+function LeftPoint(object) {
+    var x;
+    var y;
+
+    x = object.left;
+    y = object.top + object.height - 4;
+
+    return {
+        x: x,
+        y: y
+    }
+}
+
+function RightPoint(object) {
+    var x;
+    var y;
+
+    x = object.left + object.width - 4;
+    y = object.top + object.height - 4;
+
+    return {
+        x: x,
+        y: y
+    }
+}
