@@ -342,10 +342,10 @@ var MindMap = {
                 }
             };
 
-            if (parent.key === 0)
-                json.brush = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
+            if (parent.category === "root")
+                json.node_object.brush = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
             else
-                json.brush = parent._objects[0].fill;
+                json.node_object.brush = parent._objects[0].fill;
 
             socket.send(json);
         },
@@ -580,7 +580,7 @@ var MindMap = {
             var idea = object.text;
             var dir = object.dir;
             var parentKey = object.parent;
-            var brush = object.brush;
+            var fill = object.brush;
 
             var text = new f.IText(idea, {
                 fontSize: 18
@@ -590,7 +590,7 @@ var MindMap = {
                 width: text.width,
                 height: 4,
                 top: text.top + 20,
-                fill:brush
+                fill:fill
             });
 
             var parent = MindMap.methods.getParent(parentKey);
