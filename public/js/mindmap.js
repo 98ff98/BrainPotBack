@@ -351,40 +351,16 @@ var MindMap = {
         },
         removeNode: (object) => {
             if (object.category === "node") {
-                var keys = [];
+                var json = {
+                    event:"node_remove",
+                    team:teamID,
+                    key:object.key
+                }
 
-                keys.push(object.key);
                 MindMap.methods.removeButtons();
 
-                MindMap.list.forEach(function (item, index) {
-                    if (item.key === keys[0]) {
-                        MindMap.list.splice(index, 1);
-                        return;
-                    }
-                });
-
-                for (var i = 0; i < keys.length; i++)
-                    for (var j = 0; j < MindMap.list.length;) {
-                        if (MindMap.list[j].category === "root") {
-                            j++;
-                            continue;
-                        }
-
-                        if (MindMap.list[j].category === "node") {
-                            if (MindMap.list[j].parent === keys[i]) {
-                                keys.push(MindMap.list[j].key);
-                                MindMap.list.splice(j, 1);
-                            } else
-                                j++;
-                        }
-
-                        if (MindMap.list[j].category === "line") {
-                            if (MindMap.list[j].to === keys[i]) {
-                                MindMap.list.splice(j, 1);
-                            } else
-                                j++;
-                        }
-                    }
+                socket.send(json);
+                //TODO
             }
         },
         layoutSort: (object) => {
@@ -599,7 +575,7 @@ var MindMap = {
         }
     },
     event : {
-        node_add : (object ) => {
+        node_add : (object) => {
             var owner = object.owner;
             var idea = object.text;
             var dir = object.dir;
@@ -665,6 +641,41 @@ var MindMap = {
 
             MindMap.methods.layoutSort(parent);
             MindMap.methods.objectMoving(parent);
+        },
+        node_remove : (key) => {
+                var keys = [];
+
+                keys.push(key);
+
+                MindMap.list.forEach(function (item, index) {
+                    if (item.key === keys[0]) {
+                        MindMap.list.splice(index, 1);
+                        return;
+                    }
+                });
+
+                for (var i = 0; i < keys.length; i++)
+                    for (var j = 0; j < MindMap.list.length;) {
+                        if (MindMap.list[j].category === "root") {
+                            j++;
+                            continue;
+                        }
+
+                        if (MindMap.list[j].category === "node") {
+                            if (MindMap.list[j].parent === keys[i]) {
+                                keys.push(MindMap.list[j].key);
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+
+                        if (MindMap.list[j].category === "line") {
+                            if (MindMap.list[j].to === keys[i]) {
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+                    }
         }
     }
 };

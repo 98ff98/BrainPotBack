@@ -41,7 +41,8 @@ var socket = {
 					break;
 				case "node_add_comment" :
 					break;
-				case "remove" :
+				case "node_remove" :
+					MindMap.event.node_remove(json.key);
 					break;
 			}
 		}
