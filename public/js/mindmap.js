@@ -343,9 +343,9 @@ var MindMap = {
             };
 
             if (parent.key === 0)
-                json.fill = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
+                json.brush = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
             else
-                json.fill = parent._objects[0].fill;
+                json.brush = parent._objects[0].fill;
 
             socket.send(json);
         },
