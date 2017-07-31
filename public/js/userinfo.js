@@ -19,7 +19,7 @@ var UserInfo = {
             nickname: myNickname,
         };
 
-        socket.send(json);
+        send(json);
     },
     //유저 데이터 제거
     remove: (json) => {
@@ -40,7 +40,7 @@ var UserInfo = {
             isAdmin : isAdmin (id)
         };
 
-        socket.send(json);
+        send(json);
     },
     //방장인가
     isAdmin: (id) => {
