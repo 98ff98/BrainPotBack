@@ -68,4 +68,8 @@ $(document).ready(function () {
 
     function exit () {
         UserInfo.left(myID);
-    }  
+    }
+
+    function blind () {
+        $("#blind").css("display", "none");
+    }
