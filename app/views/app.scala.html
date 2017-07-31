@@ -288,61 +288,69 @@
                 </div>
             </div>
 
-            <div class="col s9">
-                    <!-- Teal page content  -->
-                <div id="brain_field_1" class="col s12 z-depth-2">First brain field</div>
-                <div id="brain_field_2" class="col s12 z-depth-2">Second brain field</div>
-                <div id="brain_field_3" class="col s12 z-depth-2">Third brain field</div>
-                <div id="brain_field_4" class="col s12 z-depth-2">Fourth brain field
+            <div id="brainField" class="col s9">
+                 <!-- Teal page content  -->
+            <canvas id="brain_field_1" class="col s12 z-depth-2">First brain field</canvas>
+            <canvas id="brain_field_2" class="col s12 z-depth-2">Second brain field</canvas>
+            <canvas id="brain_field_3" class="col s12 z-depth-2">Third brain field</canvas>
+            <canvas id="brain_field_4" class="col s12 z-depth-2">Fourth brain field
                     <!-- 투표 -->
-                    <ul id="vote_field" class="collection with-header">
-                        <li class="collection-header">
-                            <h4 class="font-noto-bold">투표 제목</h4>
-                        </li>
-                        <li class="collection-item avatar">
-                            <span class="title">Alivin</span>
-                        </li>
-                        <li class="collection-item">Alvin</li>
-                        <li class="collection-item">Alvin</li>
-                        <li class="collection-item">Alvin</li>
-                        <li class="collection-item">Alvin</li>
-                        <li class="collection-item">Alvin</li>
-                    </ul>
-                </div>
-                <div id="menu" class="fixed-action-btn vertical click-to-toggle">
-                    <a class="btn-floating btn-large red waves-effect waves-light">
-                        <i class="material-icons">menu</i>
-                    </a>
-                    <ul>
-                        <li><a id="menu_draw" class="btn-floating waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
-                        <li><a id="menu_postit" class="btn-floating waves-effect waves-light"><i class="material-icons">note</i></a></li>
-                        <li>
-                            <form action="#">
-                                <div class="file-field input-field">
-                                    <div class="btn-floating waves-effect waves-light"  id="menu_load">
-                                        <i class="material-icons">publish</i>
-                                        <input id="upload_json" type="file" accept=".json">
-                                    </div>
+                <ul id="vote_field" class="collection with-header">
+                    <li class="collection-header">
+                        <h4 class="font-noto-bold">투표 제목</h4>
+                    </li>
+                    <li class="collection-item avatar">
+                        <span class="title">Alivin</span>
+                    </li>
+                    <li class="collection-item">Alvin</li>
+                    <li class="collection-item">Alvin</li>
+                    <li class="collection-item">Alvin</li>
+                    <li class="collection-item">Alvin</li>
+                    <li class="collection-item">Alvin</li>
+                </ul>
+            </canvas>
+                   <div id="menu" class="fixed-action-btn vertical click-to-toggle">
+                <a class="btn-floating btn-large red waves-effect waves-light">
+                    <i class="material-icons">menu</i>
+                </a>
+                <ul>
+                    <li><a id="menu_draw" class="btn-floating waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
+                    <li><a id="menu_postit" class="btn-floating waves-effect waves-light"><i class="material-icons">note</i></a></li>
+                    <li>
+                        <form action="#">
+                            <div class="file-field input-field">
+                                <div class="btn-floating waves-effect waves-light">
+                                    <i class="material-icons">publish</i>
+                                    <input id="upload_json" type="file" accept=".json">
                                 </div>
-                            </form>
-                        </li>
-                        <li><a id="menu_save" class="btn-floating waves-effect waves-light"><i class="material-icons">get_app</i></a></li>
-                        <li><a id="menu_capture" class="btn-floating waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
-                        <li><a id="menu_next" class="btn-floating waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
-                    </ul>
+                            </div>
+                        </form>
+                    </li>
+                    <li><a id="menu_save" class="btn-floating waves-effect waves-light"><i class="material-icons">get_app</i></a></li>
+                    <li><a id="menu_capture" class="btn-floating waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
+                    <li><a id="menu_next" class="btn-floating waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
+                </ul>
+            </div>
+            <!-- 의미부여 -->
+            <div id="menu_comment" class="row">
+                <div class="input-field col s9">
+                    <input disabled id="comment" type="text" class="validate font-noto-regular">
+                    <label id="comment_label" for="comment" class="font-noto-regular">먼저, 의미를 부여할 의견을 선택하세요.</label>
                 </div>
-                    <!-- 의미부여 -->
-                <div id="menu_comment" class="row">
-                    <div class="input-field col s9">
-                        <input disabled id="comment" type="text" class="validate font-noto-regular">
-                        <label id="comment_label" for="comment" class="font-noto-regular">먼저, 의미를 부여할 의견을 선택하세요.</label>
-                    </div>
-                    <div class="input-field col s3">
-                        <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
-                    </div>
+                <div class="input-field col s3">
+                    <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
                 </div>
             </div>
+            <div id="menu2" class="fixed-action-btn vertical click-to-toggle">
+                <a class="btn-floating btn-large blue waves-effect waves-light">
+                    <i class="material-icons">menu</i>
+                </a>
+                <ul>
+                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
+                </ul>
+            </div>
         </div>
+    </div>
 
             <!-- 초대코드 모달 -->
         <div id="modal_code" class="modal">
