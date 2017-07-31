@@ -64,7 +64,7 @@ $(document).ready(function () {
     }   
 
     //방장이 아닌 경우
-    if (!isAdmin(myID)) {
+    if (!UserInfo.isAdmin(myID)) {
         $("#menu_next").attr("disabled", "on");
         $("#upload_json").attr("disabled", "on");
     }
