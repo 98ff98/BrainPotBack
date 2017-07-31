@@ -331,104 +331,36 @@ var MindMap = {
             }
         },
         createNode: (parent) => {
-            var text = new f.IText("idea", {
-                fontSize: 18
-            });
+            var json = {
+                event : "node_add",
+                team : teamID,
+                node_object : {
+                    owner : myID,
+                    text : "idea",
+                    dir : parent.dir,
+                    parent : parent.key
+                }
+            };
 
-            var rect = new f.Rect({
-                width: text.width,
-                height: 4,
-                top: text.top + 20
-            });
-
-            if (parent.category === "root")
-                rect.fill = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
+            if (parent.key === 0)
+                json.fill = "#" + Math.round(Math.random() * 0xFFFFFF).toString(16);
             else
-                rect.fill = parent._objects[0].fill;
+                json.fill = parent._objects[0].fill;
 
-            var node = new f.Group([rect, text], {
-                top: parent.top,
-                left: parent.left + parent.width + 50,
-                key: MindMap.keyCount,
-                parent: parent.key,
-                category: "node",
-                dir: parent.dir
-            });
-
-            if (node.dir === "right") {
-                node.leftLine = undefined;
-                node.rightLine = [];
-            } else if (node.dir === "left") {
-                node.leftLine = [];
-                node.rightLine = undefined;
-            }
-
-            node.setControlsVisibility(MindMap.control.selectionUnableOptions);
-            MindMap.keyCount++;
-
-            brainField.add(node);
-
-            var parentRightPoint = new RightPoint(parent);
-            var nodeLeftPoint = new LeftPoint(node);
-            var line = new f.Line([parentRightPoint.x, parentRightPoint.y, nodeLeftPoint.x, nodeLeftPoint.y], {
-                category: "line",
-                from: parent.key,
-                to: node.key,
-                fill: rect.fill,
-                stroke: rect.fill,
-                strokeWidth: 4,
-                selectable: false
-            });
-
-            if (parent.dir === "right") {
-                node.leftLine = line;
-                parent.rightLine.push(line);
-            } else if (parent.dir === "left") {
-                node.rightLine = line;
-                parent.leftLine.push(line);
-            }
-
-            brainField.add(line);
-
-            MindMap.methods.layoutSort(parent);
-            MindMap.methods.objectMoving(parent);
+            socket.send(json);
         },
         removeNode: (object) => {
             if (object.category === "node") {
-                var keys = [];
+                var json = {
+                    event:"node_remove",
+                    team:teamID,
+                    key:object.key
+                }
 
-                keys.push(object.key);
                 MindMap.methods.removeButtons();
 
-                MindMap.list.forEach(function (item, index) {
-                    if (item.key === keys[0]) {
-                        MindMap.list.splice(index, 1);
-                        return;
-                    }
-                });
-
-                for (var i = 0; i < keys.length; i++)
-                    for (var j = 0; j < MindMap.list.length;) {
-                        if (MindMap.list[j].category === "root") {
-                            j++;
-                            continue;
-                        }
-
-                        if (MindMap.list[j].category === "node") {
-                            if (MindMap.list[j].parent === keys[i]) {
-                                keys.push(MindMap.list[j].key);
-                                MindMap.list.splice(j, 1);
-                            } else
-                                j++;
-                        }
-
-                        if (MindMap.list[j].category === "line") {
-                            if (MindMap.list[j].to === keys[i]) {
-                                MindMap.list.splice(j, 1);
-                            } else
-                                j++;
-                        }
-                    }
+                socket.send(json);
+                //TODO
             }
         },
         layoutSort: (object) => {
@@ -640,6 +572,110 @@ var MindMap = {
             });
 
             return data;
+        }
+    },
+    event : {
+        node_add : (object) => {
+            var owner = object.owner;
+            var idea = object.text;
+            var dir = object.dir;
+            var parentKey = object.parent;
+            var brush = object.brush;
+
+            var text = new f.IText(idea, {
+                fontSize: 18
+            });
+
+            var rect = new f.Rect({
+                width: text.width,
+                height: 4,
+                top: text.top + 20,
+                fill:brush
+            });
+
+            var parent = MindMap.methods.getParent(parentKey);
+
+            var node = new f.Group([rect, text], {
+                top: parent.top,
+                left: parent.left + parent.width + 50,
+                key: MindMap.keyCount,
+                parent: parentKey,
+                category: "node",
+                dir: dir
+            });
+
+            if (node.dir === "right") {
+                node.leftLine = undefined;
+                node.rightLine = [];
+            } else if (node.dir === "left") {
+                node.leftLine = [];
+                node.rightLine = undefined;
+            }
+
+            node.setControlsVisibility(MindMap.control.selectionUnableOptions);
+            MindMap.keyCount++;
+
+            brainField.add(node);
+
+            var parentRightPoint = new RightPoint(parent);
+            var nodeLeftPoint = new LeftPoint(node);
+            var line = new f.Line([parentRightPoint.x, parentRightPoint.y, nodeLeftPoint.x, nodeLeftPoint.y], {
+                category: "line",
+                from: parent.key,
+                to: node.key,
+                fill: rect.fill,
+                stroke: rect.fill,
+                strokeWidth: 4,
+                selectable: false
+            });
+
+            if (parent.dir === "right") {
+                node.leftLine = line;
+                parent.rightLine.push(line);
+            } else if (parent.dir === "left") {
+                node.rightLine = line;
+                parent.leftLine.push(line);
+            }
+
+            brainField.add(line);
+
+            MindMap.methods.layoutSort(parent);
+            MindMap.methods.objectMoving(parent);
+        },
+        node_remove : (key) => {
+                var keys = [];
+
+                keys.push(key);
+
+                MindMap.list.forEach(function (item, index) {
+                    if (item.key === keys[0]) {
+                        MindMap.list.splice(index, 1);
+                        return;
+                    }
+                });
+
+                for (var i = 0; i < keys.length; i++)
+                    for (var j = 0; j < MindMap.list.length;) {
+                        if (MindMap.list[j].category === "root") {
+                            j++;
+                            continue;
+                        }
+
+                        if (MindMap.list[j].category === "node") {
+                            if (MindMap.list[j].parent === keys[i]) {
+                                keys.push(MindMap.list[j].key);
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+
+                        if (MindMap.list[j].category === "line") {
+                            if (MindMap.list[j].to === keys[i]) {
+                                MindMap.list.splice(j, 1);
+                            } else
+                                j++;
+                        }
+                    }
         }
     }
 };

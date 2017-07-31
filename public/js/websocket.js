@@ -33,6 +33,7 @@ var socket = {
 				case "draw" :
 					break;
 				case "node_add" :
+					MindMap.event.node_add(json.node_object);
 					break;
 				case "node_update_content" :
 					break;
@@ -40,7 +41,8 @@ var socket = {
 					break;
 				case "node_add_comment" :
 					break;
-				case "remove" :
+				case "node_remove" :
+					MindMap.event.node_remove(json.key);
 					break;
 			}
 		}
