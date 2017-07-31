@@ -4,7 +4,7 @@ var screen = window.screen;
 
 $(document).ready(function () {
     //FHD인 경우
-    if (screen.width === 1920) {
+    if (screen.width >= 1820 && screen.width <= 2020) {
         //메인 슬라이더 사이즈
         $('.slider').height(980);
         $('.slides').height(950);
@@ -25,7 +25,7 @@ $(document).ready(function () {
         $("#chat_send").addClass("btn-large");
     }
     //HD인 경우
-    else if (screen.width === 1366) {
+    else if (screen.width >= 1266 && screen.width <= 1466) {
         //메인 슬라이더 사이즈
         $('.slider').height(670);
         $('.slides').height(640);
