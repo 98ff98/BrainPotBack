@@ -61,12 +61,7 @@ $(document).ready(function () {
 
     function exit () {
         UserInfo.left(myID);
-    }
-
-    //웹 페이지를 탈출할 때 발동
-    $(window).unload(function() {
-        exit();
-    });
+    }   
 
     //방장이 아닌 경우
     if (!isAdmin(myID)) {
