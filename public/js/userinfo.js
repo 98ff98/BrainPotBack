@@ -7,6 +7,7 @@ var UserInfo = {
             nickname: json.nickname
         };
 
+        toast(user.nickname + "님이 입장하였습니다.");
         UserInfo.list.push(user);
     },
     //유저 데이터 입장 요청
@@ -64,8 +65,11 @@ $("#user_list").click(function () {
             + UserInfo.list[i].nickname
             + '</a></li>');
     }
+
+    console.log(UserInfo.list);
 });
 
 $(".user_list_item").click(function () {
-    $("#modal_kick").modal('open');
+    if (isAdmin(myID))
+        $("#modal_kick").modal('open');
 });

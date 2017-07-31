@@ -44,7 +44,13 @@
             bottom: 10px;
             width: 400px;
         }
-        
+        #menu2 {
+            display: none;
+            z-index: 3;
+            position: absolute;
+            bottom: 40px;
+            right: 100px;
+        }
         #menu_comment_btn {
             position: absolute;
             right: 70px;
@@ -391,6 +397,22 @@
         </div>
     </div>
 
+    <!-- 그룹 추가 모달 -->
+    <div id="modal_group" class="modal">
+        <div class="modal-content">
+            <h4 class="font-noto-medium">그룹 추가</h4>
+            <div class="divider"></div>
+            <div class="input-field col s10">
+                <input id="brain_groupNameField" type="text" class="validate font-noto-regular">
+                <label for="brain_groupNameField" class="font-noto-regular">새로 추가할 그룹명을 입력하세요.</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a onclick="addGroup()" class="modal-action modal-close waves-effect waves-green btn-flat">추가</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+        </div>
+    </div>
+
     <!-- library scripts -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.10/go-debug.js"></script>
@@ -426,34 +448,26 @@
             }
         }
 
-        init(level);
+        $(document).ready(function() {
+            //<summary>브레인스토밍 작업 초기화</summary>
+            init(level);
+            $(".canvas-container").css("position", "absolute");
+        });
 
-        function init(level) {
+         function init(level) {
             switch (level) {
                 case 1:
-                    MindMap.init("brain_field_1");
-                    Drawing.init();
+                    MindMap.methods.init("brain_field_1");
                     break;
                 case 2:
-                    var nodeData = brainField.model.toJson();
-                    nodeData = JSON.parse(nodeData);
+                    var data = MindMap.methods.nextLevel();
 
                     $("ul.tabs").tabs("select_tab", "brain_field_2");
-                    Grouping.init("brain_field_2", function() {
-                        Grouping.methods.mindMapToGrouping(nodeData);
-                    });
-                    Drawing.init();
+                    Grouping.methods.init("brain_field_2", data);
                     break;
                 case 3:
-                    var nodeData = brainField.model.toJson();
-                    nodeData = JSON.parse(nodeData);
-
                     $("ul.tabs").tabs("select_tab", "brain_field_3");
                     $("#menu_comment").css("display", "inline");
-                    Meaning.init("brain_field_3", function() {
-                        Meaning.methods.groupingToMeaning(nodeData);
-                    });
-                    Drawing.init();
                     break;
                 case 4:
                     $("ul.tabs").tabs("select_tab", "brain_field_4");

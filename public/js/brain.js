@@ -67,4 +67,10 @@ $(document).ready(function () {
     $(window).unload(function() {
         exit();
     });
+
+    //방장이 아닌 경우
+    if (!isAdmin(myID)) {
+        $("#menu_next").attr("disabled", "on");
+        $("#upload_json").attr("disabled", "on");
+    }
 });
