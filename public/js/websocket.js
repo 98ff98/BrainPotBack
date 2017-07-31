@@ -19,6 +19,8 @@ var socket = {
 			switch (json.event) {
 				case "join_user" :
 					UserInfo.add(json);
+				    //TODO
+				    blind();
 					break;
 				case "left_user" :
 					UserInfo.remove(json);
