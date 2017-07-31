@@ -54,14 +54,6 @@ $(document).ready(function () {
         $("#upload_json").val(undefined);
     });
 
-    //<summary> function define </summary>
-    function toast(text) {
-        Materialize.toast(text, 4000);
-    }
-
-    function exit () {
-        UserInfo.left(myID);
-    }   
 
     //방장이 아닌 경우
     if (!UserInfo.isAdmin(myID)) {
@@ -69,3 +61,11 @@ $(document).ready(function () {
         $("#upload_json").attr("disabled", "on");
     }
 });
+    //<summary> function define </summary>
+    function toast(text) {
+        Materialize.toast(text, 4000);
+    }
+
+    function exit () {
+        UserInfo.left(myID);
+    }  
