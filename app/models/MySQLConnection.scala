@@ -15,7 +15,7 @@ import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
 
-class MySQLConnection(dbName: String) extends TeamConnection with UserConnection{
+class MySQLConnection(dbName: String) extends TeamConnection with UserConnection with NodeConnection{
   //랜덤 초대 코드 생성에 사용항 문자 리스트
   private val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
 
@@ -169,14 +169,45 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
     }
   }
 
+
   //##### NODE 테이블 영역 #####
+
+  override def addNode(nodeID: Int, teamID: Int, userID: Int, content: String): Future[Unit] = {
+    Future{
+      DB.withConnection{ implicit conn =>
+        SQL("`ADD_NODE`({ID}, {TEAM}, {USER}, {CONTENT})").on('ID -> nodeID, 'TEAM -> teamID, 'USER -> userID, 'CONTENT -> content).execute()
+      }
+    }
+  }
+
+  override def delNode(nodeID: Int, userID: Int): Future[Unit] = {
+    Future{
+      DB.withConnection{ implicit conn =>
+        SQL("`DROP_NODE`({ID}, {USER})").on('ID -> nodeID, 'USER -> userID).execute()
+      }
+    }
+  }
+
+  override def loadNodes(teamID: Int): Future[List[Node]] = {
+    Future{
+      DB.withConnection{ implicit conn =>
+        SQL("`VIEW_NODES`({TEAM})").on('TEAM -> teamID).as(nodeParser *)
+      }
+    }
+  }
+
+  override def modiNode(nodeID: Int, userID: Int): Future[Unit] = {
+    Future{
+      //TODO
+    }
+  }
 
 
 
   //##### PAINT 테이블 영역 #####
 
 
-  //##### PowParser 영역 #####
+  //##### RowParser 영역 #####
 
   //팀 생성 시간을 제외한 팀 데이터를 파싱하는 파서
   private val teamParser: RowParser[TeamData] = {
@@ -197,6 +228,17 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
       get[String]("USER.NICKNAME")  map{
       case id ~ teamID ~ nickname =>
         UserData(id, teamID, nickname)
+    }
+  }
+
+  //노드 데이터를 파싱하는 파서
+  private val nodeParser : RowParser[Node] = {
+    get[Int]("NODE.ID") ~
+    get[Int]("NODE.OWNERTEAM") ~
+    get[Int]("NODE.OWNERUSER") ~
+    get[String]("NODE.CONTENT") map{
+      case id ~ team ~ user ~ content =>
+        Node(id, team, user, content)
     }
   }
 

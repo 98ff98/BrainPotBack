@@ -28,7 +28,7 @@ class MsgActor(out: ActorRef) extends Actor {
   //MySQL default DB에 접근하기 위한 인스턴스
   val mySQLConnection = new MySQLConnection("default")
 
-  //클라이언트와의 웹소켓 연결에서 새로운 메세지가 도착하면 호출된다.
+  //클라이언트와의 웹소켓 연결에서 새로운 메세지 수신시 호출된다.
   def receive = {
     case msg: String => {
       //받은 메세지를 JSON 포맷으로 파싱한다.
@@ -93,7 +93,7 @@ class MsgActor(out: ActorRef) extends Actor {
 
         //유저가 오브젝트를 삭제 했다는 것을 알리는 메세지를 처리한다.
         //DB 접근 있음
-        case "remove" => {
+        case "node_remove" => {
           TeamManager.broadcast( (json \ "team").as[Int], msg)
           //TODO
         }
@@ -106,7 +106,6 @@ class MsgActor(out: ActorRef) extends Actor {
       }
     }
   }
-
 }
 
 //MsgActor의 props를 담당하는 컴패니언 오브젝트

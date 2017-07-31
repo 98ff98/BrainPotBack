@@ -2,7 +2,6 @@ package models
 
 import scala.concurrent.Future
 
-
 trait TeamConnection{
   //생성된지 일정 이상 시간이 지난 팀들을 삭제한다.
   def clearOldTeams() : Future[Unit]

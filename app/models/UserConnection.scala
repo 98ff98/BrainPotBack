@@ -21,5 +21,4 @@ trait UserConnection {
 
   //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
   def getUserData(id: Int): Future[UserData]
-
 }
