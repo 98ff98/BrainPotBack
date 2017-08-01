@@ -164,30 +164,12 @@ var MindMap = {
 
                 //<code>direction sort</code>
                 if (object.category === "node") {
-                    var parentKey = object.parent;
-                    var parent = MindMap.methods.getParent(parentKey);
+                    var json = {
+                        x:object.top,
+                        y:object.left
+                    };
 
-                    if (parent.category === "root") {
-                        var objectLoc = new Location(object);
-                        var parentLoc = new Location(parent);
-                        var dir = object.dir;
-                        var dirChange;
-
-                        if (objectLoc.x < parentLoc.x) {
-                            dirChange = (dir === "left") ? false : true;
-                            if (dirChange)
-                                MindMap.methods.dirChange(object, "left");
-                        } else if (objectLoc.x > parentLoc.x) {
-                            dirChange = (dir === "right") ? false : true;
-                            if (dirChange)
-                                MindMap.methods.dirChange(object, "right");
-                        }
-
-                        if (dirChange) {
-                            MindMap.methods.layoutSort(object);
-                            MindMap.methods.objectMoving(object);
-                        }
-                    }
+                    socket.send(json);
                 }
                 //<code>direction sort</code>
             });
@@ -492,7 +474,7 @@ var MindMap = {
                 }
             }
 
-            brainField.renderAll();
+            render();
         },
         dirChange: (object, dir) => {
             var key = object.key;
@@ -641,6 +623,7 @@ var MindMap = {
 
             MindMap.methods.layoutSort(parent);
             MindMap.methods.objectMoving(parent);
+            render();
         },
         node_remove : (key) => {
                 var keys = [];
@@ -676,6 +659,48 @@ var MindMap = {
                                 j++;
                         }
                     }
+
+                render();
+        },
+        node_update_content : (key, text) => {
+            //TODO
+            render();
+        },
+        node_update_loc : (key, x, y) => {
+            //TODO
+            var object = MindMap.methods.getObject(key);
+            var parentKey = object.parent;
+            var parent = MindMap.methods.getParent(parentKey);
+
+            object.set({
+                top : x,
+                left : y
+            });
+
+            if (parent.category === "root") {
+                var objectLoc = new Location(object);
+                var parentLoc = new Location(parent);
+                var dir = object.dir;
+                var dirChange;
+
+                if (objectLoc.x < parentLoc.x) {
+                    dirChange = (dir === "left") ? false : true;
+                    if (dirChange)
+                        MindMap.methods.dirChange(object, "left");
+                } else if (objectLoc.x > parentLoc.x) {
+                    dirChange = (dir === "right") ? false : true;
+                    if (dirChange)
+                        MindMap.methods.dirChange(object, "right");
+                }
+
+                if (dirChange) {
+                    MindMap.methods.layoutSort(object);
+                    MindMap.methods.objectMoving(object);
+                }
+            }
+
+            MindMap.methods.objectMoving(object);
+            render();
         }
     }
 };
