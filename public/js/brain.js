@@ -62,14 +62,20 @@ $(document).ready(function () {
     }
 });
     //<summary> function define </summary>
-    function toast(text) {
-        Materialize.toast(text, 4000);
-    }
+function toast(text) {
+    Materialize.toast(text, 4000);
+}
 
-    function exit () {
-        UserInfo.left(myID);
-    }
+function exit () {
+    UserInfo.left(myID);
+}
 
-    function blind () {
-        $("#blind").css("display", "none");
-    }
+function blind () {
+    $("#blind").css("display", "none");
+}
+
+function render () {
+    brainField.setActiveGroup(new f.Group(brainField.getObjects()));
+    brainField.deactivateAll();
+    brainField.renderAll();
+}

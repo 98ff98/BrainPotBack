@@ -36,8 +36,10 @@ var socket = {
 					MindMap.event.node_add(json.node_object);
 					break;
 				case "node_update_content" :
+					MindMap.event.node_update_content(json.key, json.text);
 					break;
 				case "node_update_loc" :
+					MindMap.event.node_update_loc(json.key, json.x, json.y);
 					break;
 				case "node_add_comment" :
 					break;
