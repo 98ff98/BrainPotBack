@@ -30,8 +30,14 @@ var socket = {
 					break;
 				case "init" : 
 					break;
+				//draw
 				case "draw" :
+					Drawing.event.draw(json.draw_object);
 					break;
+				case "draw_remove" :
+					Drawing.event.draw_remove(json.key); 
+					break;
+				//mind map
 				case "node_add" :
 					MindMap.event.node_add(json.node_object);
 					break;
@@ -46,6 +52,7 @@ var socket = {
 				case "node_remove" :
 					MindMap.event.node_remove(json.key);
 					break;
+				//grouping
 			}
 		}
 	},

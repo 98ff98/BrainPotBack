@@ -245,6 +245,19 @@ var MindMap = {
                 }
                 //<code>add / remove button move </code>
             });
+            //object moving (data send)
+            brainField.on("object:modified", function (event) {
+                var object = event.target;
+                var json = {
+                    event: "node_update_loc",
+                    team: teamID,
+                    key: object.key,
+                    x: object.left,
+                    y: object.top
+                };
+
+                socket.send(json);
+            });
             //text changed
             brainField.on("text:changed", function (event) {
                 var object = event.target;
@@ -283,7 +296,6 @@ var MindMap = {
                 node.skewY = 0;
                 node.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
-                console.log(node);
                 brainField.add(node);
 
                 MindMap.control.ungroupedNode = {
@@ -398,7 +410,7 @@ var MindMap = {
                         childs.forEach(function (item, index) {
                             item.set({
                                 top: object.top + ((index + 1 - half) * 40) + 20,
-                                left: object.left - object.width - 50
+                                left: object.left - item.width - 50
                             });
                         });
                     } else {
@@ -406,7 +418,7 @@ var MindMap = {
                         childs.forEach(function (item, index) {
                             item.set({
                                 top: object.top + ((index + 1 - half) * 40) - 20,
-                                left: object.left - object.width - 50
+                                left: object.left - item.width - 50
                             });
                         });
                     }
@@ -700,7 +712,7 @@ var MindMap = {
             }
 
             MindMap.methods.objectMoving(object);
-            render();
+            brainField.renderAll();
         }
     }
 };
