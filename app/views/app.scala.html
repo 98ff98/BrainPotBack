@@ -462,19 +462,23 @@
             switch (level) {
                 case 1:
                     MindMap.methods.init("brain_field_1");
+                    Drawing.methods.init();
                     break;
                 case 2:
                     var data = MindMap.methods.nextLevel();
 
                     $("ul.tabs").tabs("select_tab", "brain_field_2");
                     Grouping.methods.init("brain_field_2", data);
+                    Drawing.methods.init();
                     break;
                 case 3:
                     $("ul.tabs").tabs("select_tab", "brain_field_3");
                     $("#menu_comment").css("display", "inline");
+                    Drawing.methods.init();
                     break;
                 case 4:
                     $("ul.tabs").tabs("select_tab", "brain_field_4");
+                    Drawing.methods.init();
                     break;
                 default:
                     break;
