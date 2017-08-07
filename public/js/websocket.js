@@ -76,7 +76,12 @@ var socket = {
 					Idea.event.idea_remove(json.key);
 					break;
 				//grouping
-
+				case "group_create_block" :
+					Grouping.event.group_create_block(json.block_object);
+					break;
+				case "group_create" :
+					Grouping.event.group_create("TODO");
+					break;
 				//meaning
 				case "node_add_comment" :
 					break;

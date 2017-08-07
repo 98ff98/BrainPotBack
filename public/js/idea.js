@@ -134,8 +134,10 @@ var Idea = {
             var data = [];
 
             Idea.list.forEach(function (item) {
-                if (item.category === "idea")
+                if (item.category === "idea") {
+                    item.category = "node";
                     data.push(item);
+                }
             });
 
             return data;
