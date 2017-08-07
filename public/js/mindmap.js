@@ -308,7 +308,7 @@ var MindMap = {
                     team : teamID,
                     owner : owner,
                     key : key,
-                    text : text
+                    text : text.text
                 };
 
                 socket.send(json);
