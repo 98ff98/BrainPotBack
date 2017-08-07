@@ -721,7 +721,8 @@ var MindMap = {
             });
             rect.set({
                 left : object.left,
-                top : object.top + 20
+                top : object.top + 20,
+                width : object.width
             });
 
             var node = new f.Group([rect, text], {
@@ -741,6 +742,7 @@ var MindMap = {
             node.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
             brainField.add(node);
+            MindMap.methods.objectMoving(node);
         },
         node_update_loc : (key, x, y) => {
             //TODO
