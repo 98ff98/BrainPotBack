@@ -62,7 +62,7 @@ var Drawing = {
             if (!object)
                 return;
 
-            if (object.owner === myID || isAdmin(myID)) {
+            if (object.owner === myID || UserInfo.isAdmin(myID)) {
                 var json = {
                     team : teamID,
                     event: "draw_remove",
