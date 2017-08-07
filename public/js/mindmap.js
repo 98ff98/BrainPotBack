@@ -660,7 +660,7 @@ var MindMap = {
                         }
                     }
 
-                render();
+                brainField.renderAll();
         },
         node_update_content : (key, text) => {
             //TODO
