@@ -722,7 +722,7 @@ var MindMap = {
             rect.set({
                 left : object.left,
                 top : object.top + 20,
-                width : object.width
+                width : text.width
             });
 
             var node = new f.Group([rect, text], {
