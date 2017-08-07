@@ -29,7 +29,7 @@ var Idea = {
                         key : object.key,
                         x : object.left,
                         y : object.top
-                    },
+                    };
 
                     socket.send (json);
                 }
@@ -117,7 +117,8 @@ var Idea = {
                 left : left,
                 top : top,
                 owner : owner,
-                key : key
+                key : key,
+                fontSize : 20
             });
 
             brainField.add(idea);
