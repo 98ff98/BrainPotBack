@@ -32,7 +32,7 @@ var socket = {
 					chat.write(json);
 					break;
 				case "init" :
-					init (json);
+					init (json.level);
 					break;
 				//draw
 				case "draw" :
