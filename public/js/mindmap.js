@@ -673,8 +673,8 @@ var MindMap = {
             var parent = MindMap.methods.getParent(parentKey);
 
             object.set({
-                top : x,
-                left : y
+                top : y,
+                left : x
             });
 
             if (parent.category === "root") {
