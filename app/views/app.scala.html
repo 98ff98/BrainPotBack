@@ -38,6 +38,7 @@
             cursor: pointer;
         }
 
+        #menu_idea,
         #menu_comment {
             display: none;
             z-index: 3;
@@ -340,6 +341,25 @@
                 </ul>
             </div>
             <!-- 의미부여 -->
+            <div id="menu_idea" class="row">
+                <div class="input-field col s9">
+                    <input disabled id="idea" type="text" class="validate font-noto-regular">
+                    <label id="idea_label" for="idea" class="font-noto-regular">새로운 아이디어를 입력하세요.</label>
+                </div>
+                <div class="input-field col s3">
+                    <a disabled id="idea_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
+                </div>
+            </div>
+            <!-- 그룹 추가 -->
+            <div id="menu2" class="fixed-action-btn vertical click-to-toggle">
+                <a class="btn-floating btn-large blue waves-effect waves-light">
+                    <i class="material-icons">menu</i>
+                </a>
+                <ul>
+                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
+                </ul>
+            </div>
+            <!-- 의미부여 -->
             <div id="menu_comment" class="row">
                 <div class="input-field col s9">
                     <input disabled id="comment" type="text" class="validate font-noto-regular">
@@ -348,14 +368,6 @@
                 <div class="input-field col s3">
                     <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
                 </div>
-            </div>
-            <div id="menu2" class="fixed-action-btn vertical click-to-toggle">
-                <a class="btn-floating btn-large blue waves-effect waves-light">
-                    <i class="material-icons">menu</i>
-                </a>
-                <ul>
-                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
-                </ul>
             </div>
         </div>
     </div>
