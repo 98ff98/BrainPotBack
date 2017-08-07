@@ -93,9 +93,10 @@ var Grouping = {
                 block_object : {
                     key : object.key,
                     category : object.category,
+                    parent : object.parent,
+                    text : object.text,
                     x : randomX,
-                    y : randomY,
-                    parent : object.parent
+                    y : randomY
                 }
             };
             
