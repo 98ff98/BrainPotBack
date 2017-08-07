@@ -109,7 +109,7 @@ var Idea = {
         getObject: (objectKey) => {
             var object;
 
-            for (var i = 1; i < Idea.list.length; i++) {
+            for (var i = 0; i < Idea.list.length; i++) {
                 if (Idea.list[i].category !== "draw")
                     if (Idea.list[i].key === objectKey) {
                         object = Idea.list[i];
