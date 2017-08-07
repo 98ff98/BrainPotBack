@@ -134,11 +134,11 @@
             <div class="nav-content">
                 <div class="container">
                     <ul class="tabs tabs-transparent tabs-fixed-width">
-                        <li class="tab font-noto-light"><a href="#brain_field_1">1단계 : 아이디어 발상</a></li>
-                        <li class="tab font-noto-light"><a href="#brain_field_2">2단계 : 아이디어 그룹화</a></li>
-                        <li class="tab font-noto-light"><a href="#brain_field_3">3단계 : 그룹 의미부여, 병합</a></li>
-                        <li class="tab font-noto-light"><a href="#brain_field_4">4단계 : 최종결정</a></li>
-                        <li class="tab font-noto-light"><a href="#brain_field_5">+ 마인드맵</a></li>
+                        <li id="tab_1" class="tab font-noto-light"><a href="#brain_field_1">1단계 : 아이디어 발상</a></li>
+                        <li id="tab_2" class="tab font-noto-light disabled"><a href="#brain_field_2">2단계 : 아이디어 그룹화</a></li>
+                        <li id="tab_3" class="tab font-noto-light disabled"><a href="#brain_field_3">3단계 : 그룹 의미부여, 병합</a></li>
+                        <li id="tab_4" class="tab font-noto-light disabled"><a href="#brain_field_4">4단계 : 최종결정</a></li>
+                        <li id="tab_5" class="tab font-noto-light"><a href="#brain_field_5">+ 마인드맵</a></li>
                     </ul>
                 </div>
             </div>
@@ -452,6 +452,8 @@
         <script>
         //<summary>브레인스토밍 작업 초기화</summary>
         var level = 1; //현재 진행 레벨
+        var brainField;
+        var mindField;
 
          $(document).ready(function() {
             //<summary>브레인스토밍 작업 초기화</summary>
@@ -469,17 +471,23 @@
                 case 2:
                     var data = MindMap.methods.nextLevel();
 
+                    $("#tab_2").removeClass("disabled");
                     $("ul.tabs").tabs("select_tab", "brain_field_2");
+                    $("#tab_1").addClass("disabled");
                     Grouping.methods.init("brain_field_2", data);
                     Drawing.methods.init();
                     break;
                 case 3:
+                    $("#tab_3").removeClass("disabled");
                     $("ul.tabs").tabs("select_tab", "brain_field_3");
+                    $("#tab_2").addClass("disabled");
                     $("#menu_comment").css("display", "inline");
                     Drawing.methods.init();
                     break;
                 case 4:
+                    $("#tab_4").removeClass("disabled");
                     $("ul.tabs").tabs("select_tab", "brain_field_4");
+                    $("#tab_3").addClass("disabled");
                     Drawing.methods.init();
                     break;
                 default:

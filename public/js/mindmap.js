@@ -1,5 +1,4 @@
 var f = fabric;
-var brainField;
 
 var MindMap = {
     keyCount: 0,
