@@ -86,7 +86,7 @@ var Grouping = {
         },
         createBlock: (object) => {
             var randomX = Math.floor(Math.random() * Grouping.width - 200) + 1;
-            var randomY = Math.floor(Math.random() * 80) + 720;
+            var randomY = Math.floor(Math.random() * Grouping.height - 100) + 1;
 
             var block = new f.Text(object.text, {
                 key: object.key,
