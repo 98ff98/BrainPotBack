@@ -179,6 +179,7 @@ var MindMap = {
                         var rect = items[0];
                         var text = items[1];
                         var dir = object.dir;
+                        var owner = object.owner;
                         var leftLine = object.leftLine;
                         var rightLine = object.rightLine;
 
@@ -193,6 +194,7 @@ var MindMap = {
                         MindMap.control.ungroupedNode.text = text;
                         MindMap.control.ungroupedNode.key = key;
                         MindMap.control.ungroupedNode.parent = parent;
+                        MindMap.control.ungroupedNode.owner = owner;
                         MindMap.control.ungroupedNode.dir = dir;
                         MindMap.control.ungroupedNode.leftLine = leftLine;
                         MindMap.control.ungroupedNode.rightLine = rightLine;
@@ -265,6 +267,7 @@ var MindMap = {
                 var key = MindMap.control.ungroupedNode.key;
                 var parent = MindMap.control.ungroupedNode.parent;
                 var dir = MindMap.control.ungroupedNode.dir;
+                var owner = MindMap.control.ungroupedNode.owner;
                 var leftLine = MindMap.control.ungroupedNode.leftLine;
                 var rightLine = MindMap.control.ungroupedNode.rightLine;
 
@@ -292,6 +295,7 @@ var MindMap = {
                     rect: undefined,
                     text: undefined,
                     key: undefined,
+                    owner: undefined,
                     dir: undefined,
                     parent: undefined,
                     leftLine: undefined,
@@ -301,6 +305,7 @@ var MindMap = {
                 var json = {
                     event : "node_update_content",
                     team : teamID,
+                    owner : 
                     key : key,
                     text : text
                 };
