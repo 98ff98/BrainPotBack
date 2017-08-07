@@ -87,21 +87,19 @@ var Grouping = {
         createBlock: (object) => {
             var randomX = Math.floor(Math.random() * Grouping.width - 200) + 1;
             var randomY = Math.floor(Math.random() * 50) + 720;
-
-            var block = new f.Text(object.text, {
-                key: object.key,
-                parent: object.parent,
-                category: object.category,
-                isGroup: object.isGroup,
-                backgroundColor: "#ACE600",
-                fontSize: 20,
-                fill: "#404040",
-                top: randomY,
-                left: randomX
-            });
-            block.setControlsVisibility(Grouping.control.selectionUnableOptions);
-
-            brainField.add(block);
+            var json = {
+                event : "group_create_block",
+                team : teamID,
+                block_object : {
+                    key : object.key,
+                    category : object.category,
+                    x : randomX,
+                    y : randomY,
+                    parent : object.parent
+                }
+            };
+            
+            socket.send (json);
         },
         createGroup: (object) => {
             var text;
@@ -340,6 +338,27 @@ var Grouping = {
             }
 
             return (childs.length > 0) ? childs : undefined;
+        }
+    },
+    event : {
+        group_create_block : (block_object) => {
+            var block = new f.Text(block_object.text, {
+                key: block_object.key,
+                parent: block_object.parent,
+                category: block_object.category,
+                isGroup: false,
+                backgroundColor: "#ACE600",
+                fontSize: 20,
+                fill: "#404040",
+                top: block_object.y,
+                left: block_object.x
+            });
+            block.setControlsVisibility(Grouping.control.selectionUnableOptions);
+
+            brainField.add(block);
+        },
+        group_create : () => {
+
         }
     }
 };
