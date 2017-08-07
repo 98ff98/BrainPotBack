@@ -231,15 +231,18 @@ var MindMap = {
             //object moving (data send)
             brainField.on("object:modified", function (event) {
                 var object = event.target;
-                var json = {
-                    event: "node_update_loc",
-                    team: teamID,
-                    key: object.key,
-                    x: object.left,
-                    y: object.top
-                };
 
-                socket.send(json);
+                if (object.category === "node") {
+                    var json = {
+                        event: "node_update_loc",
+                        team: teamID,
+                        key: object.key,
+                        x: object.left,
+                        y: object.top
+                    };
+
+                    socket.send(json);
+                }
             });
             //text changed
             brainField.on("text:changed", function (event) {

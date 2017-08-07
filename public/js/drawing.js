@@ -102,8 +102,8 @@ var Drawing = {
             brainField.add(path);
             brainField.renderAll();
         },
-        draw_remove: (draw_object) => {
-            var object = Drawing.methods.getObject(draw_remove.key);
+        draw_remove: (key) => {
+            var object = Drawing.methods.getObject(key);
 
             brainField.remove(object);
             background.renderAll();
