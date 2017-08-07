@@ -647,6 +647,8 @@ var MindMap = {
                     }
                 });
 
+                MindMap.methods.removeButtons();
+
                 for (var i = 0; i < keys.length; i++)
                     for (var j = 0; j < MindMap.list.length;) {
                         if (MindMap.list[j].category === "root") {
