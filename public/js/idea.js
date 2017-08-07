@@ -57,6 +57,9 @@ var Idea = {
             });
         },
         ideaAdd: (text) => {
+            var x = Math.floor(Math.random() * Idea.width - 100) + 1;
+            var y = Math.floor(Math.random() * Idea.height - 50) + 1;
+
             var json = {
                 event: "idea_add",
                 team: "TODO_teamID",
@@ -64,8 +67,8 @@ var Idea = {
                     text: text,
                     key: Idea.keyCount,
                     owner: "TODO_myID",
-                    x: "TODO_x",
-                    y: "TODO_y"
+                    x: x,
+                    y: y
                 }
             };
 
