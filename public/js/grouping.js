@@ -30,43 +30,47 @@ var Grouping = {
             Grouping.list = brainField._objects;
             $("#menu2").css("display", "inline");
 
-            //<code>convert data mindmap to grouping</code>
-            if (data) {
-                data.forEach(function (item) {
-                    if ((getChild(data, item.key) && item.parent === 0) || item.category === "root") {
-                        item.isGroup = true;
-                        Grouping.methods.createGroup(item);
-                    } else {
-                        item.isGroup = false;
-                        Grouping.methods.createBlock(item);
-                    }
-                });
+            // //<code>convert data mindmap to grouping</code>
+            // if (data) {
+            //     data.forEach(function (item) {
+            //         if ((getChild(data, item.key) && item.parent === 0) || item.category === "root") {
+            //             item.isGroup = true;
+            //             Grouping.methods.createGroup(item);
+            //         } else {
+            //             item.isGroup = false;
+            //             Grouping.methods.createBlock(item);
+            //         }
+            //     });
 
-                function getChild(data, objectKey) {
-                    var childs = [];
+            //     function getChild(data, objectKey) {
+            //         var childs = [];
 
-                    for (var i = 0; i < data.length; i++)
-                        if (data[i].parent !== undefined)
-                            if (data[i].category !== "draw")
-                                if (data[i].parent === objectKey)
-                                    childs.push(data[i]);
+            //         for (var i = 0; i < data.length; i++)
+            //             if (data[i].parent !== undefined)
+            //                 if (data[i].category !== "draw")
+            //                     if (data[i].parent === objectKey)
+            //                         childs.push(data[i]);
 
-                    return (childs.length > 0) ? childs : undefined;
-                }
+            //         return (childs.length > 0) ? childs : undefined;
+            //     }
 
-                //sort node
-                Grouping.methods.createGroupingMode();
-            }
-            else {
-                Grouping.methods.createGroup({
-                    text : teamTopic,
-                    category : "root",
-                    key : 0,
-                    isGroup : true,
-                    parent : undefined
-                });
-            }
-            //<code>load data mindmap to grouping</code>
+            //     //sort node
+            //     Grouping.methods.createGroupingMode();
+            // }
+            // //<code>load data mindmap to grouping</code>
+            //<code>load data idea to grouping</code>
+            Grouping.methods.createGroup({
+                text : teamTopic,
+                category : "root",
+                key : 0,
+                isGroup : true,
+                parent : undefined
+            });
+
+            data.forEach (function (item) {
+                Grouping.methods.createBlock(item);
+            });
+            //<code>load data idea to grouping</code>
 
             //<code>object drag and drop</code>
             brainField.on('mouse:up', function (event) {
