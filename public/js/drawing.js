@@ -1,7 +1,7 @@
 var Drawing = {
     keyCount : 0,
     control: {
-        selectedDraw : undefind,
+        selectedDraw : undefined,
         selectionUnableOptions: {
             bl: false,
             br: false,
@@ -14,8 +14,11 @@ var Drawing = {
             tr: false
         }
     },
+    list : undefined,
     methods: {
         init: () => {
+            Drawing.list = brainField._objects;
+
             brainField.freeDrawingBrush.width = 2;
             brainField.freeDrawingBrush.onMouseUp = function () {
                 var context = this.canvas.contextTop;
@@ -39,7 +42,12 @@ var Drawing = {
             }
 
             brainField.on('mouse:down', function (event) {
-                
+                var object = event.target;
+
+                if (!object || object.category !== "draw")
+                    Drawing.control.selectedDraw = undefined;
+                else if (object.category === "draw")
+                    Drawing.control.selectedDraw = object;
             });
         },
         switch: () => {
@@ -47,6 +55,35 @@ var Drawing = {
         },
         setColor: (hex) => {
             brainField.freeDrawingBrush.color = hex;
+        },
+        remove: () => {
+            var object = Drawing.control.selectedDraw;
+
+            if (!object)
+                return;
+
+            if (object.owner === myID || isAdmin(myID)) {
+                var json = {
+                    event: "draw_remove",
+                    key : object.key
+                }
+
+                socket.send(json);
+            }
+            else
+                toast ("내가 그린 그림이 아니면 지울 수 없습니다.");
+        },
+        getObject: (objectKey) => {
+            var object;
+
+            for (var i = 0; i < Drawing.list.length; i++) {
+                if (Drawing.list[i].key === objectKey) {
+                    object = Drawing.list[i];
+                    break;
+                }
+            }
+
+            return object;
         }
     },
     event: {
@@ -65,8 +102,11 @@ var Drawing = {
             brainField.add(path);
             brainField.renderAll();
         },
-        draw_remove: () => {
+        draw_remove: (draw_object) => {
+            var object = Drawing.methods.getObject(draw_remove.key);
 
+            brainField.remove(object);
+            background.renderAll();
         }
     }
 };
@@ -82,4 +122,9 @@ $("#palette>area").click(function () {
 
     $("#menu_draw").css("background", hex);
     Drawing.methods.setColor(hex);
+});
+
+$(document).keydown(function (event) {
+    if (event.key === "Delete" || event.key === "Backspace")
+        Drawing.methods.remove();
 });
