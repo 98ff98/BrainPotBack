@@ -644,6 +644,8 @@ var MindMap = {
                 keys.push(key);
 
                 MindMap.methods.removeButtons();
+                if (brainField.getActiveObject() === MindMap.methods.getObject(key))
+                    brainField.setActiveObject(MindMap.list[0]);
 
                 MindMap.list.forEach(function (item, index) {
                     if (item.key === keys[0]) {
@@ -661,9 +663,6 @@ var MindMap = {
 
                         if (MindMap.list[j].category === "node") {
                             if (MindMap.list[j].parent === keys[i]) {
-                                if (brainField.getActiveObject() === MindMap.list[j])
-                                    brainField.setActiveObject(MindMap.list[0]);
-                                
                                 keys.push(MindMap.list[j].key);
                                 MindMap.list.splice(j, 1);
                             } else
