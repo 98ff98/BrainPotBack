@@ -719,7 +719,7 @@ var MindMap = {
                 top : object.top,
                 text : changedText
             });
-            rect.set.({
+            rect.set({
                 left : object.left,
                 top : object.top + 20
             });
