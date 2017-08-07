@@ -40,6 +40,8 @@ var socket = {
 				case "draw_remove" :
 					Drawing.event.draw_remove(json.key); 
 					break;
+				case "draw_update_loc" :
+					Drawing.event.draw_update_loc(json.key, json.x, json.y);
 				//mind map
 				case "node_add" :
 					MindMap.event.node_add(json.node_object);

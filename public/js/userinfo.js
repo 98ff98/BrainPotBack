@@ -15,7 +15,7 @@ var UserInfo = {
             + '"'
             + user.id
             + '"'
-            +'><a href="#!">'
+            +'><a href="#modal_kick">'
             + user.nickname
             + '</a></li>');
     },
