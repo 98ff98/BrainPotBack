@@ -125,7 +125,7 @@ var Idea = {
             var text = idea_object.text;
             var left = idea_object.x;
             var top = idea_object.y;
-            var ket = idea_object.key;
+            var key = idea_object.key;
             var owner = idea_object.owner;
 
             var idea = new f.Text(text, {
