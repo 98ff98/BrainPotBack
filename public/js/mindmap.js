@@ -12,6 +12,7 @@ var MindMap = {
             rect: undefined,
             text: undefined,
             key: undefined,
+            owner :undefined,
             parent: undefined,
             dir: undefined,
             leftLine: undefined,
@@ -154,24 +155,6 @@ var MindMap = {
                     MindMap.methods.removeNode(MindMap.control.selectedNode);
                 }
                 //<code>remove button pressed</code>
-            });
-            //object moved
-            brainField.on("mouse:up", function (event) {
-                var object = event.target;
-
-                if (!object)
-                    return;
-
-                //<code>direction sort</code>
-                // if (object.category === "node") {
-                //     var json = {
-                //         x:object.top,
-                //         y:object.left
-                //     };
-
-                //     socket.send(json);
-                // }
-                //<code>direction sort</code>
             });
             //object double click -> text editing mode enter
             f.util.addListener(brainField.upperCanvasEl, 'dblclick', function (event) {
