@@ -68,7 +68,7 @@ var Grouping = {
             });
 
             data.forEach (function (item) {
-                Grouping.methods.createBlock();
+                Grouping.methods.createBlock(item);
             });
             //<code>load data idea to grouping</code>
 
