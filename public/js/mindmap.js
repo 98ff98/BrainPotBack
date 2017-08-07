@@ -304,9 +304,6 @@ var MindMap = {
             var removeButton = MindMap.control.removeButton;
 
             if (addButton) {
-                if (brainField.getActiveObject() === addButton)
-                    brainField.setActiveObject(MindMap.list[0]);
-
                 MindMap.list.forEach(function (item, index) {
                     if (item === addButton)
                         MindMap.list.splice(index, 1);
@@ -314,9 +311,6 @@ var MindMap = {
             }
 
             if (removeButton) {
-                if (brainField.getActiveObject() === addButton)
-                    brainField.setActiveObject(MindMap.list[0]);
-                
                 MindMap.list.forEach(function (item, index) {
                     if (item === removeButton)
                         MindMap.list.splice(index, 1);
@@ -649,14 +643,14 @@ var MindMap = {
 
                 keys.push(key);
 
+                MindMap.methods.removeButtons();
+
                 MindMap.list.forEach(function (item, index) {
                     if (item.key === keys[0]) {
                         MindMap.list.splice(index, 1);
                         return;
                     }
                 });
-
-                MindMap.methods.removeButtons();
 
                 for (var i = 0; i < keys.length; i++)
                     for (var j = 0; j < MindMap.list.length;) {
@@ -667,6 +661,9 @@ var MindMap = {
 
                         if (MindMap.list[j].category === "node") {
                             if (MindMap.list[j].parent === keys[i]) {
+                                if (brainField.getActiveObject() === MindMap.list[j])
+                                    brainField.setActiveObject(MindMap.list[0]);
+                                
                                 keys.push(MindMap.list[j].key);
                                 MindMap.list.splice(j, 1);
                             } else
