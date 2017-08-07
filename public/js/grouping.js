@@ -53,12 +53,18 @@ var Grouping = {
 
                     return (childs.length > 0) ? childs : undefined;
                 }
+
+                //sort node
+                Grouping.methods.createGroupingMode();
+            }
+            else {
+                Grouping.methods.createGroup({
+                    category : "root",
+                    key : 0,
+                    isGroup : true
+                });
             }
             //<code>load data mindmap to grouping</code>
-
-            //<code>sort node</code>
-            Grouping.methods.createGroupingMode();
-            //<code>sort node</code>
 
             //<code>object drag and drop</code>
             brainField.on('mouse:up', function (event) {
