@@ -82,7 +82,8 @@ var Drawing = {
                 var json = {
                     team : teamID,
                     event: "draw_remove",
-                    key : object.key
+                    key : object.key,
+                    owner : object.owner
                 }
 
                 socket.send(json);
