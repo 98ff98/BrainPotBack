@@ -49,6 +49,22 @@ var Drawing = {
                 else if (object.category === "draw")
                     Drawing.control.selectedDraw = object;
             });
+                        //object moving (data send)
+            brainField.on("object:modified", function (event) {
+                var object = event.target;
+
+                if (object.category === "draw") {
+                    var json = {
+                        event: "draw_update_loc",
+                        team: teamID,
+                        key: object.key,
+                        x: object.left,
+                        y: object.top
+                    };
+
+                    socket.send(json);
+                }
+            });
         },
         switch: () => {
             brainField.isDrawingMode = (brainField.isDrawingMode) ? false : true;
@@ -107,6 +123,16 @@ var Drawing = {
             var object = Drawing.methods.getObject(key);
 
             brainField.remove(object);
+            brainField.renderAll();
+        },
+        draw_update_loc : (key, x, y) => {
+            var object = Drawing.methods.getObject(key);
+
+            object.set({
+                top : y,
+                left : x
+            });
+
             brainField.renderAll();
         }
     }
