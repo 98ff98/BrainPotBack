@@ -64,7 +64,7 @@ var socket = {
 					break;
 				//idea
 				case "idea_add" :
-					Idea.event.idea_add(json.node_object);
+					Idea.event.idea_add(json.idea_object);
 					break;
 				case "idea_update_content" :
 					Idea.event.idea_update_content(json.key, json.text);
