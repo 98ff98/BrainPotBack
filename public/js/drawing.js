@@ -106,6 +106,8 @@ var Drawing = {
         draw_remove: (key) => {
             var object = Drawing.methods.getObject(key);
 
+            console.log(object);
+
             brainField.remove(object);
             brainField.renderAll();
         }
