@@ -31,7 +31,8 @@ var socket = {
 				case "chat" :
 					chat.write(json);
 					break;
-				case "init" : 
+				case "init" :
+					init (json);
 					break;
 				//draw
 				case "draw" :
@@ -42,6 +43,7 @@ var socket = {
 					break;
 				case "draw_update_loc" :
 					Drawing.event.draw_update_loc(json.key, json.x, json.y);
+					break;
 				//mind map
 				case "node_add" :
 					MindMap.event.node_add(json.node_object);

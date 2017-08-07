@@ -9,8 +9,13 @@ $(document).ready(function () {
     //<summary>event define</summary>
     
     $("#menu_next").click(function () {
-        level++;
-        init(level);
+        var json = {
+            event: "init",
+            level : level + 1,
+            team : teamID
+        };
+
+        socket.send(json);
     });
 
     $("#menu_capture").click(function () {

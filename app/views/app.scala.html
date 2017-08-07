@@ -455,11 +455,12 @@
          $(document).ready(function() {
             //<summary>브레인스토밍 작업 초기화</summary>
             init(level);
+
             $(".canvas-container").css("position", "absolute");
         });
 
-        function init(level) {
-            switch (level) {
+        function init(lev) {
+            switch (lev) {
                 case 1:
                     MindMap.methods.init("brain_field_1");
                     Drawing.methods.init();
@@ -483,6 +484,8 @@
                 default:
                     break;
             }
+
+            level++;
         }
 
     </script>
