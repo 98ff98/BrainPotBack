@@ -28,6 +28,7 @@ var Idea = {
                 if (object.category === "idea") {
                     var json = {
                         event : "idea_update_loc",
+                        team : teamID,
                         owner : object.owner,
                         key : object.key,
                         x : object.left,
@@ -51,6 +52,7 @@ var Idea = {
                 var object = event.target;
                 var json = {
                     event : "idea_update_content",
+                    team : teamID,
                     owner : object.owner,
                     key : object.key,
                     text : object.text
