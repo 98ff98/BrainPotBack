@@ -59,6 +59,7 @@ var Grouping = {
             }
             else {
                 Grouping.methods.createGroup({
+                    text : teamID,
                     category : "root",
                     key : 0,
                     isGroup : true
