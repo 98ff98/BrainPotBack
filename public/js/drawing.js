@@ -77,12 +77,12 @@ var Drawing = {
         getObject: (objectKey) => {
             var object;
 
-            for (var i = 0; i < Drawing.list.length; i++) {
-                if (Drawing.list[i].key === objectKey) {
-                    object = Drawing.list[i];
-                    break;
-                }
-            }
+            for (var i = 0; i < Drawing.list.length; i++)
+                if ( Drawing.list[i].categroy === "draw")
+                    if (Drawing.list[i].key === objectKey) {
+                        object = Drawing.list[i];
+                        break;
+                    }
 
             return object;
         }
@@ -107,7 +107,7 @@ var Drawing = {
             var object = Drawing.methods.getObject(key);
 
             brainField.remove(object);
-            background.renderAll();
+            brainField.renderAll();
         }
     }
 };
