@@ -278,6 +278,7 @@ var MindMap = {
                     key: key,
                     parent: parent,
                     dir: dir,
+                    owner : owner,
                     category: "node",
                     leftLine: leftLine,
                     rightLine: rightLine,
