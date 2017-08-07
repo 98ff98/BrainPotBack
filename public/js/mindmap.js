@@ -167,7 +167,7 @@ var MindMap = {
                     return;
 
                 if (object.category === "node") {
-                    if (object.owner === myID || UserInfo.isAdmin(myID)) {
+                    if (object.owner === myID) {
                         var left = object.left;
                         var top = object.top;
                         var width = object.width;
@@ -206,6 +206,8 @@ var MindMap = {
                         text.enterEditing();
                         text.text = "";
                     }
+                    else if (UserInfo.isAdmin(myID))
+                        toast("내가 방장이어도 다른 사람의 아이디어는 수정할 수 없습니다.");
                     else
                         toast("내가 제출한 아이디어가 아니면 수정할 수 없습니다.");
                 }
@@ -694,12 +696,51 @@ var MindMap = {
 
                 brainField.renderAll();
         },
-        node_update_content : (key, text) => {
+        node_update_content : (key, changedText) => {
             var object = MindMap.methods.getObject(key);
+            var left = object.left;
+            var top = object.top;
+            var width = object.width;
+            var items = object.getObjects();
 
-            object._objects[1].text = text;
+            var key = object.key;
+            var parent = object.parent;
+            var rect = items[0];
+            var text = items[1];
+            var dir = object.dir;
+            var owner = object.owner;
+            var leftLine = object.leftLine;
+            var rightLine = object.rightLine;
 
-            brainField.renderAll();
+            brainField.remove(object);
+
+            text.set({
+                left : object.left,
+                top : object.top,
+                text : changedText
+            });
+            rect.set.({
+                left : object.left,
+                top : object.top + 20
+            });
+
+            var node = new f.Group([rect, text], {
+                key: key,
+                parent: parent,
+                dir: dir,
+                owner : owner,
+                category: "node",
+                leftLine: leftLine,
+                rightLine: rightLine,
+            });
+            node.isMoving = false;
+            node.scaleX = 1;
+            node.scaleY = 1;
+            node.skewX = 0;
+            node.skewY = 0;
+            node.setControlsVisibility(MindMap.control.selectionUnableOptions);
+
+            brainField.add(node);
         },
         node_update_loc : (key, x, y) => {
             //TODO
