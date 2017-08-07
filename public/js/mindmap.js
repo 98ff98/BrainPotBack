@@ -167,41 +167,45 @@ var MindMap = {
                     return;
 
                 if (object.category === "node") {
-                    var left = object.left;
-                    var top = object.top;
-                    var width = object.width;
+                    if (object.owner === myID || UserInfo.isAdmin(myID)) {
+                        var left = object.left;
+                        var top = object.top;
+                        var width = object.width;
 
-                    items = object.getObjects();
+                        items = object.getObjects();
 
-                    var key = object.key;
-                    var parent = object.parent;
-                    var rect = items[0];
-                    var text = items[1];
-                    var dir = object.dir;
-                    var leftLine = object.leftLine;
-                    var rightLine = object.rightLine;
+                        var key = object.key;
+                        var parent = object.parent;
+                        var rect = items[0];
+                        var text = items[1];
+                        var dir = object.dir;
+                        var leftLine = object.leftLine;
+                        var rightLine = object.rightLine;
 
-                    brainField.remove(object);
+                        brainField.remove(object);
 
-                    text.left = object.left;
-                    rect.left = object.left;
-                    text.top = object.top;
-                    rect.top = object.top + 20;
+                        text.left = object.left;
+                        rect.left = object.left;
+                        text.top = object.top;
+                        rect.top = object.top + 20;
 
-                    MindMap.control.ungroupedNode.rect = rect;
-                    MindMap.control.ungroupedNode.text = text;
-                    MindMap.control.ungroupedNode.key = key;
-                    MindMap.control.ungroupedNode.parent = parent;
-                    MindMap.control.ungroupedNode.dir = dir;
-                    MindMap.control.ungroupedNode.leftLine = leftLine;
-                    MindMap.control.ungroupedNode.rightLine = rightLine;
+                        MindMap.control.ungroupedNode.rect = rect;
+                        MindMap.control.ungroupedNode.text = text;
+                        MindMap.control.ungroupedNode.key = key;
+                        MindMap.control.ungroupedNode.parent = parent;
+                        MindMap.control.ungroupedNode.dir = dir;
+                        MindMap.control.ungroupedNode.leftLine = leftLine;
+                        MindMap.control.ungroupedNode.rightLine = rightLine;
 
 
-                    brainField.add(text);
-                    brainField.add(rect);
+                        brainField.add(text);
+                        brainField.add(rect);
 
-                    text.enterEditing();
-                    text.text = "";
+                        text.enterEditing();
+                        text.text = "";
+                    }
+                    else
+                        toast("내가 제출한 아이디어가 아니면 수정할 수 없습니다.");
                 }
             });
             //object moving
