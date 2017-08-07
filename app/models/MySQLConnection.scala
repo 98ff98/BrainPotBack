@@ -172,18 +172,24 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
 
   //##### NODE 테이블 영역 #####
 
-  override def addNode(nodeID: Int, teamID: Int, userID: Int, content: String): Future[Unit] = {
-    Future{
-      DB.withConnection{ implicit conn =>
-        SQL("`ADD_NODE`({ID}, {TEAM}, {USER}, {CONTENT})").on('ID -> nodeID, 'TEAM -> teamID, 'USER -> userID, 'CONTENT -> content).execute()
+  override def addNode(node: Node): Unit = {
+    Future {
+      DB.withConnection { implicit conn =>
+        try {
+          SQL("CALL `ADD_NODE`({ID}, {TEAM}, {USER}, {CONTENT})").on('ID -> node.nodeID, 'TEAM -> node.teamID, 'USER -> node.userID, 'CONTENT -> node.content).execute()
+          Logger.debug("노드 추가 작동")
+        }
+        catch {
+          case e: Exception => e.printStackTrace()
+        }
       }
     }
   }
 
-  override def delNode(nodeID: Int, userID: Int): Future[Unit] = {
+  override def delNode(nodeID: Int, userID: Int): Unit = {
     Future{
       DB.withConnection{ implicit conn =>
-        SQL("`DROP_NODE`({ID}, {USER})").on('ID -> nodeID, 'USER -> userID).execute()
+        SQL("CALL `DROP_NODE`({ID}, {USER})").on('ID -> nodeID, 'USER -> userID).execute()
       }
     }
   }
@@ -191,14 +197,24 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
   override def loadNodes(teamID: Int): Future[List[Node]] = {
     Future{
       DB.withConnection{ implicit conn =>
-        SQL("`VIEW_NODES`({TEAM})").on('TEAM -> teamID).as(nodeParser *)
+        SQL("CALL `VIEW_NODES`({TEAM})").on('TEAM -> teamID).as(nodeParser *)
       }
     }
   }
 
-  override def modiNode(nodeID: Int, userID: Int): Future[Unit] = {
+  override def modiNodeText(nodeID: Int, userID: Int, content: String): Unit = {
     Future{
-      //TODO
+      DB.withConnection{ implicit conn =>
+        SQL("CALL `MODI_NODE_TEXT`({ID}, {USER}, {CONTENT})").on('ID -> nodeID, 'USER -> userID, 'CONTENT -> content).execute()
+      }
+    }
+  }
+
+  override def modiNodeLoc(nodeID: Int, userID: Int, content: String): Unit = {
+    Future{
+      DB.withConnection{ implicit conn =>
+        SQL("CALL `MODI_NODE_LOC`({ID}, {USER}, {CONTENT})").on('ID -> nodeID, 'USER -> userID, 'CONTENT -> content).execute()
+      }
     }
   }
 
