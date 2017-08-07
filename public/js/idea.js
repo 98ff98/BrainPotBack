@@ -1,7 +1,7 @@
 var f = fabric;
 
 var Idea = {
-    keyCount: 0,
+    keyCount: 1,
     list : undefined,
     control : {
         selectedIdea : undefined
@@ -28,6 +28,7 @@ var Idea = {
                 if (object.category === "idea") {
                     var json = {
                         event : "idea_update_loc",
+                        team : teamID,
                         owner : object.owner,
                         key : object.key,
                         x : object.left,
@@ -51,6 +52,7 @@ var Idea = {
                 var object = event.target;
                 var json = {
                     event : "idea_update_content",
+                    team : teamID,
                     owner : object.owner,
                     key : object.key,
                     text : object.text
@@ -60,7 +62,7 @@ var Idea = {
             });
         },
         ideaAdd: () => {
-            var text = $("#idea").val("");
+            var text = $("#idea").val();
 
             if (text === "") {
                 toast("아이디어를 입력해주세요.");
@@ -72,11 +74,11 @@ var Idea = {
 
             var json = {
                 event: "idea_add",
-                team: "TODO_teamID",
+                team: teamID,
                 idea_object: {
                     text: text,
                     key: Idea.keyCount,
-                    owner: "TODO_myID",
+                    owner: myID,
                     x: x,
                     y: y
                 }
