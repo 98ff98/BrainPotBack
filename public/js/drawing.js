@@ -1,6 +1,7 @@
 var Drawing = {
     keyCount : 0,
     control: {
+        selectedDraw : undefind,
         selectionUnableOptions: {
             bl: false,
             br: false,
@@ -36,6 +37,10 @@ var Drawing = {
 
                 socket.send(json);
             }
+
+            brainField.on('mouse:down', function (event) {
+                
+            });
         },
         switch: () => {
             brainField.isDrawingMode = (brainField.isDrawingMode) ? false : true;
