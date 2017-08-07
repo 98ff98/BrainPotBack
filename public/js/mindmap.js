@@ -300,16 +300,25 @@ var MindMap = {
             });
         },
         removeButtons: () => {
-            if (MindMap.control.addButton) {
+            var addButton = MindMap.control.addButton;
+            var removeButton = MindMap.control.removeButton;
+
+            if (addButton) {
+                if (brainField.getActiveObject() === addButton)
+                    brainField.setActiveObject(MindMap.list[0]);
+
                 MindMap.list.forEach(function (item, index) {
-                    if (item === MindMap.control.addButton)
+                    if (item === addButton)
                         MindMap.list.splice(index, 1);
                 });
             }
 
-            if (MindMap.control.removeButton) {
+            if (removeButton) {
+                if (brainField.getActiveObject() === addButton)
+                    brainField.setActiveObject(MindMap.list[0]);
+                
                 MindMap.list.forEach(function (item, index) {
-                    if (item === MindMap.control.removeButton)
+                    if (item === removeButton)
                         MindMap.list.splice(index, 1);
                 });
             }
