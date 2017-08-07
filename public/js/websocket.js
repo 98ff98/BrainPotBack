@@ -31,6 +31,11 @@ var socket = {
 				case "chat" :
 					chat.write(json);
 					break;
+				//initialize
+				case "load_start" :
+					break;
+				case "load_end" :
+					break;
 				case "init" :
 					init (json.level);
 					break;
@@ -54,12 +59,27 @@ var socket = {
 				case "node_update_loc" :
 					MindMap.event.node_update_loc(json.key, json.x, json.y);
 					break;
-				case "node_add_comment" :
-					break;
 				case "node_remove" :
 					MindMap.event.node_remove(json.key);
 					break;
+				//idea
+				case "idea_add" :
+					Idea.event.idea_add(json.node_object);
+					break;
+				case "idea_update_content" :
+					Idea.event.idea_update_content(json.key, json.text);
+					break;
+				case "idea_update_loc" :
+					Idea.event.idea_update_loc(json.key, json.x, json.y);
+					break;
+				case "idea_remove" :
+					Idea.event.idea_remove(json.key);
+					break;
 				//grouping
+
+				//meaning
+				case "node_add_comment" :
+					break;
 			}
 		}
 	},
