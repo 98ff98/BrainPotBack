@@ -7,7 +7,7 @@ var chat = {
 		var html;
 
 		if (myID === id)
-			html = "<p class='right-align blue'>" + nickname + " : " + message + "</p>";
+			html = "<p class='right-align text-blue'>" + nickname + " : " + message + "</p>";
 		else
 			html = "<p>" + nickname + " : " + message + "</p>";
 
