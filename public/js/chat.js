@@ -7,11 +7,12 @@ var chat = {
 		var html;
 
 		if (myID === id)
-			html = "<p class='right-align'>" + nickname + " : " + message + "</p>";
+			html = "<p class='right-align blue'>" + nickname + " : " + message + "</p>";
 		else
 			html = "<p>" + nickname + " : " + message + "</p>";
 
 		$("#brain_chatList").append(html);
+        $("#brain_chatList").scrollTop($("#brain_chatList")[0].scrollHeight);
 	}
 };
 
