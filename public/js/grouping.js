@@ -59,10 +59,11 @@ var Grouping = {
             }
             else {
                 Grouping.methods.createGroup({
-                    text : teamID,
+                    text : teamTopic,
                     category : "root",
                     key : 0,
-                    isGroup : true
+                    isGroup : true,
+                    parent : undefined
                 });
             }
             //<code>load data mindmap to grouping</code>
