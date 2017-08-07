@@ -11,6 +11,9 @@ var Idea = {
             //hide
             $(".upper-canvas").removeClass("z-depth-2");
 
+            //show
+            $("#menu_idea").css("display", "inline");
+
             //create
             brainField = new f.Canvas(name);
 
@@ -56,7 +59,14 @@ var Idea = {
                 socket.send(json);
             });
         },
-        ideaAdd: (text) => {
+        ideaAdd: () => {
+            var text = $("#idea").val("");
+
+            if (text === "") {
+                toast("아이디어를 입력해주세요.");
+                return;
+            }
+
             var x = Math.floor(Math.random() * Idea.width - 100) + 1;
             var y = Math.floor(Math.random() * Idea.height - 50) + 1;
 
@@ -72,6 +82,7 @@ var Idea = {
                 }
             };
 
+            $("#idea").val("")
             socket.send(json);
         },
         ideaRemove: () => {
@@ -153,14 +164,14 @@ var Idea = {
     }
 };
 
-$("#ideaField").keydown(function (event) {
+$("#idea").keydown(function (event) {
     if (event.key === "Enter") {
-        var text = $("#brain_chatField").val();
-
-        if (text !== "") {
-
-        }
+        Idea.methods.ideaAdd();
     }
+});
+
+$("#idea_send").click(function (event) {
+    Idea.methods.ideaAdd();
 });
 
 $(document).keydown(function (event) {
