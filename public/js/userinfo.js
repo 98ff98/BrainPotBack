@@ -9,6 +9,15 @@ var UserInfo = {
 
         toast(user.nickname + "님이 입장하였습니다.");
         UserInfo.list.push(user);
+
+        $("#user_list").append(
+            '<li class="user_list_item" data-id='
+            + '"'
+            + user.id
+            + '"'
+            +'><a href="#!">'
+            + user.nickname
+            + '</a></li>');
     },
     //유저 데이터 입장 요청
     join : () => {
@@ -56,16 +65,7 @@ UserInfo.join();
 
 //<summary> event function define </summary>
 $("#user_list").click(function () {
-    $("#user_list").append(
-        '<li class="user_list_item" data-id='
-        + '"'
-        + UserInfo.list[i].id
-        + '"'
-        +'><a href="#!">'
-        + UserInfo.list[i].nickname
-        + '</a></li>');
-
-    console.log(UserInfo.list);
+    
 });
 
 $(".user_list_item").click(function () {
