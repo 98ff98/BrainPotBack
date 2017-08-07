@@ -4,7 +4,18 @@ var Idea = {
     keyCount: 1,
     list : undefined,
     control : {
-        selectedIdea : undefined
+        selectedIdea : undefined,
+        selectionUnableOptions: {
+            bl: false,
+            br: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mt: false,
+            mtr: false,
+            tl: false,
+            tr: false
+        }
     },
     methods: {
         init: (name) => {
@@ -128,7 +139,7 @@ var Idea = {
             var key = idea_object.key;
             var owner = idea_object.owner;
 
-            var idea = new f.Text(text, {
+            var idea = new f.IText(text, {
                 category : "idea",
                 left : left,
                 top : top,
@@ -136,6 +147,7 @@ var Idea = {
                 key : key,
                 fontSize : 20
             });
+            idea.setControlsVisibility(Idea.control.selectionUnableOptions);
 
             brainField.add(idea);
             brainField.renderAll();
@@ -160,8 +172,9 @@ var Idea = {
         },
         idea_remove : (key) => {
             var object = Idea.methods.getObject(key);
-            console.log(object);
-            brainField.remove(key);
+            
+            brainField.remove(object);
+            brainField.renderAll();
         }
     }
 };
