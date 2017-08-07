@@ -104,12 +104,12 @@ var Idea = {
                 socket.send(json);
             }
             else
-                toast ("내가 제출한 아이디어가 아니면 지울 수 없습니다.");
+                toast ("타인의 아이디어는 지울 수 없습니다.");
         },
         getObject: (objectKey) => {
             var object;
 
-            for (var i = 0; i < Idea.list.length; i++) {
+            for (var i = 1; i < Idea.list.length; i++) {
                 if (Idea.list[i].category !== "draw")
                     if (Idea.list[i].key === objectKey) {
                         object = Idea.list[i];
@@ -160,7 +160,7 @@ var Idea = {
         },
         idea_remove : (key) => {
             var object = Idea.methods.getObject(key);
-
+            console.log(object);
             brainField.remove(key);
         }
     }
