@@ -306,7 +306,7 @@ var MindMap = {
                 var json = {
                     event : "node_update_content",
                     team : teamID,
-                    owner : 
+                    owner : owner,
                     key : key,
                     text : text
                 };
