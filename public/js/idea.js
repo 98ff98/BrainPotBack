@@ -129,6 +129,16 @@ var Idea = {
             }
 
             return object;
+        },
+        nextLevel : () => {
+            var data = [];
+
+            Idea.list.forEach(function (item) {
+                if (item.category === "idea")
+                    data.push(item);
+            });
+
+            return data;
         }
     },
     event: {

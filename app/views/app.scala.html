@@ -483,12 +483,12 @@
                     break;
                 case 2:
                     // var data = MindMap.methods.nextLevel();
+                    var data = Idea.methods.nextLevel();
 
                     $("#tab_2").removeClass("disabled");
                     $("ul.tabs").tabs("select_tab", "brain_field_2");
                     $("#tab_1").addClass("disabled");
-                    Grouping.methods.init("brain_field_2");
-                    // Grouping.methods.init("brain_field_2", data);
+                    Grouping.methods.init("brain_field_2", data);
                     Drawing.methods.init();
                     break;
                 case 3:
