@@ -586,7 +586,8 @@ var MindMap = {
                 key: key,
                 parent: parentKey,
                 category: "node",
-                dir: dir
+                dir: dir,
+                owner : owner
             });
 
             if (node.dir === "right") {
