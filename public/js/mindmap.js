@@ -163,14 +163,14 @@ var MindMap = {
                     return;
 
                 //<code>direction sort</code>
-                if (object.category === "node") {
-                    var json = {
-                        x:object.top,
-                        y:object.left
-                    };
+                // if (object.category === "node") {
+                //     var json = {
+                //         x:object.top,
+                //         y:object.left
+                //     };
 
-                    socket.send(json);
-                }
+                //     socket.send(json);
+                // }
                 //<code>direction sort</code>
             });
             //object double click -> text editing mode enter
@@ -332,7 +332,8 @@ var MindMap = {
                     owner : myID,
                     text : "idea",
                     dir : parent.dir,
-                    parent : parent.key
+                    parent : parent.key,
+                    key : MindMap.keyCount
                 }
             };
 
@@ -573,6 +574,7 @@ var MindMap = {
             var owner = object.owner;
             var idea = object.text;
             var dir = object.dir;
+            var key = object.key;
             var parentKey = object.parent;
             var fill = object.brush;
 
@@ -592,7 +594,7 @@ var MindMap = {
             var node = new f.Group([rect, text], {
                 top: parent.top,
                 left: parent.left + parent.width + 50,
-                key: MindMap.keyCount,
+                key: key,
                 parent: parentKey,
                 category: "node",
                 dir: dir
