@@ -1,5 +1,18 @@
 var Drawing = {
     keyCount : 0,
+    control: {
+        selectionUnableOptions: {
+            bl: false,
+            br: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mt: false,
+            mtr: false,
+            tl: false,
+            tr: false
+        }
+    },
     methods: {
         init: () => {
             brainField.freeDrawingBrush.width = 2;
@@ -42,6 +55,7 @@ var Drawing = {
             path.stroke = color;
             path.category = category;
             path.key = Drawing.keyCount++;
+            path.setControlsVisibility(Drawing.control.selectionUnableOptions);
 
             brainField.add(path);
             brainField.renderAll();

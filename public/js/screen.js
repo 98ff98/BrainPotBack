@@ -1,6 +1,7 @@
 //<summary>디스플레이 해상도에 따른 컴포넌트 사이즈 조정</summary>
 
 var screen = window.screen;
+console.log("screen width : " + screen.width + ", height : " + screen.height);
 
 $(document).ready(function () {
     //FHD인 경우
