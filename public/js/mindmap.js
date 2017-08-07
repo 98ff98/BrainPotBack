@@ -235,6 +235,7 @@ var MindMap = {
                 if (object.category === "node") {
                     var json = {
                         event: "node_update_loc",
+                        owner : object.owner,
                         team: teamID,
                         key: object.key,
                         x: object.left,
@@ -332,16 +333,18 @@ var MindMap = {
         },
         removeNode: (object) => {
             if (object.category === "node") {
-                var json = {
-                    event:"node_remove",
-                    team:teamID,
-                    key:object.key
-                }
+                if (object.owner === myID || UserInfo.isAdmin(myID)) {
 
-                MindMap.methods.removeButtons();
+                    var json = {
+                        event:"node_remove",
+                        team:teamID,
+                        key:object.key
+                    }
 
-                socket.send(json);
-                //TODO
+                    MindMap.methods.removeButtons();
+                    socket.send(json);
+                } else
+                    toast("내가 제출한 아이디어가 아니면 삭제할 수 없습니다.");
             }
         },
         layoutSort: (object) => {
