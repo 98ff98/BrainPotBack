@@ -56,18 +56,14 @@ UserInfo.join();
 
 //<summary> event function define </summary>
 $("#user_list").click(function () {
-    $("#user_list").empty();
-
-    for (var i = 0; i < UserInfo.list.length; i++) {
-        $("#user_list").append(
-            '<li class="user_list_item" data-id='
-            + '"'
-            + UserInfo.list[i].id
-            + '"'
-            +'><a href="#!">'
-            + UserInfo.list[i].nickname
-            + '</a></li>');
-    }
+    $("#user_list").append(
+        '<li class="user_list_item" data-id='
+        + '"'
+        + UserInfo.list[i].id
+        + '"'
+        +'><a href="#!">'
+        + UserInfo.list[i].nickname
+        + '</a></li>');
 
     console.log(UserInfo.list);
 });
