@@ -78,7 +78,7 @@ var Drawing = {
             var object;
 
             for (var i = 0; i < Drawing.list.length; i++)
-                if ( Drawing.list[i].categroy === "draw")
+                if (Drawing.list[i].categroy === "draw")
                     if (Drawing.list[i].key === objectKey) {
                         object = Drawing.list[i];
                         break;
@@ -106,6 +106,7 @@ var Drawing = {
         draw_remove: (key) => {
             var object = Drawing.methods.getObject(key);
 
+            console.log(key);
             console.log(object);
 
             brainField.remove(object);
