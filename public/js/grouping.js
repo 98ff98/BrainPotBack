@@ -47,8 +47,9 @@ var Grouping = {
 
                     for (var i = 0; i < data.length; i++)
                         if (data[i].parent !== undefined)
-                            if (data[i].parent === objectKey)
-                                childs.push(data[i]);
+                            if (data[i].category !== "draw")
+                                if (data[i].parent === objectKey)
+                                    childs.push(data[i]);
 
                     return (childs.length > 0) ? childs : undefined;
                 }
@@ -321,8 +322,9 @@ var Grouping = {
 
             for (var i = 0; i < Grouping.list.length; i++) {
                 if (Grouping.list[i].parent !== undefined)
-                    if (Grouping.list[i].parent === objectKey)
-                        childs.push(Grouping.list[i]);
+                    if (Grouping.list[i].category !== "draw")
+                        if (Grouping.list[i].parent === objectKey)
+                            childs.push(Grouping.list[i]);
             }
 
             return (childs.length > 0) ? childs : undefined;

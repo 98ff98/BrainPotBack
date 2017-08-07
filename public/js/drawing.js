@@ -154,5 +154,6 @@ $("#palette>area").click(function () {
 
 $(document).keydown(function (event) {
     if (event.key === "Delete" || event.key === "Backspace")
-        Drawing.methods.remove();
+        if (Drawing.control.selectedDraw)
+            Drawing.methods.remove();
 });

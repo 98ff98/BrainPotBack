@@ -509,10 +509,11 @@ var MindMap = {
             var parent;
 
             for (var i = 0; i < MindMap.list.length; i++) {
-                if (MindMap.list[i].key === parentKey) {
-                    parent = MindMap.list[i];
-                    break;
-                }
+                if (MindMap.list[i].category !== "draw")
+                    if (MindMap.list[i].key === parentKey) {
+                        parent = MindMap.list[i];
+                        break;
+                    }
             }
 
             return parent;
@@ -521,10 +522,11 @@ var MindMap = {
             var object;
 
             for (var i = 0; i < MindMap.list.length; i++) {
-                if (MindMap.list[i].key === objectKey) {
-                    object = MindMap.list[i];
-                    break;
-                }
+                if (MindMap.list[i].category !== "draw")
+                    if (MindMap.list[i].key === objectKey) {
+                        object = MindMap.list[i];
+                        break;
+                    }
             }
 
             return object;
@@ -533,9 +535,10 @@ var MindMap = {
             var childs = [];
 
             for (var i = 0; i < MindMap.list.length; i++)
-                if (MindMap.list[i].parent !== undefined)
-                    if (MindMap.list[i].parent === objectKey)
-                        childs.push(MindMap.list[i]);
+                if (MindMap.list[i].category !== "draw")
+                    if (MindMap.list[i].parent !== undefined)
+                        if (MindMap.list[i].parent === objectKey)
+                            childs.push(MindMap.list[i]);
 
             return (childs.length > 0) ? childs : undefined;
         },
