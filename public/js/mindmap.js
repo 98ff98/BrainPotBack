@@ -44,7 +44,7 @@ var MindMap = {
             MindMap.height = brainField.height;
             MindMap.list = brainField._objects;
 
-            var text = new f.IText("Mind Map", {
+            var text = new f.IText(teamTopic, {
                 fontSize: 18,
                 left: (MindMap.width / 2) - 50,
                 top: (MindMap.height / 2) - 50
@@ -297,6 +297,15 @@ var MindMap = {
                     leftLine: undefined,
                     rightLine: []
                 };
+
+                var json = {
+                    event : "node_update_content",
+                    team : teamID
+                    key : key,
+                    text : text
+                };
+
+                socket.send(json);
             });
         },
         removeButtons: () => {
@@ -680,8 +689,11 @@ var MindMap = {
                 brainField.renderAll();
         },
         node_update_content : (key, text) => {
-            //TODO
-            render();
+            var object = MindMap.methods.getObject(key);
+
+            object._objects[1].text = text;
+
+            brainField.renderAll();
         },
         node_update_loc : (key, x, y) => {
             //TODO
