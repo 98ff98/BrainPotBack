@@ -32,6 +32,7 @@ class MsgActor(out: ActorRef) extends Actor {
   //클라이언트와의 웹소켓 연결에서 새로운 메세지 수신시 호출된다.
   def receive = {
     case msg: String => {
+      Logger.debug(msg)
       //받은 메세지를 JSON 포맷으로 파싱한다.
       val json = Json.parse(msg)
       //메세지의 "event" 코드에 따라 작업을 처리한다.
@@ -113,6 +114,33 @@ class MsgActor(out: ActorRef) extends Actor {
           //TODO
         }
 
+        //
+        case "idea_add" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        case "idea_update_content" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        case "idea_update_loc" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        case "idea_remove" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        case "group_create_block" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+
+        case "group_create" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+
 
         //위에 해당하는 메세지 타입이 없을 경우
         //DB 접근 없음
@@ -120,6 +148,7 @@ class MsgActor(out: ActorRef) extends Actor {
           Logger.error("Unknown Massage : \n" + msg + "\n")
         }
       }
+
     }
   }
 }
