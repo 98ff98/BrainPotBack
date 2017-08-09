@@ -83,6 +83,35 @@ var Grouping = {
                     Grouping.methods.locationCheck(object);
             });
             //<code>object drag and drop</code>
+
+            //<code>object moving</code>
+            brainField.on('object:moving', function (event) {
+                var object = event.target;
+                var childs;
+
+                if (object.isGroup)
+                    childs = Grouping.methods.getChild(object.key);
+
+                if (childs) {
+                    var distanceX = object.prevX - object.left;
+                    var distanceY = object.prevY - object.top;
+
+                    childs.forEach(function (item) {
+                        item.set({
+                            left: item.left - distanceX,
+                            prevX: item.left - distanceX,
+                            top: item.top - distanceY,
+                            prevY: item.top - distanceY,
+                        });
+                    });
+
+                    object.prevX = object.left;
+                    object.prevY = object.top;
+                }
+            });
+            //<code>object moving</code>
+
+            render();
         },
         createBlock: (object) => {
             var randomX = Math.floor(Math.random() * Grouping.width - 200) + 1;
@@ -185,116 +214,142 @@ var Grouping = {
             brainField.add(group);
         },
         createGroupingMode: () => {
-            var node = [];
             var group = [];
-            var nextTop = 50;
-            var nextLeft = 10;
-            var height = 0;
 
             Grouping.list.forEach(function (item) {
                 if (item.isGroup && item.parent === 0)
                     group.push(item);
-                else if (!item.isGroup && item.parent === 0)
-                    node.push(item);
             });
 
             group.forEach(function (item) {
-                var objects = item.getObjects();
-                var childs = Grouping.methods.getChild(item.key);
-                var key = item.key;
-                var category = item.category;
-                var isGroup = item.isGroup;
-                var groupWidth = item.width;
-                var groupHeight = 0;
+                Grouping.methods.groupReDraw(item);
+            });
+        },
+        groupReDraw: (group, isRe) => {
+            var objects = group.getObjects();
+            var childs = Grouping.methods.getChild(group.key);
+            var key = group.key;
+            var category = group.category;
+            var isGroup = group.isGroup;
+            var groupWidth = group.width;
+            var groupHeight = 0;
+            var prevX = group.prevX;
+            var prevY = group.prevY;
 
-                var titleBar = objects[0];
-                var text = objects[1];
-                var leftBorder = objects[2];
-                var rightBorder = objects[3];
-                var bottomBorder = objects[4];
+            var titleBar = objects[0];
+            var text = objects[1];
+            var leftBorder = objects[2];
+            var rightBorder = objects[3];
+            var bottomBorder = objects[4];
 
-                //spot update
-                objects.forEach(function (i) {
-                    i.top = 0;
-                    i.left = 0;
-                });
+            //spot update
+            objects.forEach(function (i) {
+                i.top = 0;
+                i.left = 0;
+            });
 
+            if (isRe) {
                 titleBar.set({
-                    top: nextTop,
-                    left: nextLeft
+                    top: group.top,
+                    left: group.left
                 });
-                text.set({
-                    top: titleBar.top + 6,
-                    left: titleBar.left + 6
+            } else {
+                titleBar.set({
+                    top: Grouping.control.nextTop,
+                    left: Grouping.control.nextLeft
                 });
-                leftBorder.set({
-                    top: titleBar.top,
-                    left: titleBar.left
-                });
-                rightBorder.top = titleBar.top;
-                bottomBorder.left = titleBar.left;
+            }
 
+            text.set({
+                top: titleBar.top + 6,
+                left: titleBar.left + 6
+            });
+            leftBorder.set({
+                top: titleBar.top,
+                left: titleBar.left
+            });
+            rightBorder.top = titleBar.top;
+            bottomBorder.left = titleBar.left;
+
+            if (childs)
                 for (var i = 0; i < childs.length; i++) {
                     childs[i].left = titleBar.left + 6;
                     childs[i].top = titleBar.top + (titleBar.height + 5) + (childs[i].height + 5) * i;
+                    childs[i].prevX = childs[i].left;
+                    childs[i].prevY = childs[i].top;
 
                     if (groupWidth < childs[i].width)
-
                         groupWidth = childs[i].width + 5;
+
                     groupHeight += (childs[i].height + 5);
                 }
 
-                groupHeight += titleBar.height + 2;
+            groupHeight += titleBar.height + 2;
 
-                titleBar.width = groupWidth;
-                leftBorder.height = groupHeight + 2
-                rightBorder.set({
-                    left: titleBar.left + titleBar.width - 2,
-                    height: groupHeight + 2
-                });
-                bottomBorder.set({
-                    top: titleBar.top + leftBorder.height,
-                    width: titleBar.width
-                });
-
-                var node = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
-                    key: key,
-                    isGroup: isGroup,
-                    category: category
-                });
-                node.setControlsVisibility(Grouping.control.selectionUnableOptions);
-                brainField.remove(item);
-                brainField.add(node);
-                brainField.moveTo(node, 1);
-
-                //location
-                nextLeft += node.width + 5;
-                height = (height < groupHeight) ? groupHeight : height;
-
-                if (nextLeft + 100 >= Grouping.width) {
-                    nextLeft = 10;
-                    nextTop += height + 10;
-                }
+            titleBar.width = groupWidth;
+            leftBorder.height = groupHeight + 2
+            rightBorder.set({
+                left: titleBar.left + titleBar.width - 2,
+                height: groupHeight + 2
             });
+            bottomBorder.set({
+                top: titleBar.top + leftBorder.height,
+                width: titleBar.width
+            });
+
+            var node = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
+                key: key,
+                isGroup: isGroup,
+                category: category
+            });
+            node.set({
+                width: Math.floor(node.width - 1),
+                prevY: node.top,
+                prevX: node.left
+            });
+            node.setControlsVisibility(Grouping.control.selectionUnableOptions);
+            brainField.remove(group);
+            brainField.add(node);
+            brainField.moveTo(node, 1);
+
+            //location
+            Grouping.control.nextLeft += node.width + 5;
+            Grouping.control.stackHeight = (Grouping.control.stackHeight < groupHeight) ? groupHeight : Grouping.control.stackHeight;
+
+            if (Grouping.control.nextLeft + 100 >= Grouping.width) {
+                Grouping.control.nextLeft = 10;
+                Grouping.control.nextTop += Grouping.control.stackHeight + 10;
+            }
+
+            render();
         },
         resize: (childs) => {
 
         },
         locationCheck: (object) => {
             var objectLoc = point(object); //LT, LB, RT, RB
-            var groupLoc = [];
-            var isArea;
+            var areaOf = -1;
 
-            for (var i = 1; i < Grouping.list.length; i++) {
-                if (Grouping.list[i].isGroup)
-                    groupLoc.push({
-                        location: point(Grouping.list[i]),
-                        key: Grouping.list[i].key
-                    });
+            for (var i = 1; i < Grouping.list.length; i++)
+                if (Grouping.list[i].isGroup) {
+                    var groupLoc = point(Grouping.list[i]);
+
+                    if (inGroup(objectLoc, groupLoc)) {
+                        areaOf = Grouping.list[i].key;
+                        break;
+                    }
+                }
+
+            if (areaOf !== -1) {
+                var oldParent = object.parent;
+                object.parent = areaOf;
+
+                var newGroup = Grouping.methods.getParent(object.parent);
+                var oldGroup = Grouping.methods.getParent(oldParent);
+
+                Grouping.methods.groupReDraw(newGroup, true);
+                Grouping.methods.groupReDraw(oldGroup, true);
             }
-
-            console.log(objectLoc);
-            console.log(groupLoc);
 
             function point(object) {
                 var location = [];
@@ -326,6 +381,29 @@ var Grouping = {
                 return location;
             }
 
+            function inGroup(objectLoc, groupLoc) {
+                var check = false;
+
+                objectLoc.forEach(function (loc) {
+                    if (
+                        groupLoc[0].x <= loc.x && //LT.x
+                        groupLoc[0].y <= loc.y && //LT.y
+
+                        groupLoc[1].x <= loc.x && //LB.x
+                        groupLoc[1].y >= loc.y && //LB.y
+
+                        groupLoc[2].x >= loc.x && //RT.x
+                        groupLoc[2].y <= loc.y && //RT.y
+
+                        groupLoc[3].x >= loc.x && //RB.x
+                        groupLoc[3].y >= loc.y) //RB.y
+
+                        check = true;
+                });
+
+                return check;
+            }
+
             return;
         },
         getChild: (objectKey) => {
@@ -339,6 +417,18 @@ var Grouping = {
             }
 
             return (childs.length > 0) ? childs : undefined;
+        },
+        getParent: (parentKey) => {
+            var parent;
+
+            for (var i = 0; i < Grouping.list.length; i++) {
+                if (Grouping.list[i].key === parentKey) {
+                    parent = Grouping.list[i];
+                    break;
+                }
+            }
+
+            return parent;
         }
     },
     event : {
@@ -359,6 +449,9 @@ var Grouping = {
             brainField.add(block);
         },
         group_create : () => {
+
+        },
+        group_update_loc : (key, x, y) => {
 
         }
     }
