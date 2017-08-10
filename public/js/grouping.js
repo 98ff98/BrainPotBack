@@ -59,13 +59,7 @@ var Grouping = {
             // }
             // //<code>load data mindmap to grouping</code>
             //<code>load data idea to grouping</code>
-            Grouping.methods.createGroup({
-                text : teamTopic,
-                category : "root",
-                key : 0,
-                isGroup : true,
-                parent : undefined
-            });
+            Grouping.methods.createGroup("root");
 
             data.forEach (function (item) {
                 Grouping.methods.createBlock(item);
@@ -131,87 +125,38 @@ var Grouping = {
             
             socket.send (json);
         },
-        createGroup: (object) => {
-            var text;
-            var titleBar;
-            var leftBorder;
-            var rightBorder;
-            var bottomBorder;
+        createGroup: (category) => {
+            var text = $("#brain_groupNameField").val();
 
-            if (object.category === "root") {
-
-                titleBar = new f.Rect({
-                    width: Grouping.width,
-                    height: 35
-                });
-                text = new f.Text(object.text, {
-                    fontSize: 20,
-                    top: 6,
-                    left: 6
-                });
-                leftBorder = new f.Rect({
-                    width: 2,
-                    height: 700
-                });
-                rightBorder = new f.Rect({
-                    left: titleBar.width - 2,
-                    width: 2,
-                    height: 700
-                });
-                bottomBorder = new f.Rect({
-                    top: 700,
-                    width: titleBar.width,
-                    height: 2
-                });
-
-                titleBar.fill = "#FFDD33";
-                leftBorder.fill = "#FFDD33";
-                rightBorder.fill = "#FFDD33";
-                bottomBorder.fill = "#FFDD33";
-            } else if (object.category === "node") {
-                titleBar = new f.Rect({
-                    width: 100,
-                    height: 35
-                });
-                text = new f.Text(object.text, {
-                    fontSize: 20,
-                    top: 6,
-                    left: 6
-                });
-                titleBar.width = text.width + (2 * 6);
-                leftBorder = new f.Rect({
-                    width: 2,
-                    height: 75
-                });
-                rightBorder = new f.Rect({
-                    left: titleBar.width - 2,
-                    width: 2,
-                    height: 75
-                });
-                bottomBorder = new f.Rect({
-                    top: 75,
-                    width: titleBar.width,
-                    height: 2
-                });
-
-                titleBar.fill = "#33D3E5";
-                leftBorder.fill = "#33D3E5";
-                rightBorder.fill = "#33D3E5";
-                bottomBorder.fill = "#33D3E5";
+            if (text === "") {
+                toast("그룹명을 다시 입력해주세요.");
+                return;
             }
 
-            var group = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
-                key: object.key,
-                parent: object.parent,
-                category: object.category,
-                isGroup: object.isGroup,
-                top: 10
-            });
-            group.setControlsVisibility(Grouping.control.selectionUnableOptions);
-            if (group.category === "root")
-                group.selectable = false;
+            var json = {
+                event : "group_create",
+                team:teamID,
+                group_object : {
+                    category : category,
+                    x : randomX,
+                    y : randomY 
+                }
+            };
 
-            brainField.add(group);
+            if (category === "node") {
+                json.key = idea.keyCount;
+                json.text = text;
+                json.parent : 0;
+            }
+            else if (category === "root") {
+                json.key = 0;
+                json.text = teamTopic;
+                json.parent : undefined;
+            }
+
+            socket.send(json);
+
+            $("#brain_groupNameField").val("");
         },
         createGroupingMode: () => {
             var group = [];
@@ -448,8 +393,89 @@ var Grouping = {
 
             brainField.add(block);
         },
-        group_create : () => {
+        group_create : (group_object) => {
+            var object = group_object;
+            var text;
+            var titleBar;
+            var leftBorder;
+            var rightBorder;
+            var bottomBorder;
 
+            if (object.category === "root") {
+
+                titleBar = new f.Rect({
+                    width: Grouping.width,
+                    height: 35
+                });
+                text = new f.Text(object.text, {
+                    fontSize: 20,
+                    top: 6,
+                    left: 6
+                });
+                leftBorder = new f.Rect({
+                    width: 2,
+                    height: 700
+                });
+                rightBorder = new f.Rect({
+                    left: titleBar.width - 2,
+                    width: 2,
+                    height: 700
+                });
+                bottomBorder = new f.Rect({
+                    top: 700,
+                    width: titleBar.width,
+                    height: 2
+                });
+
+                titleBar.fill = "#FFDD33";
+                leftBorder.fill = "#FFDD33";
+                rightBorder.fill = "#FFDD33";
+                bottomBorder.fill = "#FFDD33";
+            } else if (object.category === "node") {
+                titleBar = new f.Rect({
+                    width: 100,
+                    height: 35
+                });
+                text = new f.Text(object.text, {
+                    fontSize: 20,
+                    top: 6,
+                    left: 6
+                });
+                titleBar.width = text.width + (2 * 6);
+                leftBorder = new f.Rect({
+                    width: 2,
+                    height: 75
+                });
+                rightBorder = new f.Rect({
+                    left: titleBar.width - 2,
+                    width: 2,
+                    height: 75
+                });
+                bottomBorder = new f.Rect({
+                    top: 75,
+                    width: titleBar.width,
+                    height: 2
+                });
+
+                titleBar.fill = "#33D3E5";
+                leftBorder.fill = "#33D3E5";
+                rightBorder.fill = "#33D3E5";
+                bottomBorder.fill = "#33D3E5";
+            }
+
+            var group = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
+                key: object.key,
+                parent: object.parent,
+                category: object.category,
+                isGroup: true,
+                top: 10
+            });
+            group.setControlsVisibility(Grouping.control.selectionUnableOptions);
+            Idea.keyCount++;
+            if (group.category === "root")
+                group.selectable = false;
+
+            brainField.add(group);
         },
         group_update_loc : (key, x, y) => {
 
