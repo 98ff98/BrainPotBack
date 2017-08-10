@@ -73,8 +73,15 @@ var Grouping = {
                 if (!object)
                     return;
 
-                else if (object.category === "node" && !object.isGroup)
-                    Grouping.methods.locationCheck(object);
+                var json = {
+                        event : "group_update_loc",
+                        team : teamID,
+                        key : object.key,
+                        x : object.left,
+                        y : object.top
+                };
+
+                socket.send(json);
             });
             //<code>object drag and drop</code>
 
@@ -353,6 +360,19 @@ var Grouping = {
 
             return;
         },
+        getObject: (objectKey) => {
+            var object;
+
+            for (var i = 0; i < Grouping.list.length; i++) {
+                if (Grouping.list[i].category !== "draw")
+                    if (Grouping.list[i].key === objectKey) {
+                        object = Grouping.list[i];
+                        break;
+                    }
+            }
+
+            return object;
+        },
         getChild: (objectKey) => {
             var childs = [];
 
@@ -480,7 +500,19 @@ var Grouping = {
             brainField.add(group);
         },
         group_update_loc : (key, x, y) => {
+            var object = Grouping.methods.getObject(key);
 
+            object.set({
+                top : y,
+                prevY : y,
+                left : x,
+                prevX : x
+            });
+
+            if (object.category === "node" && !object.isGroup)
+                Grouping.methods.locationCheck(object);
+            
+            brainField.renderAll();
         }
     }
 };
