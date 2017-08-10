@@ -126,6 +126,8 @@ var Grouping = {
             socket.send (json);
         },
         createGroup: (category) => {
+            var randomX = Math.floor(Math.random() * Grouping.width - 200) + 1;
+            var randomY = Math.floor(Math.random() * 50) + 720;
             var text = $("#brain_groupNameField").val();
 
             if (text === "") {
