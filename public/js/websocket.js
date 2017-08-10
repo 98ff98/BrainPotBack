@@ -80,7 +80,7 @@ var socket = {
 					Grouping.event.group_create_block(json.block_object);
 					break;
 				case "group_create" :
-					Grouping.event.group_create("TODO");
+					Grouping.event.group_create(json.group_object);
 					break;
 				//meaning
 				case "node_add_comment" :
