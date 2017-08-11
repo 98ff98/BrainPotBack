@@ -155,12 +155,12 @@ var Grouping = {
             if (category === "node") {
                 json.key = idea.keyCount;
                 json.text = text;
-                json.parent : 0;
+                json.parent = 0;
             }
             else if (category === "root") {
                 json.key = 0;
                 json.text = teamTopic;
-                json.parent : undefined;
+                json.parent = undefined;
             }
 
             socket.send(json);

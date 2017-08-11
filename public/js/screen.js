@@ -17,8 +17,8 @@ $(document).ready(function () {
         $("#brain_field_5").attr("width", 1418);
         $("#brain_field_1").attr("height", 870);
         $("#brain_field_2").attr("height", 870);
-        $("#brain_field_3").attr("height", 870);
-        $("#brain_field_4").attr("height", 870);
+        $("#brain_field_3").css("height", 870);
+        $("#brain_field_4").css("height", 870);
         $("#brain_field_5").attr("height", 870);
         $("#brain_chatList").css("height", 274 + 310);
 
@@ -40,8 +40,8 @@ $(document).ready(function () {
         $("#brain_field_5").attr("width", 1002);
         $("#brain_field_1").attr("height", 560);
         $("#brain_field_2").attr("height", 560);
-        $("#brain_field_3").attr("height", 560);
-        $("#brain_field_4").attr("height", 560);
+        $("#brain_field_3").css("height", 560);
+        $("#brain_field_4").css("height", 560);
         $("#brain_field_5").attr("height", 560);
 
 
