@@ -1,6 +1,8 @@
 CREATE DATABASE `BRAINPOT`;
-USE `BRAINPOT`;
-
+USE `brainpot`;
+#XEzlPhqVqx729IfvGAIZGnk1toZq51CoxacKp4sUT
+show databases;
+use brainpot;
 
 CREATE TABLE `TEAM` (
     `ID` INT NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,

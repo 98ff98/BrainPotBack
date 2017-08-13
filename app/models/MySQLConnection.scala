@@ -239,7 +239,7 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
 
   //유저 데이터를 파싱하는 파서
   private val userParser : RowParser[UserData] = {
-    get[Int]("USER.ID") ~
+      get[Int]("USER.ID") ~
       get[Int]("USER.TEAM") ~
       get[String]("USER.NICKNAME")  map{
       case id ~ teamID ~ nickname =>

@@ -14,6 +14,9 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import scala.collection.mutable
 import scala.concurrent.Future
 
+class TeamManager{
+
+}
 
 object TeamManager{
   //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
@@ -28,7 +31,7 @@ object TeamManager{
         this.users.synchronized{
           val tempList = (userID, actorRef) :: this.users(teamID)
           this.users(teamID) = tempList
-          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
           true
         }
       }
@@ -36,8 +39,8 @@ object TeamManager{
       case None => {
         this.users.synchronized{
           this.users += (teamID -> List{(userID, actorRef)})
-          Logger.debug("팀 추가작동, 팀ID:" + teamID)
-          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          //Logger.debug("팀 추가작동, 팀ID:" + teamID)
+          //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
           true
         }
       }
@@ -61,5 +64,18 @@ object TeamManager{
   //해당 팀에 있는 모든 유저들에게 메세지를 전달한다
   def broadcast(teamID : Int, msg: String) : Unit = {
     this.users(teamID).foreach( data => data._2 !  msg)
+  }
+
+  //해당 actorRef에 팀 데이터들을 비동기로 전송한다.
+  def loadTeamDatas(teamID: Int, actorRef: ActorRef) : Future[Unit] = {
+    Future{
+      /*
+      *  mySQLConection 객체를 통해서 해당 actorRef의 유저가 속한 팀이
+      *  지금까지 진행했던 정보들과, 팀원들 정보등
+      *  각각의 정보를 비동기로 받아서 요청한 데이터가 반환될 때마다
+      *  actorRef에 값을 전송한다.
+      *
+      * */
+    }
   }
 }
