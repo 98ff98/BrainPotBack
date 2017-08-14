@@ -337,6 +337,16 @@
                     <li><a id="menu_next" class="btn-floating waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
                 </ul>
             </div>
+            <!-- 아이디어 추가 -->
+            <div id="menu_idea" class="row">
+                <div class="input-field col s9">
+                    <input id="idea" type="text" class="validate font-noto-regular">
+                    <label id="idea_label" for="idea" class="font-noto-regular">새로운 아이디어를 입력하세요.</label>
+                </div>
+                <div class="input-field col s3">
+                    <a id="idea_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
+                </div>
+            </div>
             <!-- 그룹 추가 -->
             <div id="menu2" class="fixed-action-btn vertical click-to-toggle">
                 <a class="btn-floating btn-large blue waves-effect waves-light">
@@ -495,11 +505,12 @@
                     Drawing.methods.init();
                     break;
                 case 3:
+                    var data = Grouping.methods.nextLevel();
+
                     $("#tab_3").removeClass("disabled");
                     $("ul.tabs").tabs("select_tab", "brain_field_3");
                     $("#tab_2").addClass("disabled");
-                    $("#menu_comment").css("display", "inline");
-                    Drawing.methods.init();
+                    Meaning.methods.init();
                     break;
                 case 4:
                     $("#tab_4").removeClass("disabled");
