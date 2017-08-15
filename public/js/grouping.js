@@ -153,7 +153,7 @@ var Grouping = {
             };
 
             if (category === "node") {
-                json.key = idea.keyCount;
+                json.key = Idea.keyCount;
                 json.text = text;
                 json.parent = 0;
             }
@@ -185,6 +185,7 @@ var Grouping = {
             var key = group.key;
             var category = group.category;
             var isGroup = group.isGroup;
+            var parent = group.parent;
             var groupWidth = group.width;
             var groupHeight = 0;
             var prevX = group.prevX;
@@ -396,6 +397,31 @@ var Grouping = {
             }
 
             return parent;
+        },
+        nextLevel: () => {
+            var data = [];
+
+            Grouping.list.forEach(function (item) {
+                if (item.parent === 0 && item.isGroup) {
+                    var object = {
+                        title: item.getObjects()[1].text,
+                        node: [],
+                        comment: []
+                    };
+                    var childs = Grouping.methods.getChild(item.key);
+
+                    if (childs instanceof Array)
+                        childs.forEach(function (item) {
+                            object.node.push(item.text);
+                        });
+                    else
+                        object.node.push(childs.text);
+
+                    data.push(object);
+                }
+            });
+
+            return data;
         }
     },
     event : {
