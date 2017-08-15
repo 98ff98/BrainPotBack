@@ -83,8 +83,13 @@ var socket = {
 					Grouping.event.group_create(json.group_object);
 					break;
 				//meaning
-				case "node_add_comment" :
+				case "comment_add" :
+					Meaning.event.comment_add(json.comment, json.index);
 					break;
+				case "comment_remove" :
+					Meaning.event.comment_remove();
+					break;
+
 			}
 		}
 	},
