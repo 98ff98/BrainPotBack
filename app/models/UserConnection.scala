@@ -19,6 +19,9 @@ trait UserConnection {
   //현재 BrainPot에 존재하지 않는 유일한 ID값을 생성한다.
   def createUniqueUserID(): Int
 
-  //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
+  //해당 ID를 가지고 있는 유저의 데이터를 가져온다.
   def getUserData(id: Int): Future[UserData]
+
+  //해당 팀의 모든 유저들의 리스트를 가져온다.
+  def getUserList(teamID: Int) : Future[List[UserData]]
 }

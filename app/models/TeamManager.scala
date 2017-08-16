@@ -10,6 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.Logger
 import play.api.db.DBApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -74,8 +75,23 @@ object TeamManager{
       *  지금까지 진행했던 정보들과, 팀원들 정보등
       *  각각의 정보를 비동기로 받아서 요청한 데이터가 반환될 때마다
       *  actorRef에 값을 전송한다.
-      *
       * */
+      val mySQLConnection = new MySQLConnection("default")
+      val userListFuture = mySQLConnection.getUserList(teamID)
+      implicit val userWrites = new Writes[UserData] {
+        def writes(user: UserData) = Json.obj(
+          "userID" -> user.id,
+          "userNickname" -> user.nickname
+        )
+      }
+      var userListJSON : JsValue = Json.parse(""" { "event" : "load_users", "users" : [] }""")
+      userListFuture.map{ list =>
+        userListJSON = Json.obj(
+          "event" -> "load_users",
+          "users" -> list
+        )
+        actorRef ! Json.stringify(userListJSON)
+      }
     }
   }
 }

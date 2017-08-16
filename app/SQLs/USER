@@ -72,6 +72,15 @@ CREATE PROCEDURE `GET_USER_DATA`(IN `ID` INT)
 
 DELIMITER ;
 
+
+#해당 팀에 속한 유저들의 리스트를 가져오는 프로시저
+DELIMITER @@;
+    CREATE PROCEDURE `GET_USER_LIST`(IN `TEAM_ID` INT)
+        BEGIN
+            SELECT `ID`, `NICKNAME` FROM `USER` WHERE `TEAM_ID` = `TEAM`;
+        END @@;
+DELIMITER ;
+
 #위 프로시저를 호출
 CALL `GET_USER_DATA`(1080332383);
 
