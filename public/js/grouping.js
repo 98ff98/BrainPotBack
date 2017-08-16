@@ -20,6 +20,7 @@ var Grouping = {
         init: (name, data) => {
             //hide
             $(".upper-canvas").removeClass("z-depth-2");
+            $("#menu_idea").css("display", "none");
 
             //create
             brainField = new f.Canvas(name);
@@ -153,14 +154,14 @@ var Grouping = {
             };
 
             if (category === "node") {
-                json.key = Idea.keyCount;
-                json.text = text;
-                json.parent = 0;
+                json.group_object.key = Idea.keyCount;
+                json.group_object.text = text;
+                json.group_object.parent = 0;
             }
             else if (category === "root") {
-                json.key = 0;
-                json.text = teamTopic;
-                json.parent = undefined;
+                json.group_object.key = 0;
+                json.group_object.text = teamTopic;
+                json.group_object.parent = undefined;
             }
 
             socket.send(json);

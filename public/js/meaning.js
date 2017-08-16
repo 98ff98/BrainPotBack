@@ -21,14 +21,15 @@ var Meaning = {
                     chips += '<div class="chip green">' + node + '</div>';
                 });
 
-                $(div).html('<div class="row center" index="' + index + '">' +
+                div.innerHTML += '<div class="row center" index="' + index + '">' +
                     '<div class="col s2"></div>' +
                     '<div class="col s8 z-depth-1">' +
                     '<div>' +
                     '<h4 class="left">' + item.title + '</h4>' +
-                    '<div class="chips">' +
+                    '<div class="ideas">' +
                     chips +
                     '</div>' +
+                    '<div class="comments"></div>' +
                     '<div class="input-field col s6">' +
                     '<input id="test" type="text" class="validate comment_input" index="' + index + '">' +
                     '<label for="test">comment<label>' +
@@ -36,7 +37,7 @@ var Meaning = {
                     '</div>' +
                     '</div>' +
                     '<div class="col s2"></div>' +
-                    '</div>');
+                    '</div>';
             });
             //<code>load data grouping to meaning</code>
 
@@ -72,11 +73,14 @@ var Meaning = {
 
                         var json = {
                             event: "comment_add",
+                            team: teamID,
                             index: index,
                             comment: comment
                         };
 
                         socket.send(json);
+
+                        $(event.target).val("");
                     }
                 }
             });
@@ -85,9 +89,7 @@ var Meaning = {
     },
     event: {
         comment_add: (comment, index) => {
-            var div = $(".chips")[index];
-
-            console.log($(div)[0]);
+            var div = $(".comments")[index];
 
             $(div)[0].innerHTML += '<div class="chip pink">' +
                 comment +
@@ -95,9 +97,36 @@ var Meaning = {
                 '</div>';
 
             Meaning.list[index].comment.push(comment);
+
+            $(".close").click(function (event) {
+                var comment = event.target.parentNode.firstChild.data;
+                var titleIndex;
+                var commentIndex;
+
+                titleIndex = $(event.target).parent().parent().parent().parent().parent().attr("index");
+                Meaning.list[titleIndex].comment.forEach(function (item, index) {
+                    if (item === comment)
+                        commentIndex = index;
+                });
+
+                var json = {
+                    event: "comment_remove",
+                    team: teamID,
+                    index_title: titleIndex,
+                    index_comment: commentIndex,
+                    removerID : myID
+                };
+
+                socket.send(json);
+            });
         },
-        comment_remove : () => {
-            
+        comment_remove: (index_title, index_comment, removerID) => {
+            var div = $(".comments")[index_title];
+
+            if(removerID !== myID)
+                div.removeChild(div.childNodes[index_comment]);
+
+            Meaning.list[index_title].comment.splice(index_comment, 1);
         }
     }
 };

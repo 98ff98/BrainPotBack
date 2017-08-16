@@ -9,13 +9,20 @@ $(document).ready(function () {
     //<summary>event define</summary>
     
     $("#menu_next").click(function () {
-        var json = {
-            event: "init",
-            level : level + 1,
-            team : teamID
-        };
+        var nextLevel = level + 1;
 
-        socket.send(json);
+        if (nextLevel === 4) 
+            $('#modal_vote').modal('open');
+        else {
+
+            var json = {
+                event: "init",
+                level : nextLevel,
+                team : teamID
+            };
+
+            socket.send(json);
+        }
     });
 
     $("#menu_capture").click(function () {
