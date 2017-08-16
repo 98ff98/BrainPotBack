@@ -20,6 +20,7 @@ var Grouping = {
         init: (name, data) => {
             //hide
             $(".upper-canvas").removeClass("z-depth-2");
+            $("#menu_idea").css("display", "none");
 
             //create
             brainField = new f.Canvas(name);

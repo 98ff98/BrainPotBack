@@ -87,7 +87,7 @@ var socket = {
 					Meaning.event.comment_add(json.comment, json.index);
 					break;
 				case "comment_remove" :
-					Meaning.event.comment_remove();
+					Meaning.event.comment_remove(json.index_title, json.index_comment, json.removerID);
 					break;
 
 			}
