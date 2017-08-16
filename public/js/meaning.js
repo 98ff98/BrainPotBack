@@ -73,6 +73,7 @@ var Meaning = {
 
                         var json = {
                             event: "comment_add",
+                            team: teamID,
                             index: index,
                             comment: comment
                         };
@@ -110,6 +111,7 @@ var Meaning = {
 
                 var json = {
                     event: "comment_remove",
+                    team: teamID,
                     index_title: titleIndex,
                     index_comment: commentIndex,
                     removerID : myID
