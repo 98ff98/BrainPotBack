@@ -82,6 +82,9 @@ var socket = {
 				case "group_create" :
 					Grouping.event.group_create(json.group_object);
 					break;
+				case "group_update_loc" :
+					Grouping.event.group_update_loc(json.key, json.x, json.y);
+					break;
 				//meaning
 				case "comment_add" :
 					Meaning.event.comment_add(json.comment, json.index);
