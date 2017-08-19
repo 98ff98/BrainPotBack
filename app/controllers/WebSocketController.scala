@@ -140,6 +140,36 @@ class MsgActor(out: ActorRef) extends Actor {
           TeamManager.broadcast( (json \ "team").as[Int], msg)
           //TODO
         }
+        
+        case "group_update_loc" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        
+        case "comment_add" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        
+        case "comment_remove" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        
+        case "vote_setup" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        
+        case "vote_vote" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
+        
+        case "vote_finish" => {
+          TeamManager.broadcast( (json \ "team").as[Int], msg)
+          //TODO
+        }
 
 
         //위에 해당하는 메세지 타입이 없을 경우
