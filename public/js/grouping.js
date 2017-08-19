@@ -138,7 +138,7 @@ var Grouping = {
             var randomY = Math.floor(Math.random() * 50) + 720;
             var text = $("#brain_groupNameField").val();
 
-            if (text === "") {
+            if (text === "" && category !== "root") {
                 toast("그룹명을 다시 입력해주세요.");
                 return;
             }

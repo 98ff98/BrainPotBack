@@ -85,6 +85,9 @@ var Meaning = {
                 }
             });
             //<code>comment add</code>
+        },
+        nextLevel: () => {
+            return Meaning.list;
         }
     },
     event: {
