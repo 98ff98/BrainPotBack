@@ -255,6 +255,7 @@ var Grouping = {
 
             var node = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
                 key: key,
+                parent : parent,
                 isGroup: isGroup,
                 category: category
             });
@@ -520,7 +521,6 @@ var Grouping = {
                 isGroup: true,
                 top: 10
             });
-            group.parent = 0;
             group.setControlsVisibility(Grouping.control.selectionUnableOptions);
             Idea.keyCount++;
             if (group.category === "root")
