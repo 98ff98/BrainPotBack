@@ -1,10 +1,13 @@
 var Vote = {
     list: undefined,
+    type : undefined,
     methods: {
         init: (data) => {
             //data set
             Vote.list = data;
-
+            Vote.list.forEach(function (item) {
+                item.count = 0;
+            });
         },
         setUp: () => {
             var voteTitle = $("#input_vote_title").val();
@@ -18,12 +21,22 @@ var Vote = {
             }
 
             socket.send(json);
+        },
+        createButtons: () => {
+            var div = $("#vote_field")[0];
+
+            div.innerHTML += '<a id="btn_vote" class="waves-effect waves-light btn-large">' +
+                '<i class="material-icons left">done</i>제출</a>' +
+                '<a id="btn_vote_finish" class="waves-effect waves-light btn-large">' +
+                '<i class="material-icons left">gavel</i>종료</a>';
         }
     },
     event: {
         setup : (voteTitle, isMultiple) => {
             var div = $("#vote_field")[0];
             var type = (isMultiple) ? "radio" : "checkbox";
+
+            Vote.type = type;
 
             div.innerHTML +=
                 '<h4 id="vote_title" class="font-noto-bold">' +
@@ -53,7 +66,43 @@ var Vote = {
                     '<div>' + comment + '</div>' +
                     '</div>' +
                     '</div>';
+            }); 
+
+            Vote.methods.createButtons();
+
+            if (!UserInfo.isAdmin(myID))
+                $("#btn_vote_finish").addClass("disabled");
+
+            $("#btn_vote").click(function () {
+                var checkerList = $(":input:" + Vote.type + "[name=vote]");
+                var checkList = [];
+
+                for (var i = 0; i < checkerList.length; i++)
+                    if ($(checkerList[i]).is(":checked"))
+                        checkList.push(i);
+
+                var json = {
+                    event: "vote_vote",
+                    team: teamID,
+                    index: checkList
+                };
+
+                socket.send(json);
+
+                toast("투표하였습니다. 다른 팀원이 모두 투표할 때까지 기다려주세요.");
+                $("#btn_vote").addClass("disabled");
             });
+        },
+        vote: (votedIndex) => {
+            Vote.list.forEach(function (item, index) {
+                votedIndex.forEach(function (item2) {
+                    if (index === item2)
+                        item.count++;
+                });
+            });
+        },
+        finish : () => {
+            
         }
     }
 };
