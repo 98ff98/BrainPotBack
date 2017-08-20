@@ -304,7 +304,7 @@ var Grouping = {
                 var oldGroup = Grouping.methods.getParent(oldParent);
 
                 Grouping.methods.groupReDraw(newGroup, true);
-                if(!oldGroup)
+                if(oldGroup)
                     Grouping.methods.groupReDraw(oldGroup, true);
             }
 
@@ -520,6 +520,7 @@ var Grouping = {
                 isGroup: true,
                 top: 10
             });
+            group.parent = 0;
             group.setControlsVisibility(Grouping.control.selectionUnableOptions);
             Idea.keyCount++;
             if (group.category === "root")
