@@ -255,6 +255,7 @@ var Grouping = {
 
             var node = new f.Group([titleBar, text, leftBorder, rightBorder, bottomBorder], {
                 key: key,
+                parent : parent,
                 isGroup: isGroup,
                 category: category
             });
@@ -304,7 +305,7 @@ var Grouping = {
                 var oldGroup = Grouping.methods.getParent(oldParent);
 
                 Grouping.methods.groupReDraw(newGroup, true);
-                if(!oldGroup)
+                if(oldGroup)
                     Grouping.methods.groupReDraw(oldGroup, true);
             }
 
