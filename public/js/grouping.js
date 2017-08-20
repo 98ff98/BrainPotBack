@@ -304,7 +304,8 @@ var Grouping = {
                 var oldGroup = Grouping.methods.getParent(oldParent);
 
                 Grouping.methods.groupReDraw(newGroup, true);
-                Grouping.methods.groupReDraw(oldGroup, true);
+                if(!oldGroup)
+                    Grouping.methods.groupReDraw(oldGroup, true);
             }
 
             function point(object) {
