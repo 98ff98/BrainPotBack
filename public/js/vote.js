@@ -34,7 +34,7 @@ var Vote = {
     event: {
         setup : (voteTitle, isMultiple) => {
             var div = $("#vote_field")[0];
-            var type = (isMultiple) ? "radio" : "checkbox";
+            var type = (isMultiple) ? "checkbox" : "radio";
 
             Vote.type = type;
 
@@ -92,6 +92,15 @@ var Vote = {
                 toast("투표하였습니다. 다른 팀원이 모두 투표할 때까지 기다려주세요.");
                 $("#btn_vote").addClass("disabled");
             });
+
+            $("#btn_vote_finish").click(function () {
+                var json = {
+                    event: "vote_finish",
+                    team: teamID
+                };
+
+                socket.send(json);
+            });
         },
         vote: (votedIndex) => {
             Vote.list.forEach(function (item, index) {
@@ -102,7 +111,68 @@ var Vote = {
             });
         },
         finish : () => {
-            
+            var div = $("#vote_field")[0];
+            var list = "";
+            var sumCount = 0;
+
+            Vote.list.sort(function (a, b) {
+                return b.count - a.count;
+            });
+            Vote.list.forEach(function (item) {
+                var chips = "";
+
+                item.node.forEach(function (node) {
+                    chips += '<div class="chip green">' + node + '</div>';
+                });
+                item.comment.forEach(function (comment) {
+                    chips += '<div class="chip pink">' + comment + '</div>';
+                });
+
+                sumCount += item.count;
+                list += '<li>' +
+                    '<div class="collapsible-header"><i class="material-icons">filter_drama</i><span class="vote_result_bar">' + item.title + '</span></div>' +
+                    '<div class="collapsible-body"><span>' + chips + '</span></div>' +
+                    '</li>';
+            });
+            div.innerHTML = "";
+            div.innerHTML += '<ul class="collapsible" data-collapsible="accordion">' +
+                list +
+                '</ul>';
+
+            Vote.list.forEach(function (item, index) {
+                var percent = 100 / sumCount * item.count;
+
+                switch (index % 6) {
+                    case 0:
+                        $($(".vote_result_bar")[index]).css("background", "#009688");
+                        break;
+                    case 1:
+                        $($(".vote_result_bar")[index]).css("background", "#26a69a");
+                        break;
+                    case 2:
+                        $($(".vote_result_bar")[index]).css("background", "#4db6ac");
+                        break;
+                    case 3:
+                        $($(".vote_result_bar")[index]).css("background", "#80cbc4");
+                        break;
+                    case 4:
+                        $($(".vote_result_bar")[index]).css("background", "#b2dfdb");
+                        break;
+                    case 5:
+                        $($(".vote_result_bar")[index]).css("background", "#e0f2f1");
+                        break;
+                }
+
+                if (percent)
+                    $($(".vote_result_bar")[index]).width(1000 * percent / 100);
+                else
+                    $($(".vote_result_bar")[index]).width(10);
+            });
+            $(".vote_result_bar").css("display", "inline-block");
+            $('.collapsible').collapsible();
+
+            toast('이번 브레인스토밍의 최종 아이디어는 "' + Vote.list[0].title + '"로 결정되었습니다.');
+            toast('브레인스토밍이 종료되었습니다.');
         }
     }
 };

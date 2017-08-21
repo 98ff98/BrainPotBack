@@ -304,7 +304,8 @@ var Grouping = {
                 var newGroup = Grouping.methods.getParent(object.parent);
                 var oldGroup = Grouping.methods.getParent(oldParent);
 
-                Grouping.methods.groupReDraw(newGroup, true);
+                if(newGroup)
+                    Grouping.methods.groupReDraw(newGroup, true);
                 if(oldGroup)
                     Grouping.methods.groupReDraw(oldGroup, true);
             }
