@@ -306,9 +306,11 @@ var Grouping = {
 
                 if(newGroup)
                     Grouping.methods.groupReDraw(newGroup, true);
-                if(oldGroup)
+                if(oldGroup && newGroup !== oldGroup)
                     Grouping.methods.groupReDraw(oldGroup, true);
             }
+            else
+                object.parent = undefined;
 
             function point(object) {
                 var location = [];
@@ -407,12 +409,16 @@ var Grouping = {
 
             Grouping.list.forEach(function (item) {
                 if (item.parent === 0 && item.isGroup) {
+                    var childs = Grouping.methods.getChild(item.key);
+
+                    if (!childs)
+                        return;
+
                     var object = {
                         title: item.getObjects()[1].text,
                         node: [],
                         comment: []
                     };
-                    var childs = Grouping.methods.getChild(item.key);
 
                     if (childs instanceof Array)
                         childs.forEach(function (item) {
@@ -542,7 +548,7 @@ var Grouping = {
             if (object.category === "node" && !object.isGroup)
                 Grouping.methods.locationCheck(object);
             
-            brainField.renderAll();
+            render();
         }
     }
 };
