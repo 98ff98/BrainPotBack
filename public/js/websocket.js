@@ -94,13 +94,13 @@ var socket = {
 					break;
 				//vote
 				case "vote_setup" :
-					Vote.event.vote_setup(json.title, json.multiple);
+					Vote.event.setup(json.title, json.multiple);
 					break;
 				case "vote_vote" :
-					Vote.event.vote_vote(json.index);
+					Vote.event.vote(json.index);
 					break;
 				case "vote_finish" :
-					Vote.event.vote_finish();
+					Vote.event.finish();
 					break;
 			}
 		}
