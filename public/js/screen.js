@@ -1,11 +1,13 @@
 //<summary>디스플레이 해상도에 따른 컴포넌트 사이즈 조정</summary>
 
 var screen = window.screen;
+var resolution;
 console.log("screen width : " + screen.width + ", height : " + screen.height);
 
 $(document).ready(function () {
     //FHD인 경우
     if (screen.width >= 1820 && screen.width <= 2020) {
+        resolution = "FHD";
         //메인 슬라이더 사이즈
         $('.slider').height(980);
         $('.slides').height(950);
@@ -29,6 +31,7 @@ $(document).ready(function () {
     }
     //HD인 경우
     else if (screen.width >= 1266 && screen.width <= 1466) {
+        resolution = "HD";
         //메인 슬라이더 사이즈
         $('.slider').height(670);
         $('.slides').height(640);
