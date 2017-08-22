@@ -19,7 +19,74 @@
             <li><a href="/" class="w3-text-red w3-hover-red"><b></b></a></li>
         </ul>
         <style>
-            html { background: url("https://s3.ap-northeast-2.amazonaws.com/brainpot/image/back.png" ) no-repeat center center fixed; -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
+            html {background: url("https://s3.ap-northeast-2.amazonaws.com/brainpot/image/back.png" ) no-repeat center center fixed; -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
+
+            /* The Modal (background) */
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                padding-top: 100px; /* Location of the box */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content */
+            .modal-content {
+                position: relative;
+                background-color: #fefefe;
+                margin: auto;
+                padding: 0;
+                border: 1px solid #888;
+                width: 80%;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+                -webkit-animation-name: animatetop;
+                -webkit-animation-duration: 0.4s;
+                animation-name: animatetop;
+                animation-duration: 0.4s
+            }
+
+            /* Add Animation */
+            @-webkit-keyframes animatetop {
+                from {top:-300px; opacity:0} 
+                to {top:0; opacity:1}
+            }
+
+            @keyframes animatetop {
+                from {top:-300px; opacity:0}
+                to {top:0; opacity:1}
+            }
+
+            /* The Close Button */
+            .close {
+                color: white;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .modal-header {
+                padding: 2px 16px;
+                background-color: #0277bd;
+                color: white;
+            }
+
+            .modal-body {
+                padding: 2px 16px;
+            }
+        }
     </style>
             <!-- Header -->
         <header class="w3-display-container w3-content w3-hide-small" style="max-width:100%">
@@ -37,7 +104,7 @@
                     <!-- Tabs -->
                 <div id="up" class="w3-container w3-white w3-padding-16 myLink">
                     <a class="jejuLarge">온라인에서 브레인스토밍을 진행 할 팀을 생성합니다.</a>
-                    <form method="post" action="/create">
+                    <form id="form_create" method="post" action="/create">
                         <br><br>
                         <div class="w3-row-padding" style="margin:0 -16px;">
                             <div class="w3-half">
@@ -50,16 +117,14 @@
                                 <br>
                             </div>
                         </div>
-                        <input type="submit" class="w3-btn w3-dark-grey jejuSmall" value="팀 생성 후 계속">
+                        <input type="button" onclick="servicePossible('create')" class="w3-btn w3-dark-grey jejuSmall" value="팀 생성 후 계속">
                     </form>
                 </div>
 
 
-                <form method="post" action="/join">
-
+                <form id="form_join" method="post" action="/join">
                     <div id="in" class="w3-container w3-white w3-padding-16 myLink" STYLE="display: none">
                         <a class="jejuLarge">이미 생성된 팀에 참가합니다.</a>
-                        <form method="post" action="/signIn">
                             <br><br>
                             <div class="w3-row-padding" style="margin:0 -16px;">
                                 <div class="w3-half">
@@ -72,14 +137,81 @@
                                     <br>
                                 </div>
                             </div>
-                            <input type="submit" class="w3-btn w3-dark-grey jejuSmall" value="팀 참가 후 계속">
-                        </form>
+                            <input type="button" onclick="servicePossible('join')" class="w3-btn w3-dark-grey jejuSmall" value="팀 참가 후 계속">
                     </div>
-
                 </form>
             </div>
         </header>
+
+        <!-- 경고창(해상도) -->
+        <div id="modal_warning_res" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h2>모니터 해상도 경고</h2>
+            </div>
+            <div class="modal-body">
+              <p>브레인 팟은 1920X1080 Full HD 해상도만 지원합니다. 모니터의 해상도를 확인해주세요.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 경고창(브라우저) -->
+        <div id="modal_warning_brw" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close">&times;</span>
+              <h2>브라우저 버전 경고</h2>
+            </div>
+            <div class="modal-body">
+              <p>Chrome 브라우저와 Opera 브라우저를 지원하며 Internet Explorer는 지원하지 않습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <script src="@routes.Assets.at("js/screen.js")"></script>
         <script>
+            var modal_warning_res = document.getElementById('modal_warning_res');
+            var modal_warning_brw = document.getElementById('modal_warning_brw');
+            var close1 = document.getElementsByClassName("close")[0];
+            var close2 = document.getElementsByClassName("close")[1];
+
+            close1.onclick = function () {
+                modal_warning_res.style.display = "none";
+            }
+
+            close2.onclick = function () {
+                modal_warning_brw.style.display = "none";
+            }
+
+            window.onclick = function (event) {
+                if (event.target === modal_warning_res)
+                    modal_warning_res.style.display = "none";
+                else if (event.target === modal_warning_brw)
+                    modal_warning_brw.style.display = "none";
+            }
+
+            function checkResolution() {
+                return resolution === "FHD";
+            }
+
+            function checkBrowser() {
+                var agent = navigator.userAgent.toLowerCase();
+
+                if (agent.indexOf("chrome") != -1 || agent.indexOf("opera") != -1)
+                    return true;
+                else
+                    return false;
+            }
+
+            function servicePossible(name) {
+                if (checkResolution() && checkBrowser())
+                    document.getElementById("form_" + name).submit();
+                else if (checkBrowser())
+                    modal_warning_res.style.display = "block";
+                else
+                    modal_warning_brw.style.display = "block";
+            }
             // Tabs
             function openLink(evt, linkName) {
                 var i, x, tablinks;
