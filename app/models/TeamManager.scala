@@ -10,147 +10,19 @@ import org.apache.commons.lang3.RandomStringUtils
 import play.Logger
 import play.api.db.DBApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 
 import scala.collection.mutable
 import scala.concurrent.Future
 
-//팀의 정보를 담는 케이스 클래스
-case class TeamData(id: Int, owner: Int, goal: String, status: Int, inviteCode: String)
+class TeamManager{
 
-class TeamManager @Inject() (dbApi: DBApi, userManager: UserManager) {
-  private val db = dbApi.database("default")
-  //랜덤 초대 코드 생성에 사용항 문자 리스트
-  val charList = "ABCDEFGHGKLMNPQRSTUVWXYZ23456789"
-
-  //팀 생성 시간을 제외한 팀 데이터를 파싱하는 파서
-  val teamDataParser: RowParser[TeamData] = {
-      get[Int]("TEAM.ID") ~
-      get[Int]("TEAM.OWNER") ~
-      get[String]("TEAM.GOAL") ~
-      get[Int]("TEAM.STATUS") ~
-      get[String]("TEAM.INVITECODE")  map{
-      case id ~ owner ~ goal ~ status ~ inviteCode =>
-        TeamData(id, owner, goal, status, inviteCode)
-    }
-  }
-
-  def callCLEAR_OLD_TEAMS(): Unit = {
-    db.withConnection { implicit collection =>
-      SQL("CALL `CLEAR_OLD_TEAMS`()").executeUpdate()
-    }
-  }
-
-  // 해당 문자열을 초대코드로 가지고 있는 팀이 존재하는지 확인하고,
-  // 만약 있다면 해당 팀의 ID를 반환한다.
-  def findTeamByCode(inviteCode: String): Option[Int] = db.withConnection { implicit connection =>
-    try {
-      // 해당 문자열을 초대코드로 가지고 있는 팀들의 ID를 가져온다.
-      val teamIDList = SQL("CALL `FIND_TEAM_BY_INVITECODE`({INVITE_CODE})").on('INVITE_CODE -> inviteCode).as(SqlParser.int("ID") *)
-      //만약 팀 ID 리스트가 비어있지 않다면 (해당 문자열을 초대코드로 가지는 팀이 있다면)
-      if (teamIDList.size == 1) {
-        return Some(teamIDList.head)
-      }
-      else if(teamIDList.isEmpty){
-        return None
-      }
-      else{
-        Logger.error("Critical Data Error Detected : Duplicated Team ID !!!")
-        return None
-      }
-    }
-    catch {
-      case e: Exception => Logger.error("Job Failed : method findTeamByCode()")
-        e.printStackTrace()
-        None
-    }
-
-  }
-
-  //받은 정보를 바탕으로 팀을 생성하고,
-  //생성한 방의 방장의 고유 ID를 반환한다.
-  def createTeam(nickname: String, goal: String) : Option[Int] = db.withConnection{ implicit connection =>
-    val userManager = new  UserManager(dbApi)
-    lazy val createdTeamID = createUniqueTeamID()
-    lazy val createdAdminID = userManager.createUniqueID()
-    lazy val createdInviteCode = createUniqueInviteCode()
-
-    createdTeamID match {
-      case Some(n) => //Nothing to do
-      case None => return None
-    }
-    createdAdminID match {
-      case Some(n) => //Nothing to do
-      case None => return None
-    }
-    createdInviteCode match {
-      case Some(n) => //Nothing to do
-      case None => return None
-    }
-
-    SQL("CALL `ADD_TEAM`({ID}, {OWNER}, {GOAL}, {INVITECODE})").on('ID -> createdTeamID.get, 'OWNER -> createdAdminID.get, 'GOAL -> goal, 'INVITECODE -> createdInviteCode.get).executeUpdate()
-    userManager.addAdminUser(nickname, createdAdminID.get, createdTeamID.get) match {
-      case Some(n) => //Nothing to do
-      case None => return None
-    }
-
-    createdAdminID
-  }
-
-  //해당 ID를 가지고 있는 팀의 데이터를 가져온다.
-  def getTeamData(id: Int) : Option[TeamData] = db.withConnection{ implicit connection =>
-    try{
-      val teamData = SQL("CALL `GET_TEAM_DATA`({ID})").on('ID -> id).as(teamDataParser *)
-      if(teamData.size > 1){
-        Logger.warn("Critical DB Error Detected : at table `TEAM`")
-        return None
-      }
-      return Some(teamData.head)
-    }
-    catch {
-      case e: Exception => {
-        Logger.error("job failed : method getTeamData")
-        e.printStackTrace()
-        return None
-      }
-    }
-  }
-
-  //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 정수형 키를 생성한다.
-  def createUniqueTeamID() : Option[Int] = db.withConnection{ implicit connection =>
-    try {
-      val ran = new Random()
-      val createdID = ran.nextInt()
-      val duplicatedUser = SQL("CALL `CHECK_TEAM`({createdID})").on('createdID -> createdID).as(SqlParser.int("OWNER") *)
-      //만약 생성한 ID가 중복이 아니라면
-      if(duplicatedUser.isEmpty){
-        return Some(createdID)
-      }
-      //생성한 ID가 중복이였다면 재귀호출해서 다시 생성절차를 거친다.
-      createUniqueTeamID()
-    }
-    catch {
-      case e: Exception => Logger.error("Job Failed : method createUniqueID()")
-        e.printStackTrace()
-        None
-    }
-  }
-
-  //`BRAINPOT` 데이터베이스의 `TEAM` 테이블에서 중복되지 않는 5자리의 초대코드를 생성한다.
-  def createUniqueInviteCode() : Option[String] = db.withConnection{ implicit connection =>
-    val createdUniqueInviteCode = RandomStringUtils.random(5, charList)
-    val duplicatedTeamList = SQL("CALL `FIND_TEAM_BY_CODE`({inviteCode})").on('inviteCode -> createdUniqueInviteCode).as(SqlParser.int("ID") *)
-    if(duplicatedTeamList.isEmpty)
-      return Some(createdUniqueInviteCode)
-    else
-      return None
-  }
 }
-
-
 
 object TeamManager{
   //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
   private var users : mutable.HashMap[Int, List[(Int, ActorRef)]] = mutable.HashMap()
+  private val mySQLConnection = new MySQLConnection("default")
 
   //유저를 팀 유저 리스트에 추가한다.
   def addUser(userID: Int, teamID : Int, actorRef: ActorRef) : Boolean = {
@@ -161,7 +33,8 @@ object TeamManager{
         this.users.synchronized{
           val tempList = (userID, actorRef) :: this.users(teamID)
           this.users(teamID) = tempList
-          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          loadTeamDatas(teamID,actorRef).map(unit => unit)
           true
         }
       }
@@ -169,8 +42,8 @@ object TeamManager{
       case None => {
         this.users.synchronized{
           this.users += (teamID -> List{(userID, actorRef)})
-          Logger.debug("팀 추가작동, 팀ID:" + teamID)
-          Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          //Logger.debug("팀 추가작동, 팀ID:" + teamID)
+          //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
           true
         }
       }
@@ -178,8 +51,51 @@ object TeamManager{
 
   }
 
+  //유저를 팀 유저 리스트에서 삭제한다.
+  def dropUser(userID: Int, teamID: Int) : Unit = {
+    try{
+      val tempList = this.users(teamID).filter( user => user._1 != userID)
+      this.users.synchronized{
+        this.users(teamID) = tempList
+      }
+    }
+    catch {
+      case e: Exception => e.printStackTrace()
+    }
+  }
+
   //해당 팀에 있는 모든 유저들에게 메세지를 전달한다
   def broadcast(teamID : Int, msg: String) : Unit = {
     this.users(teamID).foreach( data => data._2 !  msg)
+  }
+
+  //해당 actorRef에 팀 데이터들을 비동기로 전송한다.
+  def loadTeamDatas(teamID: Int, actorRef: ActorRef) : Future[Unit] = {
+    Future{
+      /*
+      *  mySQLConection 객체를 통해서 해당 actorRef의 유저가 속한 팀이
+      *  지금까지 진행했던 정보들과, 팀원들 정보등
+      *  각각의 정보를 비동기로 받아서 요청한 데이터가 반환될 때마다
+      *  actorRef에 값을 전송한다.
+      * */
+      //Logger.debug("로드팀데이터 퓨쳐 작동")
+      val userListFuture = mySQLConnection.getUserList(teamID)
+      implicit val userWrites = new Writes[UserData] {
+        def writes(user: UserData) = Json.obj(
+          "userID" -> user.id,
+          "userNickname" -> user.nickname
+        )
+      }
+      var userListJSON : JsValue = Json.parse(""" { "event" : "load_users", "users" : [] }""")
+      userListFuture.map{ list =>
+        //Logger.debug("유저리스트 퓨쳐 작동")
+        userListJSON = Json.obj(
+          "event" -> "load_users",
+          "users" -> list
+        )
+        actorRef ! Json.stringify(userListJSON)
+        Logger.info(Json.stringify(userListJSON))
+      }
+    }
   }
 }

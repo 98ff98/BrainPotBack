@@ -1,21 +1,23 @@
 
 #index page
-GET     /              @controllers.RequestController.index()
+GET     /                        @controllers.RequestController.index()
 
 #web-app
-GET      /app           controllers.RequestController.app()
+GET      /app                    @controllers.RequestController.app()
 
 # web-app loader for Normal User
-POST     /join         @controllers.RequestController.joinTeam()
+POST     /join                   @controllers.RequestController.joinTeam()
 
 # web-app loader for Admin
-POST     /create         controllers.RequestController.createTeam()
-
-#for 404 page(인덱스를 통하지 않고 팀생성 로직이 실행되려 할때 동작)
-#GET     /create   controllers.ErrorPages.show404()
-
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+POST     /create                 @controllers.RequestController.createTeam()
 
 # for webSocket Connection
-GET     /webSocket            controllers.WebSocketController.webSocketConn
+GET      /webSocket                controllers.WebSocketController.webSocketConn()
+
+
+
+
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file             controllers.Assets.at(path="/public", file)

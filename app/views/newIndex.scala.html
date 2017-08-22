@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <title>브레인팟</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://s3.ap-northeast-2.amazonaws.com/3dprintercluster/CSS/w3css.css">
+        <link rel="stylesheet" href="https://s3.ap-northeast-2.amazonaws.com/3dprintercluster/CSS/main.css">
+        <link rel="stylesheet" href="https://s3.ap-northeast-2.amazonaws.com/3dprintercluster/CSS/font.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    </head>
+    <body>
+            <!-- Navigation Bar / 상단바 영역 -->
+        <ul class="w3-navbar w3-white w3-border-bottom w3-xlarge">
+            <li><a href="/" class="w3-text-Blue w3-hover-Indigo"><b><i class="fa fa-cloud w3-margin-right"></i>Brainpot : 온라인 웹 협업도구</b></a></li>
+        </ul>
+            <!-- Navigation Bar / 하단바 영역 -->
+        <ul class="w3-navbar w3-bottom w3-black w3-border-bottom w3-xlarge">
+            <li><a href="/" class="w3-text-red w3-hover-red"><b></b></a></li>
+        </ul>
+        <style>
+            html { background: url("https://s3.ap-northeast-2.amazonaws.com/brainpot/image/back.png" ) no-repeat center center fixed; -webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;}
+    </style>
+            <!-- Header -->
+        <header class="w3-display-container w3-content w3-hide-small" style="max-width:100%">
+            <img class="w3-image" src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/clear.png" alt="IndexImage" width="100%" height="100%">
+            <div class="w3-display-middle" style="width:65%">
+                <ul class="w3-navbar w3-black">
+                    <li><a href="javascript:void(0)" class="tablink jejuMedium" onclick="openLink(event, 'help');">Brainpot 소개</a></li>
+                    <li><a href="javascript:void(0)" class="tablink jejuMedium" onclick="openLink(event, 'up');">팀 생성</a></li>
+                    <li><a href="javascript:void(0)" class="tablink jejuMedium" onclick="openLink(event, 'in');">팀 참가</a></li>
+                </ul>
+
+                <div id="help" class="w3-container w3-white w3-padding-16 myLink">
+                    <h3>준비중입니다.</h3>
+                </div>
+                    <!-- Tabs -->
+                <div id="up" class="w3-container w3-white w3-padding-16 myLink">
+                    <a class="jejuLarge">온라인에서 브레인스토밍을 진행 할 팀을 생성합니다.</a>
+                    <form method="post" action="/create">
+                        <br><br>
+                        <div class="w3-row-padding" style="margin:0 -16px;">
+                            <div class="w3-half">
+                                <label class="jejuMedium" > &nbsp; 브레인스토밍 주제 입력</label>
+                                <input class="w3-input w3-border" type="text"  name="TOPIC" maxlength="30" required placeholder="ex) 오늘 저녁 메뉴를 정해보자">
+                            </div>
+                            <div class="w3-half">
+                                <label class="jejuMedium"> &nbsp; 팀장(본인) 닉네임 입력</label>
+                                <input class="w3-input w3-border" type="text"  required  maxlength="10" name="NICKNAME" placeholder="ex) 홍길동">
+                                <br>
+                            </div>
+                        </div>
+                        <input type="submit" class="w3-btn w3-dark-grey jejuSmall" value="팀 생성 후 계속">
+                    </form>
+                </div>
+
+
+                <form method="post" action="/join">
+
+                    <div id="in" class="w3-container w3-white w3-padding-16 myLink" STYLE="display: none">
+                        <a class="jejuLarge">이미 생성된 팀에 참가합니다.</a>
+                        <form method="post" action="/signIn">
+                            <br><br>
+                            <div class="w3-row-padding" style="margin:0 -16px;">
+                                <div class="w3-half">
+                                    <label class="jejuMedium" > &nbsp; 본인 닉네임</label>
+                                    <input class="w3-input w3-border" type="text"  name="NICKNAME"  maxlength="10" required placeholder="ex) 홍길동">
+                                </div>
+                                <div class="w3-half">
+                                    <label class="jejuMedium"> &nbsp; 팀코드 5자리 입력</label>
+                                    <input class="w3-input w3-border" type="text"  required minlength="5" maxlength="5" name="CODE" placeholder="ex) ABCD2">
+                                    <br>
+                                </div>
+                            </div>
+                            <input type="submit" class="w3-btn w3-dark-grey jejuSmall" value="팀 참가 후 계속">
+                        </form>
+                    </div>
+
+                </form>
+            </div>
+        </header>
+        <script>
+            // Tabs
+            function openLink(evt, linkName) {
+                var i, x, tablinks;
+                x = document.getElementsByClassName("myLink");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablink");
+                for (i = 0; i < x.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace("w3-Indigo", "");
+                }
+                document.getElementById(linkName).style.display = "block";
+                evt.currentTarget.className += " w3-Indigo";
+            }
+            // Click on the first tablink on load
+            document.getElementsByClassName("tablink")[0].click();
+    </script>
+    </body>
+
+
+</html>
