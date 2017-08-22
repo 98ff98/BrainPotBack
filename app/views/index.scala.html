@@ -75,8 +75,8 @@
                 </li>
             </ul>
             <div id="start_buttons" class="row center">
-                <a class="btn-large waves-effect waves-light font-noto-medium" href="#modal_create">방 만들기</a>
-                <a class="btn-large waves-effect waves-light font-noto-medium" href="#modal_join">입장 하기</a>
+                <a class="btn-large waves-effect waves-light font-noto-medium" onclick="servicePossible('#modal_create')">방 만들기</a>
+                <a class="btn-large waves-effect waves-light font-noto-medium" onclick="servicePossible('#modal_join')">입장 하기</a>
             </div>
         </div>
 
@@ -179,12 +179,59 @@
             </form>
         </div>
 
+        <!-- 입장 경고(해상도) 모달 -->
+        <div id="modal_warning_res" class="modal">
+            <div class="modal-content">
+                <h4 class="center font-noto-medium">모니터 해상도 경고</h4>
+                <div class="divider"></div>
+                <p>브레인 팟은 1920X1080 Full HD 해상도만 지원합니다. 모니터의 해상도를 확인해주세요.</p>
+            </div>
+            <div class="modal-footer font-noto-light">
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">닫기</a>
+            </div>
+        </div>
+
+        <!-- 입장 경고(브라우저) 모달 -->
+        <div id="modal_warning_res" class="modal">
+            <div class="modal-content">
+                <h4 class="center font-noto-medium">브라우저 버전 경고</h4>
+                <div class="divider"></div>
+                <p>Chrome 브라우저와 Opera 브라우저를 지원하며 Internet Explorer는 지원하지 않습니다.</p>
+            </div>
+            <div class="modal-footer font-noto-light">
+                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">닫기</a>
+            </div>
+        </div>
+
         <!-- scripts -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
         <script src="@routes.Assets.at("js/index.js")"></script>
         <script src="@routes.Assets.at("js/screen.js")"></script>
+        <script>
+            function checkResolution() {
+                return resolution === "FHD";
+            }
+
+            function checkBrowser() {
+                var agent = navigator.userAgent.toLowerCase();
+
+                if (agent.indexOf("chrome") != -1 || agent.indexOf("opera") != -1)
+                    return true;
+                else
+                    return false;
+            }
+
+            function servicePossible(modalName) {
+                if (checkResolution() && checkBrowser())
+                    $(modalName).modal('open');
+                else if (checkBrowser())
+                    $("#modal_warning_res").modal('open');
+                else
+                    $("#modal_warning_brw").modal('open');
+            }
+        </script>
     </body>
 
 </html>
