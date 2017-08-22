@@ -37,16 +37,16 @@
                     <!-- Tabs -->
                 <div id="up" class="w3-container w3-white w3-padding-16 myLink">
                     <a class="jejuLarge">온라인에서 브레인스토밍을 진행 할 팀을 생성합니다.</a>
-                    <form method="post" action="/signIn">
+                    <form method="post" action="/create">
                         <br><br>
                         <div class="w3-row-padding" style="margin:0 -16px;">
                             <div class="w3-half">
                                 <label class="jejuMedium" > &nbsp; 브레인스토밍 주제 입력</label>
-                                <input class="w3-input w3-border" type="email"  name="email" required placeholder="ex) 오늘 저녁 메뉴를 정해보자">
+                                <input class="w3-input w3-border" type="text"  name="TOPIC" maxlength="30" required placeholder="ex) 오늘 저녁 메뉴를 정해보자">
                             </div>
                             <div class="w3-half">
                                 <label class="jejuMedium"> &nbsp; 팀장(본인) 닉네임 입력</label>
-                                <input class="w3-input w3-border" type="password"  required minlength="6" maxlength="16" name="pw" placeholder="ex) 홍길동">
+                                <input class="w3-input w3-border" type="text"  required  maxlength="10" name="NICKNAME" placeholder="ex) 홍길동">
                                 <br>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                 </div>
 
 
-                <form method="post" action="/signUp">
+                <form method="post" action="/join">
 
                     <div id="in" class="w3-container w3-white w3-padding-16 myLink" STYLE="display: none">
                         <a class="jejuLarge">이미 생성된 팀에 참가합니다.</a>
@@ -64,11 +64,11 @@
                             <div class="w3-row-padding" style="margin:0 -16px;">
                                 <div class="w3-half">
                                     <label class="jejuMedium" > &nbsp; 본인 닉네임</label>
-                                    <input class="w3-input w3-border" type="email"  name="email" required placeholder="ex) 홍길동">
+                                    <input class="w3-input w3-border" type="text"  name="NICKNAME"  maxlength="10" required placeholder="ex) 홍길동">
                                 </div>
                                 <div class="w3-half">
                                     <label class="jejuMedium"> &nbsp; 팀코드 5자리 입력</label>
-                                    <input class="w3-input w3-border" type="password"  required minlength="6" maxlength="16" name="pw" placeholder="ex) ABCD2">
+                                    <input class="w3-input w3-border" type="text"  required minlength="5" maxlength="5" name="CODE" placeholder="ex) ABCD2">
                                     <br>
                                 </div>
                             </div>
