@@ -59,12 +59,14 @@ var Grouping = {
             //     Grouping.methods.createGroupingMode();
             // }
             // //<code>load data mindmap to grouping</code>
-            //<code>load data idea to grouping</code>
-            Grouping.methods.createGroup("root");
+            //<code>load data idea to grouping</code>ss
+            if (UserInfo.isAdmin(myID)) {
+                Grouping.methods.createGroup("root");
 
-            data.forEach (function (item) {
-                Grouping.methods.createBlock(item);
-            });
+                data.forEach (function (item) {
+                    Grouping.methods.createBlock(item);
+                });
+            }
             //<code>load data idea to grouping</code>
 
             //<code>object drag and drop</code>
