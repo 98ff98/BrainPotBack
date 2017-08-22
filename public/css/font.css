@@ -1,4 +1,4 @@
-@font-face {
+/*@font-face {
     font-family: "font-noto-light";
     src: url("../font/NotoSansCJKkr-Light.otf");
 }
@@ -32,4 +32,9 @@
 
 .font-noto-bold {
     font-family: font-noto-bold;
+}*/
+@import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+.font-jeju {
+    font-family: 'Jeju Gothic', sans-serif;
 }
