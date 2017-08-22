@@ -86,6 +86,26 @@
             display: inline;
         }
 
+        .nav-extended,
+        .btn-floating {
+            background: #53A5DB;
+            background-color: #53A5DB;
+        }
+        
+        .btn-z-2 {
+            background: #6494B5;
+            background-color: #6494B5;
+        }
+        
+        .btn-z-3 {
+            background: #8064B5;
+            background-color: #8064B5;
+        }
+        
+        .text {
+            color: #3A3A3A;
+        }
+
     </style>
 
         <link rel="stylesheet" href="@routes.Assets.at("css/font.css")">
@@ -296,7 +316,7 @@
                         <label for="brain_chatField" class="font-jeju">여기에 채팅을 입력하세요.</label>
                     </div>
                     <div class="input-field col s2">
-                        <a id="chat_send" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">send</i></a>
+                        <a id="chat_send" class="btn-floating btn-z-1 btn-large waves-effect waves-light"><i class="material-icons">send</i></a>
                     </div>
                 </div>
             </div>
@@ -312,26 +332,26 @@
                     
                 </div>
             </div>
-                   <div id="menu" class="fixed-action-btn vertical click-to-toggle">
-                <a class="btn-floating btn-large red waves-effect waves-light">
+            <canvas id="brain_field_5" class="col s12 z-depth-2">Fifth brain field</canvas>
+            <div id="menu" class="fixed-action-btn vertical click-to-toggle">
+                <a class="btn-floating btn-z-1 btn-large waves-effect waves-light">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li><a id="menu_draw" class="btn-floating waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
-                    <li><a id="menu_postit" class="btn-floating waves-effect waves-light"><i class="material-icons">note</i></a></li>
+                    <li><a id="menu_draw" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
                     <li>
                         <form action="#">
                             <div class="file-field input-field">
-                                <div class="btn-floating waves-effect waves-light">
+                                <div class="btn-floating btn-z-2 waves-effect waves-light">
                                     <i class="material-icons">publish</i>
                                     <input id="upload_json" type="file" accept=".json">
                                 </div>
                             </div>
                         </form>
                     </li>
-                    <li><a id="menu_save" class="btn-floating waves-effect waves-light"><i class="material-icons">get_app</i></a></li>
-                    <li><a id="menu_capture" class="btn-floating waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
-                    <li><a id="menu_next" class="btn-floating waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
+                    <li><a id="menu_save" class="btn-floating btn-z-2 waves-effect waves-light" target="_blank"><i class="material-icons">get_app</i></a></li>
+                    <li><a id="menu_capture" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
+                    <li><a id="menu_next" class="btn-floating btn-z-3 waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
                 </ul>
             </div>
             <!-- 아이디어 추가 -->
@@ -341,20 +361,20 @@
                     <label id="idea_label" for="idea" class="font-jeju">새로운 아이디어를 입력하세요.</label>
                 </div>
                 <div class="input-field col s3">
-                    <a id="idea_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
+                    <a id="idea_send" class="btn-floating btn-z-2 btn waves-effect waves-light"><i class="material-icons">send</i></a>
                 </div>
             </div>
             <!-- 그룹 추가 -->
             <div id="menu2" class="fixed-action-btn vertical click-to-toggle">
-                <a class="btn-floating btn-large blue waves-effect waves-light">
+                <a class="btn-floating btn-z-1 btn-large waves-effect waves-light">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
+                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
                 </ul>
             </div>
             <!-- 의미부여 -->
-            <div id="menu_comment" class="row">
+            <!-- <div id="menu_comment" class="row">
                 <div class="input-field col s9">
                     <input disabled id="comment" type="text" class="validate font-jeju">
                     <label id="comment_label" for="comment" class="font-jeju">먼저, 의미를 부여할 의견을 선택하세요.</label>
@@ -362,92 +382,92 @@
                 <div class="input-field col s3">
                     <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
-            <!-- 초대코드 모달 -->
-        <div id="modal_code" class="modal">
-            <div class="modal-content">
-                <h4 class="font-jeju">초대코드</h4>
-                <div class="divider"></div>
-                <p class="font-jeju">아래 생성된 코드를 타인에게 알리세요. 아래 코드를 이용하여 다른 사람과 같이 협업할 수 있습니다.</p>
-                <h5 class="center font-jeju">@appLoadDataSet.teamData.inviteCode</h5>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">닫기</a>
-            </div>
+    <!-- 초대코드 모달 -->
+    <div id="modal_code" class="modal">
+        <div class="modal-content">
+            <h4 class="font-jeju text">초대코드</h4>
+            <div class="divider"></div>
+            <p class="font-jeju text">아래 생성된 코드를 타인에게 알리세요. 아래 코드를 이용하여 다른 사람과 같이 협업할 수 있습니다.</p>
+            <h5 class="center font-jeju text">TEST1</h5>
         </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">닫기</a>
+        </div>
+    </div>
 
-            <!-- 퇴장 모달 -->
-        <div id="modal_exit" class="modal">
-            <div class="modal-content">
-                <h4 class="font-jeju">나가기</h4>
-                <div class="divider"></div>
-                <p class="font-jeju">브레인스토밍을 그만두고 퇴장합니다. 만약 내가 방장이라면 타인에게 권한이 양도됩니다.</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">나가기</a>
-                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
-            </div>
+    <!-- 퇴장 모달 -->
+    <div id="modal_exit" class="modal">
+        <div class="modal-content">
+            <h4 class="font-jeju text">나가기</h4>
+            <div class="divider"></div>
+            <p class="font-jeju text">브레인스토밍을 그만두고 퇴장합니다. 만약 내가 방장이라면 타인에게 권한이 양도됩니다.</p>
         </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju">나가기</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>
+        </div>
+    </div>
 
-            <!-- 추방 모달 -->
-        <div id="modal_kick" class="modal">
-            <div class="modal-content">
-                <h4 class="font-jeju">추방</h4>
-                <div class="divider"></div>
-                <p class="font-jeju">해당 유저를 강제로 추방합니다.</p>
-                <p class="font-jeju">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">추방</a>
-                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
-            </div>
+    <!-- 추방 모달 -->
+    <div id="modal_kick" class="modal">
+        <div class="modal-content">
+            <h4 class="font-jeju text">추방</h4>
+            <div class="divider"></div>
+            <p class="font-jeju text">해당 유저를 강제로 추방합니다.</p>
+            <p class="font-jeju text">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>
         </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju">추방</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>
+        </div>
+    </div>
 
-        <!-- 투표 개설 모달 -->
-        <div id="modal_vote" class="modal">
-            <div class="modal-content">
-                <h4 class="font-jeju">투표 개설</h4>
-                <div class="divider"></div>
-                <p class="font-jeju">이번 회의의 최종 결정을 내릴 시간입니다. 투표 제목과 아래 옵션을 입력해주세요.</p>
-                <div class="input-field col s10">
-                    <input id="input_vote_title" type="text" class="validate font-jeju">
-                    <label for="input_vote_title" class="font-jeju">최종 투표 제목</label>
-                </div>
-                <div>
-                    <p class="s5">
-                        <input name="vote_multiple" class="with-gap" type="radio" id="single" checked/>
-                        <label for="single" class="font-jeju">단일 투표</label>
-                    </p>
-                    <p class="s5">
-                        <input name="vote_multiple" class="with-gap" type="radio" id="multiple" />
-                        <label for="multiple" class="font-jeju">중복 투표</label>
-                    </p>
-                </div>
+    <!-- 투표 개설 모달 -->
+    <div id="modal_vote" class="modal">
+        <div class="modal-content">
+            <h4 class="font-jeju text">투표 개설</h4>
+            <div class="divider"></div>
+            <p class="font-jeju text">이번 회의의 최종 결정을 내릴 시간입니다. 투표 제목과 아래 옵션을 입력해주세요.</p>
+            <div class="input-field col s10">
+                <input id="input_vote_title" type="text" class="validate font-jeju">
+                <label for="input_vote_title" class="font-jeju text">최종 투표 제목</label>
             </div>
-            <div class="modal-footer">
-                <a id="vote_start" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">투표 시작</a>
-                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+            <div>
+                <p class="s5">
+                    <input name="vote_multiple" class="with-gap" type="radio" id="single" checked/>
+                    <label for="single" class="font-jeju text">단일 투표</label>
+                </p>
+                <p class="s5">
+                    <input name="vote_multiple" class="with-gap" type="radio" id="multiple" />
+                    <label for="multiple" class="font-jeju text">중복 투표</label>
+                </p>
             </div>
         </div>
+        <div class="modal-footer">
+            <a id="vote_start" href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju">투표 시작</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>
+        </div>
+    </div>
 
-        <!-- 그룹 추가 모달 -->
-        <div id="modal_group" class="modal">
-            <div class="modal-content">
-                <h4 class="font-jeju">그룹 추가</h4>
-                <div class="divider"></div>
-                <div class="input-field col s10">
-                    <input id="brain_groupNameField" type="text" class="validate font-jeju">
-                    <label for="brain_groupNameField" class="font-jeju">새로 추가할 그룹명을 입력하세요.</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a onclick="Grouping.methods.createGroup('node')" class="modal-action modal-close waves-effect waves-green btn-flat">추가</a>
-                <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">취소</a>
+    <!-- 그룹 추가 모달 -->
+    <div id="modal_group" class="modal">
+        <div class="modal-content">
+            <h4 class="font-jeju">그룹 추가</h4>
+            <div class="divider"></div>
+            <div class="input-field col s10">
+                <input id="brain_groupNameField" type="text" class="validate font-jeju">
+                <label for="brain_groupNameField" class="font-jeju text">새로 추가할 그룹명을 입력하세요.</label>
             </div>
         </div>
+        <div class="modal-footer">
+            <a onclick="Grouping.methods.createGroup()" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju">추가</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>
+        </div>
+    </div>
 
         <script>
         //스칼라 템플릿에서 넘어오는 데이터를 저장하는 부분

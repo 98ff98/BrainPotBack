@@ -7,9 +7,9 @@ var chat = {
 		var html;
 
 		if (myID === id)
-			html = "<p class='right-align blue-text'>" + nickname + " : " + message + "</p>";
+			html = "<p class='font-jeju right-align blue-text'>" + nickname + " : " + message + "</p>";
 		else
-			html = "<p>" + nickname + " : " + message + "</p>";
+			html = "<p class='font-jeju text'>" + nickname + " : " + message + "</p>";
 
 		$("#brain_chatList").append(html);
         $("#brain_chatList").scrollTop($("#brain_chatList")[0].scrollHeight);
