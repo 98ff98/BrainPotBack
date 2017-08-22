@@ -31,7 +31,7 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
 
   //인덱스 페이지에 접속하려 할 때 호출되는 메소드
   def index = Action {
-    Ok(views.html.index())
+    Ok(views.html.newIndex())
   }
 
   //방을 새로 생성하려는 POST 요청을 처리하는 메소드

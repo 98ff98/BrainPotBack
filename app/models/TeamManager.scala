@@ -22,6 +22,7 @@ class TeamManager{
 object TeamManager{
   //팀ID와 그 팀에 속하는 유저들의 리스트를 저장하는 맵
   private var users : mutable.HashMap[Int, List[(Int, ActorRef)]] = mutable.HashMap()
+  private val mySQLConnection = new MySQLConnection("default")
 
   //유저를 팀 유저 리스트에 추가한다.
   def addUser(userID: Int, teamID : Int, actorRef: ActorRef) : Boolean = {
@@ -33,6 +34,7 @@ object TeamManager{
           val tempList = (userID, actorRef) :: this.users(teamID)
           this.users(teamID) = tempList
           //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
+          loadTeamDatas(teamID,actorRef).map(unit => unit)
           true
         }
       }
@@ -76,7 +78,7 @@ object TeamManager{
       *  각각의 정보를 비동기로 받아서 요청한 데이터가 반환될 때마다
       *  actorRef에 값을 전송한다.
       * */
-      val mySQLConnection = new MySQLConnection("default")
+      //Logger.debug("로드팀데이터 퓨쳐 작동")
       val userListFuture = mySQLConnection.getUserList(teamID)
       implicit val userWrites = new Writes[UserData] {
         def writes(user: UserData) = Json.obj(
@@ -86,11 +88,13 @@ object TeamManager{
       }
       var userListJSON : JsValue = Json.parse(""" { "event" : "load_users", "users" : [] }""")
       userListFuture.map{ list =>
+        //Logger.debug("유저리스트 퓨쳐 작동")
         userListJSON = Json.obj(
           "event" -> "load_users",
           "users" -> list
         )
         actorRef ! Json.stringify(userListJSON)
+        Logger.info(Json.stringify(userListJSON))
       }
     }
   }

@@ -12,11 +12,7 @@ POST     /join                   @controllers.RequestController.joinTeam()
 POST     /create                 @controllers.RequestController.createTeam()
 
 # for webSocket Connection
-GET     /webSocket                controllers.WebSocketController.webSocketConn()
-
-
-
-
+GET      /webSocket                controllers.WebSocketController.webSocketConn()
 
 
 
