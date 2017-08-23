@@ -70,12 +70,8 @@ var Grouping = {
             //<code>load data idea to grouping</code>
 
             //<code>object drag and drop</code>
-            brainField.on('mouse:up', function (event) {
+            brainField.on('mouse:modified', function (event) {
                 var object = event.target;
-
-                if (!object)
-                    return;
-
                 var json = {
                         event : "group_update_loc",
                         team : teamID,
