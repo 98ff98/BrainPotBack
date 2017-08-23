@@ -130,10 +130,10 @@ var Vote = {
                 var chips = "";
 
                 item.node.forEach(function (node) {
-                    chips += '<div class="chip chip-idea">' + node + '</div>';
+                    chips += '<div class="chip chip-idea font-jeju text-white">' + node + '</div>';
                 });
                 item.comment.forEach(function (comment) {
-                    chips += '<div class="chip chip-comment">' + comment + '</div>';
+                    chips += '<div class="chip chip-comment font-jeju text-white">' + comment + '</div>';
                 });
 
                 sumCount += item.count;

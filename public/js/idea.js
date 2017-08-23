@@ -71,6 +71,15 @@ var Idea = {
 
                 socket.send(json);
             });
+
+            //<code>group selection lock</code>
+            brainField.observe('selection:created', function () {
+                var group = brainField.getActiveGroup();
+                group.lockMovementX = true;
+                group.lockMovementY = true;
+                group.hasControls = false;
+            });
+            //<code>group selection lock</code>
         },
         ideaAdd: () => {
             var text = $("#idea").val();
