@@ -345,10 +345,10 @@
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li><a id="menu_draw" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
-                    <li><a id="menu_save" class="btn-floating btn-z-2 waves-effect waves-light" target="_blank"><i class="material-icons">get_app</i></a></li>
-                    <li><a id="menu_capture" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
-                    <li><a id="menu_next" class="btn-floating btn-z-3 waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
+                    <li><a id="menu_draw" class="btn-floating btn-z-2 waves-effect waves-light tooltipped" data-position="left" data-tooltip="그리기 모드"><i class="material-icons">mode_edit</i></a></li>
+                    <li><a id="menu_save" class="btn-floating btn-z-2 waves-effect waves-light tooltipped" data-position="left"  data-tooltip="PPT 파일로 다운로드" target="_blank"><i class="material-icons">get_app</i></a></li>
+                    <li><a id="menu_capture" class="btn-floating btn-z-2 waves-effect waves-light tooltipped" data-position="left" data-tooltip="화면 캡쳐"><i class="material-icons">perm_media</i></a></li>
+                    <li><a id="menu_next" class="btn-floating btn-z-3 waves-effect waves-light tooltipped" data-position="left" data-tooltip="다음 단계로"><i class="material-icons">play_arrow</i></a></li>
                 </ul>
             </div>
             <!-- 아이디어 추가 -->
@@ -367,7 +367,7 @@
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
-                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
+                    <li><a id="menu_group_add" href="#modal_group" class="btn-floating btn-z-2 waves-effect waves-light tooltipped" data-position="left" data-tooltip="그룹 추가하기"><i class="material-icons">library_add</i></a></li>
                 </ul>
             </div>
         </div>
@@ -504,6 +504,9 @@
             init(level);
 
             $(".canvas-container").css("position", "absolute");
+            $('.tooltipped').tooltip({
+                delay: 50
+            });
         });
 
         function init(lev) {
