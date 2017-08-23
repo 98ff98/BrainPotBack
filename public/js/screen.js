@@ -8,9 +8,6 @@ $(document).ready(function () {
     //FHD인 경우
     if (screen.width >= 1820 && screen.width <= 2020) {
         resolution = "FHD";
-        //메인 슬라이더 사이즈
-        // $('.slider').height(980);
-        // $('.slides').height(950);
 
         //브레인 필드 사이즈
         $("#brain_field_1").attr("width", 1418);
@@ -32,9 +29,6 @@ $(document).ready(function () {
     //HD인 경우
     else if (screen.width >= 1266 && screen.width <= 1466) {
         resolution = "HD";
-        //메인 슬라이더 사이즈
-        // $('.slider').height(670);
-        // $('.slides').height(640);
 
         //브레인 필드 사이즈
         $("#brain_field_1").attr("width", 1002);

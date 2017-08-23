@@ -36,36 +36,8 @@ $(document).ready(function () {
 
     //json 다운로드 (데이터 세이브)
     $("#menu_save").click(function () {
-        var obj = brainField.model.toJson();
-        console.log(obj);
-        var writer = new FileWriter();
+        
     });
-
-    //json 업로드 (데이터 로드)
-    $("#upload_json").bind("change", function (event) {
-        //파일을 업로드 하지 않은 경우
-        if ($("#upload_json").val() == undefined)
-            return;
-
-        var file = event.target.files;
-
-        for (var i = 0, f; f = file[i]; i++) {
-            var reader = new FileReader();
-
-            reader.onload = (function (theFile) {
-                return function (event) {
-                    //TODO 서버로 json 데이터 전송
-                    var obj = JSON.parse(event.target.result);
-                    brainField.model = go.Model.fromJson(obj);
-                }
-            })(f);
-
-            reader.readAsBinaryString(f);
-        }
-
-        $("#upload_json").val(undefined);
-    });
-
 
     //방장이 아닌 경우
     if (!UserInfo.isAdmin(myID)) {
