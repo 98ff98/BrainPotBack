@@ -121,6 +121,7 @@ var Vote = {
 
             $(div).removeClass("row");
             $(div).removeClass("center");
+            $(div).addClass("col s10 offset-s1");
 
             Vote.list.sort(function (a, b) {
                 return b.count - a.count;
@@ -129,10 +130,10 @@ var Vote = {
                 var chips = "";
 
                 item.node.forEach(function (node) {
-                    chips += '<div class="chip green">' + node + '</div>';
+                    chips += '<div class="chip chip-idea">' + node + '</div>';
                 });
                 item.comment.forEach(function (comment) {
-                    chips += '<div class="chip pink">' + comment + '</div>';
+                    chips += '<div class="chip chip-comment">' + comment + '</div>';
                 });
 
                 sumCount += item.count;

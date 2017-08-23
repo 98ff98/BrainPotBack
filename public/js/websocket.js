@@ -11,6 +11,7 @@ var socket = {
 
 		socket.websocket.onopen = function (json) {
 			console.log("socket is successfuly connected! : " + json);
+			UserInfo.join();
 		}
 
 		socket.websocket.onmessage = function (json) {
