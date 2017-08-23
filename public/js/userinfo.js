@@ -57,10 +57,10 @@ var UserInfo = {
     }
 }
 
-//내 정보 입장
-$(document).ready ( function () {
-UserInfo.join();
-});
+// //내 정보 입장
+// $(document).ready ( function () {
+//     UserInfo.join();
+// });
 
 
 //<summary> event function define </summary>
