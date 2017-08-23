@@ -25,6 +25,7 @@
                 height: 560px;
             }
 
+            #brain_field_3,
             #brain_field_4 {
                 overflow: auto;
             }
@@ -92,23 +93,30 @@
             }
 
             .nav-extended,
-            .btn-floating {
+            .btn-floating,
+            .btn-z-1 {
                 background: #53A5DB;
                 background-color: #53A5DB;
             }
             
-            .btn-z-2 {
+            .btn-z-2,
+            .chip-idea {
                 background: #6494B5;
                 background-color: #6494B5;
             }
             
-            .btn-z-3 {
+            .btn-z-3,
+            .chip-comment {
                 background: #8064B5;
                 background-color: #8064B5;
             }
             
             .text {
                 color: #3A3A3A;
+            }
+            
+            .text-white {
+                color: white;
             }
 
     </style>
@@ -322,32 +330,22 @@
 
             <div id="brainField" class="col s9">
                  <!-- Teal page content  -->
-            <canvas id="brain_field_1" class="col s12 z-depth-2">First brain field</canvas>
-            <canvas id="brain_field_2" class="col s12 z-depth-2">Second brain field</canvas>
-            <div id="brain_field_3" class="col s12 z-depth-2">Third brain field</div>
-            <div id="brain_field_4" class="col s12 z-depth-2">Fourth brain field
+            <canvas id="brain_field_1" class="col s12 z-depth-2"></canvas>
+            <canvas id="brain_field_2" class="col s12 z-depth-2"></canvas>
+            <div id="brain_field_3" class="col s12 z-depth-2"></div>
+            <div id="brain_field_4" class="col s12 z-depth-2">
                     <!-- 투표 -->
-                <div id="vote_field">
+                <div id="vote_field" class="row center">
                     
                 </div>
             </div>
-            <canvas id="brain_field_5" class="col s12 z-depth-2">Fifth brain field</canvas>
+            <canvas id="brain_field_5" class="col s12 z-depth-2"></canvas>
             <div id="menu" class="fixed-action-btn vertical click-to-toggle">
                 <a class="btn-floating btn-z-1 btn-large waves-effect waves-light">
                     <i class="material-icons">menu</i>
                 </a>
                 <ul>
                     <li><a id="menu_draw" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
-                    <li>
-                        <form action="#">
-                            <div class="file-field input-field">
-                                <div class="btn-floating btn-z-2 waves-effect waves-light">
-                                    <i class="material-icons">publish</i>
-                                    <input id="upload_json" type="file" accept=".json">
-                                </div>
-                            </div>
-                        </form>
-                    </li>
                     <li><a id="menu_save" class="btn-floating btn-z-2 waves-effect waves-light" target="_blank"><i class="material-icons">get_app</i></a></li>
                     <li><a id="menu_capture" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">perm_media</i></a></li>
                     <li><a id="menu_next" class="btn-floating btn-z-3 waves-effect waves-light"><i class="material-icons">play_arrow</i></a></li>
@@ -372,16 +370,6 @@
                     <li><a id="menu_group_add" href="#modal_group" class="btn-floating btn-z-2 waves-effect waves-light"><i class="material-icons">library_add</i></a></li>
                 </ul>
             </div>
-            <!-- 의미부여 -->
-            <!-- <div id="menu_comment" class="row">
-                <div class="input-field col s9">
-                    <input disabled id="comment" type="text" class="validate font-jeju">
-                    <label id="comment_label" for="comment" class="font-jeju">먼저, 의미를 부여할 의견을 선택하세요.</label>
-                </div>
-                <div class="input-field col s3">
-                    <a disabled id="comment_send" class="btn-floating btn waves-effect waves-light"><i class="material-icons">send</i></a>
-                </div>
-            </div> -->
         </div>
     </div>
 

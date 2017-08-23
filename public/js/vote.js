@@ -25,9 +25,9 @@ var Vote = {
         createButtons: () => {
             var div = $("#vote_field")[0];
 
-            div.innerHTML += '<a id="btn_vote" class="waves-effect waves-light btn-large">' +
+            div.innerHTML += '<a id="btn_vote" class="waves-effect waves-light btn-large btn-z-2 text-white font-jeju">' +
                 '<i class="material-icons left">done</i>제출</a>' +
-                '<a id="btn_vote_finish" class="waves-effect waves-light btn-large">' +
+                '<a id="btn_vote_finish" class="waves-effect waves-light btn-large btn-z-3 text-white font-jeju">' +
                 '<i class="material-icons left">gavel</i>종료</a>';
         }
     },
@@ -39,7 +39,7 @@ var Vote = {
             Vote.type = type;
 
             div.innerHTML +=
-                '<h4 id="vote_title" class="font-noto-bold">' +
+                '<h4 id="vote_title" class="center-align font-jeju">' +
                 voteTitle +
                 '</h4>';
 
@@ -48,22 +48,26 @@ var Vote = {
                 var comment = "";
 
                 item.node.forEach(function (n) {
-                    node += '<div class="chip green">' + n + '</div>';
+                    node += '<div class="chip chip-idea text-white">' + n + '</div>';
                 });
 
                 item.comment.forEach(function (c) {
-                    comment += '<div class="chip pink">' + c + '</div>';
+                    comment += '<div class="chip chip-comment text-white">' + c + '</div>';
                 })
 
                 div.innerHTML += '<div class="vote_list row">' +
-                    '<div class="col s10 offset-s2 z-depth-1">' +
+                    '<div class="col s10 offset-s1 z-depth-1">' +
+                    '<div>' +
+                    '<h5 class="font-jeju vote_list_title">' + item.title + '</h5>' +
                     '<span>' +
-                    '<h5 class="font-noto-medium vote_list_title">' + item.title + '</h5>' +
                     '<input id="vote_index_' + index + '" name="vote" type="' + type + '">' +
                     '<label for="vote_index_' + index + '" class="right"></label>' +
                     '</span>' +
-                    '<div>' + node + '</div>' +
-                    '<div>' + comment + '</div>' +
+                    '</div>' +
+                    '<div class="left">' +
+                    '<span>' + node + '</span>' +
+                    '<span>' + comment + '</span>' +
+                    '</div>' +
                     '</div>' +
                     '</div>';
             }); 
@@ -114,6 +118,9 @@ var Vote = {
             var div = $("#vote_field")[0];
             var list = "";
             var sumCount = 0;
+
+            $(div).removeClass("row");
+            $(div).removeClass("center");
 
             Vote.list.sort(function (a, b) {
                 return b.count - a.count;

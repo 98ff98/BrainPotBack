@@ -18,25 +18,24 @@ var Meaning = {
             data.forEach(function (item, index) {
                 var chips = "";
                 item.node.forEach(function (node) {
-                    chips += '<div class="chip green">' + node + '</div>';
+                    chips += '<div class="chip chip-idea font-jeju text-white">' + node + '</div>';
                 });
 
                 div.innerHTML += '<div class="row center" index="' + index + '">' +
-                    '<div class="col s2"></div>' +
-                    '<div class="col s8 z-depth-1">' +
+                    '<div class="col s8 offset-s2 z-depth-1">' +
+                    '<h4 class="left-align font-jeju text">' + item.title + '</h4>' +
+                    '<div class="divider"></div>' +
+                    '<div class="input-field row s6">' +
+                    '<input id="test" type="text" class="validate comment_input font-jeju" index="' + index + '">' +
+                    '<label for="test" class="font-jeju">' + item.title + '에 대한 의미를 최대 3개까지 부여해주세요.<label>' +
+                    '</div>' +
                     '<div>' +
-                    '<h4 class="left">' + item.title + '</h4>' +
-                    '<div class="ideas">' +
+                    '<span class="ideas">' +
                     chips +
-                    '</div>' +
-                    '<div class="comments"></div>' +
-                    '<div class="input-field col s6">' +
-                    '<input id="test" type="text" class="validate comment_input" index="' + index + '">' +
-                    '<label for="test">comment<label>' +
+                    '</span>' +
+                    '<span class="comments"></span>' +
                     '</div>' +
                     '</div>' +
-                    '</div>' +
-                    '<div class="col s2"></div>' +
                     '</div>';
             });
             //<code>load data grouping to meaning</code>
@@ -94,7 +93,7 @@ var Meaning = {
         comment_add: (comment, index) => {
             var div = $(".comments")[index];
 
-            $(div)[0].innerHTML += '<div class="chip pink">' +
+            $(div)[0].innerHTML += '<div class="chip chip-comment font-jeju text-white">' +
                 comment +
                 '<i class="close material-icons">close</i>' +
                 '</div>';
