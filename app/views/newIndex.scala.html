@@ -51,17 +51,6 @@
                 animation-duration: 0.4s
             }
 
-            /* Add Animation */
-            @-webkit-keyframes animatetop {
-                from {top:-300px; opacity:0} 
-                to {top:0; opacity:1}
-            }
-
-            @keyframes animatetop {
-                from {top:-300px; opacity:0}
-                to {top:0; opacity:1}
-            }
-
             /* The Close Button */
             .close {
                 color: white;
@@ -86,7 +75,6 @@
             .modal-body {
                 padding: 2px 16px;
             }
-        }
     </style>
             <!-- Header -->
         <header class="w3-display-container w3-content w3-hide-small" style="max-width:100%">
@@ -99,7 +87,44 @@
                 </ul>
 
                 <div id="help" class="w3-container w3-white w3-padding-16 myLink">
-                    <h3>준비중입니다.</h3>
+                    <a class="jejuxLarge">Brainpot은 언제 어디서든 사용할 수 있는 온라인 브레인스토밍 도구입니다.</a><br><br>
+                    <a class="jejuLarge"><em><a href="https://ko.wikipedia.org/wiki/%EB%B8%8C%EB%A0%88%EC%9D%B8%EC%8A%A4%ED%86%A0%EB%B0%8D#.EC.98.A4.EC.8A.A4.EB.B3.B8_.EB.B0.A9.EC.8B.9D" class="jejuLarge" target="_blank">알렉스 오스본의 브레인스토밍</a></em></a>
+                    <a class="jejuLarge">4원칙인 <b>양보다는 질, 비판 금지, 아이디어 조합, 특이한 아이디어 환영</b>을 따라 팀원들과 브레인스토밍을 진행하세요 !</a>
+                    <div class="w3-row-padding w3-margin-top">
+                        <div class="w3-third">
+                            <div class="w3-card-2">
+                                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/chap1.png" style="width:100%">
+                                <div class="w3-container">
+                                    <h5 class="jejuLarge">초기화면</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-third">
+                            <div class="w3-card-2">
+                                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/chap2.png" style="width:100%">
+                                <div class="w3-container">
+                                    <h5 class="jejuLarge">아이디어 제시</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-third">
+                            <div class="w3-card-2">
+                                <img src="https://s3.ap-northeast-2.amazonaws.com/brainpot/image/chap3.png" style="width:100%">
+                                <div class="w3-container">
+                                    <h5 class="jejuLarge">아이디어 그룹핑</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <br>
+                    <div class="w3-center">
+                        <a class="w3-btn jejuLarge w3-hover-Indigo tablink" href="javascript:void(0)" onclick="openLink(event, 'up');">팀 생성 후 팀원 초대하기</a>
+                        <a class="w3-btn jejuLarge w3-hover-Indigo tablink" href="javascript:void(0)" onclick="openLink(event, 'in');">초대코드로 기존 팀 참가하기</a>
+                    </div>
                 </div>
                     <!-- Tabs -->
                 <div id="up" class="w3-container w3-white w3-padding-16 myLink">

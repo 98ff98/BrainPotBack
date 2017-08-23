@@ -1,6 +1,6 @@
 name := "BrainPot"
 
-version := "0.3.0"
+version := "0.4.4"
 
 lazy val `brainpot` = (project in file(".")).enablePlugins(PlayScala)
 
@@ -19,6 +19,5 @@ libraryDependencies ++= Seq(
 )
 
 
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
-
+unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"  
