@@ -296,6 +296,8 @@
             }
 
             function servicePossible(name) {
+                getScreen();
+
                 if (checkResolution() && checkBrowser())
                     document.getElementById("form_" + name).submit();
                 else if (checkBrowser())

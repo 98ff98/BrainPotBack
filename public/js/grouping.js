@@ -346,6 +346,12 @@ var Grouping = {
                     y: object.top + object.height
                 }));
 
+                //Center
+                location.push(new Object({
+                    x: object.left + (object.width / 2),
+                    y: object.top + (object.height / 2)
+                }));
+
                 return location;
             }
 

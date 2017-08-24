@@ -44,6 +44,11 @@ $(document).ready(function () {
         $("#menu_next").attr("disabled", "on");
         $("#upload_json").attr("disabled", "on");
     }
+
+    //페이지를 나가는 경우
+    $(window).on("beforeunload", function () {
+        UserInfo.left(myID, myNickname);
+    });
 });
     //<summary> function define </summary>
 function toast(text) {
