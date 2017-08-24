@@ -1,6 +1,6 @@
 name := "BrainPot"
 
-version := "0.5.5"
+version := "0.5.6"
 
 lazy val `brainpot` = (project in file(".")).enablePlugins(PlayScala)
 
