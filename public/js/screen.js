@@ -1,14 +1,13 @@
 //<summary>디스플레이 해상도에 따른 컴포넌트 사이즈 조정</summary>
-
-var screen = window.screen;
+var screen;
 var resolution;
-console.log("screen width : " + screen.width + ", height : " + screen.height);
 
 $(document).ready(function () {
-    //FHD인 경우
-    if (screen.width >= 1820 && screen.width <= 2020) {
-        resolution = "FHD";
+    getScreen();
+    console.log("screen width : " + screen.width + ", height : " + screen.height);
 
+    //FHD인 경우
+    if (resolution === "FHD") {
         //브레인 필드 사이즈
         $("#brain_field_1").attr("width", 1418);
         $("#brain_field_2").attr("width", 1418);
@@ -27,9 +26,7 @@ $(document).ready(function () {
         $("#chat_send").addClass("btn-large");
     }
     //HD인 경우
-    else if (screen.width >= 1266 && screen.width <= 1466) {
-        resolution = "HD";
-
+    else if (resolution === "HD") {
         //브레인 필드 사이즈
         $("#brain_field_1").attr("width", 1002);
         $("#brain_field_2").attr("width", 1002);
@@ -48,3 +45,13 @@ $(document).ready(function () {
         $("#chat_send").addClass("btn");
     }
 });
+
+function getScreen() {
+    screen = window.screen;
+
+    //FHD인 경우
+    if (screen.width >= 1820 && screen.width <= 2020)
+        resolution = "FHD";
+    else if (screen.width >= 1266 && screen.width <= 1466)
+        resolution = "HD";
+}

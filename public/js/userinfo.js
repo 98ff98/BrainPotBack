@@ -40,13 +40,13 @@ var UserInfo = {
         });
     },
     //유저 데이터 퇴장 요청
-    left : (id) => {
+    left : (id, nickname) => {
         var json = {
             event : "left_user",
             team : teamID,
             id: id,
-            nickname: myNickname,
-            isAdmin : isAdmin (id)
+            nickname: nickname,
+            isAdmin : UserInfo.isAdmin(id)
         };
 
         socket.send(json);
