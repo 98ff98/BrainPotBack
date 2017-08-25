@@ -4,6 +4,7 @@ function XMLDownload() {
 
     //content write
     content +=
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
         '<?mso-application progid="PowerPoint.Show"?>' +
         '<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">' +
         '<pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml" pkg:padding="512">' +
@@ -144,7 +145,7 @@ function XMLDownload() {
             '<p:cNvSpPr txBox="1" />' +
             '<p:nvPr/></p:nvSpPr>' +
             '<p:spPr>' +
-            '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
+            '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + heigth + '" /></a:xfrm>' +
             '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
             '<p:txBody>' +
             '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
@@ -2309,12 +2310,14 @@ function XMLDownload() {
 
     var xmlContent = [header, content];
     var blob = new Blob(xmlContent, {
-        type: 'text/xml'
+        type: 'text/xml;charset=UTF-8',
+        encoding: "UTF-8"
     });
     var url = URL.createObjectURL(blob);
     var link = document.getElementById("menu_save");
 
     link.setAttribute('href', url);
+    window.location.href = link.href;
 
     console.log(blob.size);
     console.log(blob.type);
@@ -2323,10 +2326,10 @@ function XMLDownload() {
 
 function getXMLLocation(x, y) {
     var XMLWidth = 8598;
-    var XMLHeight = 7882;
+    var XMLHeigth = 7882;
 
     return {
         x: XMLWidth * x,
-        y: XMLHeight * y
+        y: XMLHeigth * y
     }
 }
