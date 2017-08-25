@@ -156,6 +156,9 @@ function XMLDownload() {
             '</p:txBody>' +
             '</p:sp>';
     });
+
+    console.log (page_1_content);
+    
     //<code> page 1 </code>
     content +=
         '<pkg:part pkg:name="/ppt/slides/slide1.xml" pkg:contentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml">' +
