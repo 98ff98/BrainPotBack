@@ -4,7 +4,6 @@ function XMLDownload() {
 
     //content write
     content +=
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
         '<?mso-application progid="PowerPoint.Show"?>' +
         '<pkg:package xmlns:pkg="http://schemas.microsoft.com/office/2006/xmlPackage">' +
         '<pkg:part pkg:name="/_rels/.rels" pkg:contentType="application/vnd.openxmlformats-package.relationships+xml" pkg:padding="512">' +
@@ -156,10 +155,59 @@ function XMLDownload() {
             '</p:txBody>' +
             '</p:sp>';
     });
-
-    console.log (page_1_content);
-    
     //<code> page 1 </code>
+
+    //<code> page 2 </code>
+    var page_2_content = "";
+
+    Grouping.list.forEach(function (item, index) {
+
+        if (item.isGroup) {
+
+        } else {
+            var x = getXMLLocation(item.left, item.top).x;
+            var y = getXMLLocation(item.left, item.top).y;
+            var width = getXMLLocation(item.width, item.heigth).x;
+            var heigth = getXMLLocation(item.width, item.heigth).y;
+
+            page_2_content +=
+                '<p:sp>' +
+                '<p:nvSpPr>' +
+                '<p:cNvPr id="' + (index + 3) + '" name="직사각형 ' + (index + 2) + '" />' +
+                '<p:cNvSpPr/>' +
+                '<p:nvPr/></p:nvSpPr>' +
+                '<p:spPr>' +
+                '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + heigth + '" /></a:xfrm>' +
+                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                '<a:solidFill><a:srgbClr val="' + item.backgrounColor.substring(1) + '" /></a:solidFill>' +
+                '<a:ln><a:noFill/></a:ln>' +
+                '</p:spPr>' +
+                '<p:style>' +
+                '<a:lnRef idx="2">' +
+                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                '</a:lnRef>' +
+                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                '</p:style>' +
+                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                '<a:p><a:pPr algn="ctr" />' +
+                '<a:r>' +
+                '<a:rPr lang="ko-KR" altLang="en-US" dirty="0" smtClean="0">' +
+                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                '</a:rPr>' +
+                '<a:t>' + item.text + '</a:t>' +
+                '</a:r>' +
+                '<a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0">' +
+                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                '</a:endParaRPr>' +
+                '</a:p>' +
+                '</p:txBody>' +
+                '</p:sp>';
+        }
+    });
+    //<code> page 2 </code>
+
     content +=
         '<pkg:part pkg:name="/ppt/slides/slide1.xml" pkg:contentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml">' +
         '<pkg:xmlData>' +
@@ -197,6 +245,7 @@ function XMLDownload() {
         '<p:grpSpPr>' +
         '<a:xfrm>' + '<a:off x="0" y="0" />' + '<a:ext cx="0" cy="0" />' + '<a:chOff x="0" y="0" />' + '<a:chExt cx="0" cy="0" />' + '</a:xfrm>' +
         '</p:grpSpPr>' +
+        page_2_content +
         '</p:spTree>' +
         '<p:extLst>' +
         '<p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
