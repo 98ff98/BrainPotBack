@@ -136,8 +136,8 @@ function XMLDownload() {
     Idea.list.forEach(function (item, index) {
         var x = getXMLLocation(item.left, item.top).x;
         var y = getXMLLocation(item.left, item.top).y;
-        var width = getXMLLocation(item.width, item.heigth).x;
-        var heigth = getXMLLocation(item.width, item.heigth).y;
+        var width = getXMLLocation(item.width, item.height).x;
+        var height = getXMLLocation(item.width, item.height).y;
 
         page_1_content += '<p:sp>' +
             '<p:nvSpPr>' +
@@ -145,7 +145,7 @@ function XMLDownload() {
             '<p:cNvSpPr txBox="1" />' +
             '<p:nvPr/></p:nvSpPr>' +
             '<p:spPr>' +
-            '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + heigth + '" /></a:xfrm>' +
+            '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
             '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
             '<p:txBody>' +
             '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
@@ -165,30 +165,31 @@ function XMLDownload() {
 
         if (item.isGroup) {
             var group = item.getObjects();
+            var color = (item.category === "root") ? "FFDD33" : "33D3E5";
             var mainBox = {
                 text: group[1].text,
                 x: getXMLLocation(group[0].originalLeft, group[0].originalTop).x,
                 y: getXMLLocation(group[0].originalLeft, group[0].originalTop).y,
-                width: getXMLLocation(group[0].width, group[0].heigth).x,
-                heigth: getXMLLocation(group[0].width, group[0].heigth).y
+                width: getXMLLocation(group[0].width, group[0].height).x,
+                height: getXMLLocation(group[0].width, group[0].height).y
             };
             var leftLine = {
                 x: getXMLLocation(group[2].originalLeft, group[2].originalTop).x,
                 y: getXMLLocation(group[2].originalLeft, group[2].originalTop).y,
-                width: getXMLLocation(group[2].width, group[2].heigth).x,
-                heigth: getXMLLocation(group[2].width, group[2].heigth).y
+                width: getXMLLocation(group[2].width, group[2].height).x,
+                height: getXMLLocation(group[2].width, group[2].height).y
             };
             var rightLine = {
                 x: getXMLLocation(group[3].originalLeft, group[3].originalTop).x,
                 y: getXMLLocation(group[3].originalLeft, group[3].originalTop).y,
-                width: getXMLLocation(group[3].width, group[3].heigth).x,
-                heigth: getXMLLocation(group[3].width, group[3].heigth).y
+                width: getXMLLocation(group[3].width, group[3].height).x,
+                height: getXMLLocation(group[3].width, group[3].height).y
             };
             var bottomLine = {
                 x: getXMLLocation(group[4].originalLeft, group[4].originalTop).x,
                 y: getXMLLocation(group[4].originalLeft, group[4].originalTop).y,
-                width: getXMLLocation(group[4].width, group[4].heigth).x,
-                heigth: getXMLLocation(group[4].width, group[4].heigth).y
+                width: getXMLLocation(group[4].width, group[4].height).x,
+                height: getXMLLocation(group[4].width, group[4].height).y
             };
 
             page_2_content += '<p:grpSp>' +
@@ -197,7 +198,7 @@ function XMLDownload() {
                 '<p:cNvGrpSpPr/>' +
                 '<p:nvPr/></p:nvGrpSpPr>' +
                 '<p:grpSpPr>' +
-                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:ext cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.heigth + 1) + '" /><a:chOff x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:chExt cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.heigth + 1) + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:ext cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /><a:chOff x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:chExt cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /></a:xfrm>' +
                 '</p:grpSpPr>' +
                 '<p:sp>' +
                 '<p:nvSpPr>' +
@@ -205,7 +206,7 @@ function XMLDownload() {
                 '<p:cNvSpPr/>' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
-                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + mainBox.y + '" /><a:ext cx="' + mainBox.width + '" cy="' + mainBox.heigth + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + mainBox.y + '" /><a:ext cx="' + mainBox.width + '" cy="' + mainBox.height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '<a:ln><a:noFill/></a:ln>' +
                 '</p:spPr>' +
@@ -237,7 +238,7 @@ function XMLDownload() {
                 '<p:cNvSpPr/>' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
-                '<a:xfrm><a:off x="' + leftLine.x + '" y="' + leftLine.y + '" /><a:ext cx="' + leftLine.width + '" cy="' + leftLine.heigth + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + leftLine.x + '" y="' + leftLine.y + '" /><a:ext cx="' + leftLine.width + '" cy="' + leftLine.height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '<a:ln><a:noFill/></a:ln>' +
                 '</p:spPr>' +
@@ -259,7 +260,7 @@ function XMLDownload() {
                 '<p:cNvSpPr/>' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
-                '<a:xfrm><a:off x="' + rightLine.x + '" y="' + rightLine.y + '" /><a:ext cx="' + rightLine.width + '" cy="' + rightLine.heigth + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + rightLine.x + '" y="' + rightLine.y + '" /><a:ext cx="' + rightLine.width + '" cy="' + rightLine.height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '<a:ln><a:noFill/></a:ln>' +
                 '</p:spPr>' +
@@ -281,7 +282,7 @@ function XMLDownload() {
                 '<p:cNvSpPr/>' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
-                '<a:xfrm><a:off x="' + bottomLine.x + '" y="' + bottomLine.y + '" /><a:ext cx="' + bottomLine.width + '" cy="' + bottomLine.heigth + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + bottomLine.x + '" y="' + bottomLine.y + '" /><a:ext cx="' + bottomLine.width + '" cy="' + bottomLine.height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '<a:ln><a:noFill/></a:ln>' +
                 '</p:spPr>' +
@@ -301,8 +302,8 @@ function XMLDownload() {
         } else {
             var x = getXMLLocation(item.left, item.top).x;
             var y = getXMLLocation(item.left, item.top).y;
-            var width = getXMLLocation(item.width, item.heigth).x;
-            var heigth = getXMLLocation(item.width, item.heigth).y;
+            var width = getXMLLocation(item.width, item.height).x;
+            var height = getXMLLocation(item.width, item.height).y;
 
             page_2_content +=
                 '<p:sp>' +
@@ -311,7 +312,7 @@ function XMLDownload() {
                 '<p:cNvSpPr/>' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
-                '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + heigth + '" /></a:xfrm>' +
+                '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '<a:solidFill><a:srgbClr val="' + item.backgroundColor.substring(1) + '" /></a:solidFill>' +
                 '<a:ln><a:noFill/></a:ln>' +
@@ -2493,7 +2494,6 @@ function XMLDownload() {
         '</pkg:part>' +
         '</pkg:package>';
 
-
     var xmlContent = [header, content];
     var blob = new Blob(xmlContent, {
         type: 'text/xml;charset=UTF-8',
@@ -2512,10 +2512,10 @@ function XMLDownload() {
 
 function getXMLLocation(x, y) {
     var XMLWidth = 8598;
-    var XMLHeigth = 7882;
+    var XMLHeight = 7882;
 
     return {
         x: XMLWidth * x,
-        y: XMLHeigth * y
+        y: XMLHeight * y
     }
 }
