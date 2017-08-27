@@ -133,214 +133,225 @@ function XMLDownload() {
     //<code> page 1 </code>
     var page_1_content = "";
 
-    Idea.list.forEach(function (item, index) {
-        var x = getXMLLocation(item.left, item.top).x;
-        var y = getXMLLocation(item.left, item.top).y;
-        var width = getXMLLocation(item.width, item.height).x;
-        var height = getXMLLocation(item.width, item.height).y;
-
-        page_1_content += '<p:sp>' +
-            '<p:nvSpPr>' +
-            '<p:cNvPr id="' + ++idIncrement + '" name="TextBox ' + (idIncrement - 1) + '" />' +
-            '<p:cNvSpPr txBox="1" />' +
-            '<p:nvPr/></p:nvSpPr>' +
-            '<p:spPr>' +
-            '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
-            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
-            '<p:txBody>' +
-            '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
-            '<a:p>' +
-            '<a:r><a:rPr lang="ko-KR" altLang="en-US" dirty="0" err="1" smtClean="0" />' +
-            '<a:t>' + item.text + '</a:t>' +
-            '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0" /></a:p>' +
-            '</p:txBody>' +
-            '</p:sp>';
-    });
-    //<code> page 1 </code>
-
-    //<code> page 2 </code>
-    var page_2_content = "";
-
-    Grouping.list.forEach(function (item, index) {
-
-        if (item.isGroup) {
-            var group = item.getObjects();
-            var color = (item.category === "root") ? "FFDD33" : "33D3E5";
-            var mainBox = {
-                text: group[1].text,
-                x: getXMLLocation(group[0].originalLeft, group[0].originalTop).x,
-                y: getXMLLocation(group[0].originalLeft, group[0].originalTop).y,
-                width: getXMLLocation(group[0].width, group[0].height).x,
-                height: getXMLLocation(group[0].width, group[0].height).y
-            };
-            var leftLine = {
-                x: getXMLLocation(group[2].originalLeft, group[2].originalTop).x,
-                y: getXMLLocation(group[2].originalLeft, group[2].originalTop).y,
-                width: getXMLLocation(group[2].width, group[2].height).x,
-                height: getXMLLocation(group[2].width, group[2].height).y
-            };
-            var rightLine = {
-                x: getXMLLocation(group[3].originalLeft, group[3].originalTop).x,
-                y: getXMLLocation(group[3].originalLeft, group[3].originalTop).y,
-                width: getXMLLocation(group[3].width, group[3].height).x,
-                height: getXMLLocation(group[3].width, group[3].height).y
-            };
-            var bottomLine = {
-                x: getXMLLocation(group[4].originalLeft, group[4].originalTop).x,
-                y: getXMLLocation(group[4].originalLeft, group[4].originalTop).y,
-                width: getXMLLocation(group[4].width, group[4].height).x,
-                height: getXMLLocation(group[4].width, group[4].height).y
-            };
-
-            page_2_content += '<p:grpSp>' +
-                '<p:nvGrpSpPr>' +
-                '<p:cNvPr id="' + ++idIncrement + '" name="그룹 ' + (idIncrement - 1) + '" />' +
-                '<p:cNvGrpSpPr/>' +
-                '<p:nvPr/></p:nvGrpSpPr>' +
-                '<p:grpSpPr>' +
-                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:ext cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /><a:chOff x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:chExt cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /></a:xfrm>' +
-                '</p:grpSpPr>' +
-                '<p:sp>' +
-                '<p:nvSpPr>' +
-                '<p:cNvPr id="2" name="직사각형 1" />' +
-                '<p:cNvSpPr/>' +
-                '<p:nvPr/></p:nvSpPr>' +
-                '<p:spPr>' +
-                '<a:xfrm><a:off x="' + mainBox.x + '" y="' + mainBox.y + '" /><a:ext cx="' + mainBox.width + '" cy="' + mainBox.height + '" /></a:xfrm>' +
-                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '<a:ln><a:noFill/></a:ln>' +
-                '</p:spPr>' +
-                '<p:style>' +
-                '<a:lnRef idx="2">' +
-                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
-                '</a:lnRef>' +
-                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
-                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
-                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
-                '</p:style>' +
-                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
-                '<a:p>' +
-                '<a:r>' +
-                '<a:rPr lang="ko-KR" altLang="en-US" dirty="0" smtClean="0">' +
-                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
-                '</a:rPr>' +
-                '<a:t>' + mainBox.text + '</a:t>' +
-                '</a:r>' +
-                '<a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0">' +
-                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
-                '</a:endParaRPr>' +
-                '</a:p>' +
-                '</p:txBody>' +
-                '</p:sp>' +
-                '<p:sp>' +
-                '<p:nvSpPr>' +
-                '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
-                '<p:cNvSpPr/>' +
-                '<p:nvPr/></p:nvSpPr>' +
-                '<p:spPr>' +
-                '<a:xfrm><a:off x="' + leftLine.x + '" y="' + leftLine.y + '" /><a:ext cx="' + leftLine.width + '" cy="' + leftLine.height + '" /></a:xfrm>' +
-                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '<a:ln><a:noFill/></a:ln>' +
-                '</p:spPr>' +
-                '<p:style>' +
-                '<a:lnRef idx="2">' +
-                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
-                '</a:lnRef>' +
-                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
-                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
-                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
-                '</p:style>' +
-                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
-                '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
-                '</p:txBody>' +
-                '</p:sp>' +
-                '<p:sp>' +
-                '<p:nvSpPr>' +
-                '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
-                '<p:cNvSpPr/>' +
-                '<p:nvPr/></p:nvSpPr>' +
-                '<p:spPr>' +
-                '<a:xfrm><a:off x="' + rightLine.x + '" y="' + rightLine.y + '" /><a:ext cx="' + rightLine.width + '" cy="' + rightLine.height + '" /></a:xfrm>' +
-                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '<a:ln><a:noFill/></a:ln>' +
-                '</p:spPr>' +
-                '<p:style>' +
-                '<a:lnRef idx="2">' +
-                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
-                '</a:lnRef>' +
-                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
-                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
-                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
-                '</p:style>' +
-                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
-                '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
-                '</p:txBody>' +
-                '</p:sp>' +
-                '<p:sp>' +
-                '<p:nvSpPr>' +
-                '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
-                '<p:cNvSpPr/>' +
-                '<p:nvPr/></p:nvSpPr>' +
-                '<p:spPr>' +
-                '<a:xfrm><a:off x="' + bottomLine.x + '" y="' + bottomLine.y + '" /><a:ext cx="' + bottomLine.width + '" cy="' + bottomLine.height + '" /></a:xfrm>' +
-                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '<a:ln><a:noFill/></a:ln>' +
-                '</p:spPr>' +
-                '<p:style>' +
-                '<a:lnRef idx="2">' +
-                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
-                '</a:lnRef>' +
-                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
-                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
-                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
-                '</p:style>' +
-                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
-                '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
-                '</p:txBody>' +
-                '</p:sp>' +
-                '</p:grpSp>';
-        } else {
+    if (Idea.list)
+        Idea.list.forEach(function (item, index) {
             var x = getXMLLocation(item.left, item.top).x;
             var y = getXMLLocation(item.left, item.top).y;
             var width = getXMLLocation(item.width, item.height).x;
             var height = getXMLLocation(item.width, item.height).y;
 
-            page_2_content +=
-                '<p:sp>' +
+            page_1_content += '<p:sp>' +
                 '<p:nvSpPr>' +
-                '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
-                '<p:cNvSpPr/>' +
+                '<p:cNvPr id="' + ++idIncrement + '" name="TextBox ' + (idIncrement - 1) + '" />' +
+                '<p:cNvSpPr txBox="1" />' +
                 '<p:nvPr/></p:nvSpPr>' +
                 '<p:spPr>' +
                 '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
-                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-                '<a:solidFill><a:srgbClr val="' + item.backgroundColor.substring(1) + '" /></a:solidFill>' +
-                '<a:ln><a:noFill/></a:ln>' +
-                '</p:spPr>' +
-                '<p:style>' +
-                '<a:lnRef idx="2">' +
-                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
-                '</a:lnRef>' +
-                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
-                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
-                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
-                '</p:style>' +
-                '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
-                '<a:p><a:pPr algn="ctr" />' +
-                '<a:r>' +
-                '<a:rPr lang="ko-KR" altLang="en-US" dirty="0" smtClean="0">' +
-                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
-                '</a:rPr>' +
+                '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+                '<p:txBody>' +
+                '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
+                '<a:p>' +
+                '<a:r><a:rPr lang="ko-KR" altLang="en-US" sz="1400" dirty="0" err="1" smtClean="0" />' +
                 '<a:t>' + item.text + '</a:t>' +
-                '</a:r>' +
-                '<a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0">' +
-                '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
-                '</a:endParaRPr>' +
-                '</a:p>' +
+                '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" sz="1400" dirty="0" /></a:p>' +
                 '</p:txBody>' +
                 '</p:sp>';
-        }
-    });
+        });
+    //<code> page 1 </code>
+
+    //<code> page 2 </code>
+    var page_2_content = "";
+
+    if (Grouping.list)
+        Grouping.list.forEach(function (item, index) {
+
+            if (item.isGroup) {
+                var group = item.getObjects();
+                var color = (item.category === "root") ? "FFDD33" : "33D3E5";
+                var fontSize = (item.category === "root") ? 1400 : 1200;
+                var x = getXMLLocation(item.left, item.top).x;
+                var y = getXMLLocation(item.left, item.top).y;
+
+                var mainBox = {
+                    text: group[1].text,
+                    x: x,
+                    y: y,
+                    width: getXMLLocation(group[0].width, group[0].height).x,
+                    height: getXMLLocation(group[0].width, group[0].height).y
+                };
+                mainBox.y = (item.category === "root") ? mainBox.y - getXMLLocation(item.originalLeft, item.originalTop).y : y;
+                var leftLine = {
+                    x: x,
+                    y: y,
+                    width: getXMLLocation(group[2].width, group[2].height).x,
+                    height: getXMLLocation(group[2].width, group[2].height).y
+                };
+                var rightLine = {
+                    x: x + mainBox.width - getXMLLocation(1, 1).x,
+                    y: y,
+                    width: getXMLLocation(group[3].width, group[3].height).x,
+                    height: getXMLLocation(group[3].width, group[3].height).y
+                };
+                var bottomLine = {
+                    x: x + getXMLLocation(1, 1).x,
+                    y: y + leftLine.height - getXMLLocation(2, 2).y,
+                    width: getXMLLocation(group[4].width, group[4].height).x,
+                    height: getXMLLocation(group[4].width, group[4].height).y
+                };
+
+                page_2_content += '<p:grpSp>' +
+                    '<p:nvGrpSpPr>' +
+                    '<p:cNvPr id="' + ++idIncrement + '" name="그룹 ' + (idIncrement - 1) + '" />' +
+                    '<p:cNvGrpSpPr/>' +
+                    '<p:nvPr/></p:nvGrpSpPr>' +
+                    '<p:grpSpPr>' +
+                    '<a:xfrm><a:off x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:ext cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /><a:chOff x="' + mainBox.x + '" y="' + (mainBox.y - 1) + '" /><a:chExt cx="' + (mainBox.width + 1) + '" cy="' + (leftLine.height + 1) + '" /></a:xfrm>' +
+                    '</p:grpSpPr>' +
+                    '<p:sp>' +
+                    '<p:nvSpPr>' +
+                    '<p:cNvPr id="2" name="직사각형 1" />' +
+                    '<p:cNvSpPr/>' +
+                    '<p:nvPr/></p:nvSpPr>' +
+                    '<p:spPr>' +
+                    '<a:xfrm><a:off x="' + mainBox.x + '" y="' + mainBox.y + '" /><a:ext cx="' + mainBox.width + '" cy="' + mainBox.height + '" /></a:xfrm>' +
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                    '<a:solidFill><a:srgbClr val="' + color + '" /></a:solidFill>' +
+                    '<a:ln><a:noFill/></a:ln>' +
+                    '</p:spPr>' +
+                    '<p:style>' +
+                    '<a:lnRef idx="2">' +
+                    '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                    '</a:lnRef>' +
+                    '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                    '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                    '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                    '</p:style>' +
+                    '<p:txBody><a:bodyPr wrap="none" rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                    '<a:p>' +
+                    '<a:r>' +
+                    '<a:rPr lang="ko-KR" altLang="en-US" sz="' + fontSize + '" dirty="0" smtClean="0">' +
+                    '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                    '</a:rPr>' +
+                    '<a:t>' + mainBox.text + '</a:t>' +
+                    '</a:r>' +
+                    '<a:endParaRPr lang="ko-KR" altLang="en-US" sz="' + fontSize + '" dirty="0">' +
+                    '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                    '</a:endParaRPr>' +
+                    '</a:p>' +
+                    '</p:txBody>' +
+                    '</p:sp>' +
+                    '<p:sp>' +
+                    '<p:nvSpPr>' +
+                    '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+                    '<p:cNvSpPr/>' +
+                    '<p:nvPr/></p:nvSpPr>' +
+                    '<p:spPr>' +
+                    '<a:xfrm><a:off x="' + leftLine.x + '" y="' + leftLine.y + '" /><a:ext cx="' + leftLine.width + '" cy="' + leftLine.height + '" /></a:xfrm>' +
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                    '<a:solidFill><a:srgbClr val="' + color + '" /></a:solidFill>' +
+                    '<a:ln><a:noFill/></a:ln>' +
+                    '</p:spPr>' +
+                    '<p:style>' +
+                    '<a:lnRef idx="2">' +
+                    '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                    '</a:lnRef>' +
+                    '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                    '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                    '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                    '</p:style>' +
+                    '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                    '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+                    '</p:txBody>' +
+                    '</p:sp>' +
+                    '<p:sp>' +
+                    '<p:nvSpPr>' +
+                    '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+                    '<p:cNvSpPr/>' +
+                    '<p:nvPr/></p:nvSpPr>' +
+                    '<p:spPr>' +
+                    '<a:xfrm><a:off x="' + rightLine.x + '" y="' + rightLine.y + '" /><a:ext cx="' + rightLine.width + '" cy="' + rightLine.height + '" /></a:xfrm>' +
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                    '<a:solidFill><a:srgbClr val="' + color + '" /></a:solidFill>' +
+                    '<a:ln><a:noFill/></a:ln>' +
+                    '</p:spPr>' +
+                    '<p:style>' +
+                    '<a:lnRef idx="2">' +
+                    '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                    '</a:lnRef>' +
+                    '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                    '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                    '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                    '</p:style>' +
+                    '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                    '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+                    '</p:txBody>' +
+                    '</p:sp>' +
+                    '<p:sp>' +
+                    '<p:nvSpPr>' +
+                    '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+                    '<p:cNvSpPr/>' +
+                    '<p:nvPr/></p:nvSpPr>' +
+                    '<p:spPr>' +
+                    '<a:xfrm><a:off x="' + bottomLine.x + '" y="' + bottomLine.y + '" /><a:ext cx="' + bottomLine.width + '" cy="' + bottomLine.height + '" /></a:xfrm>' +
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                    '<a:solidFill><a:srgbClr val="' + color + '" /></a:solidFill>' +
+                    '<a:ln><a:noFill/></a:ln>' +
+                    '</p:spPr>' +
+                    '<p:style>' +
+                    '<a:lnRef idx="2">' +
+                    '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                    '</a:lnRef>' +
+                    '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                    '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                    '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                    '</p:style>' +
+                    '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                    '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+                    '</p:txBody>' +
+                    '</p:sp>' +
+                    '</p:grpSp>';
+            } else {
+                var x = getXMLLocation(item.left, item.top).x;
+                var y = getXMLLocation(item.left, item.top).y;
+                var width = getXMLLocation(item.width, item.height).x;
+                var height = getXMLLocation(item.width, item.height).y;
+
+                page_2_content +=
+                    '<p:sp>' +
+                    '<p:nvSpPr>' +
+                    '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+                    '<p:cNvSpPr/>' +
+                    '<p:nvPr/></p:nvSpPr>' +
+                    '<p:spPr>' +
+                    '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
+                    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+                    '<a:solidFill><a:srgbClr val="' + item.backgroundColor.substring(1) + '" /></a:solidFill>' +
+                    '<a:ln><a:noFill/></a:ln>' +
+                    '</p:spPr>' +
+                    '<p:style>' +
+                    '<a:lnRef idx="2">' +
+                    '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                    '</a:lnRef>' +
+                    '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                    '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                    '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                    '</p:style>' +
+                    '<p:txBody><a:bodyPr wrap="none" rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                    '<a:p><a:pPr algn="ctr" />' +
+                    '<a:r>' +
+                    '<a:rPr lang="ko-KR" altLang="en-US" sz="1100" dirty="0" smtClean="0">' +
+                    '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                    '</a:rPr>' +
+                    '<a:t>' + item.text + '</a:t>' +
+                    '</a:r>' +
+                    '<a:endParaRPr lang="ko-KR" altLang="en-US" sz="1100" dirty="0">' +
+                    '<a:solidFill><a:schemeClr val="tx1" /></a:solidFill>' +
+                    '</a:endParaRPr>' +
+                    '</a:p>' +
+                    '</p:txBody>' +
+                    '</p:sp>';
+            }
+        });
     //<code> page 2 </code>
 
     content +=
@@ -2499,11 +2510,12 @@ function XMLDownload() {
         type: 'text/xml;charset=UTF-8',
         encoding: "UTF-8"
     });
+
     var url = URL.createObjectURL(blob);
     var link = document.getElementById("menu_save");
 
     link.setAttribute('href', url);
-    window.location.href = link.href;
+    //    window.location.href = link.href;
 
     console.log(blob.size);
     console.log(blob.type);
@@ -2515,7 +2527,7 @@ function getXMLLocation(x, y) {
     var XMLHeight = 7882;
 
     return {
-        x: XMLWidth * x,
-        y: XMLHeight * y
+        x: Math.round(XMLWidth * x),
+        y: Math.round(XMLHeight * y)
     }
 }
