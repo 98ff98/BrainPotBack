@@ -32,14 +32,16 @@ var socket = {
 				case "load_users" :
 					var users = json.users;
 
-					for (var i = users.length - 1; i > 0; i--) {
-						var user = {
-							id : users[i].userID,
-							nickname : users[i].userNickname
-						};
+					users.forEach(function (item) {
+						if (!item.userID === myID) {
+							var user = {
+								id : item.userID,
+								nickname : item.userNickname
+							};
 
-						UserInfo.add(user);
-					}
+							UserInfo.add(user);
+						}
+					});
 					break;
 				case "chat" :
 					chat.write(json);
