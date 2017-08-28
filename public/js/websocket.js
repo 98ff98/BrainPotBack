@@ -23,11 +23,17 @@ var socket = {
 			switch (json.event) {
 				case "join_user" :
 					UserInfo.add(json);
-				    //TODO
 				    blind();
+				    toast(json.nickname + "님이 입장하였습니다.");
 					break;
 				case "left_user" :
 					UserInfo.remove(json);
+					break;
+				case "load_users" :
+					var users = json.users;
+
+					for (var i = users.length; i > 0; i--)
+						UserInfo.add(users[i]);
 					break;
 				case "chat" :
 					chat.write(json);

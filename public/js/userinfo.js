@@ -7,7 +7,6 @@ var UserInfo = {
             nickname: json.nickname
         };
 
-        toast(user.nickname + "님이 입장하였습니다.");
         UserInfo.list.push(user);
 
         $("#user_list").append(
