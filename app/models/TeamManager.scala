@@ -58,6 +58,7 @@ object TeamManager{
       this.users.synchronized{
         this.users(teamID) = tempList
       }
+      mySQLConnection.dropUser(userID)
     }
     catch {
       case e: Exception => e.printStackTrace()
