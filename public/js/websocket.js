@@ -32,7 +32,7 @@ var socket = {
 				case "load_users" :
 					var users = json.users;
 
-					for (var i = users.length; i > 0; i--) {
+					for (var i = users.length - 1; i > 0; i--) {
 						var user = {
 							id : users[i].userID,
 							nickname : users[i].userNickname

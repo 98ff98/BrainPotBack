@@ -149,7 +149,7 @@ function XMLDownload() {
                 '<a:xfrm><a:off x="' + x + '" y="' + y + '" /><a:ext cx="' + width + '" cy="' + height + '" /></a:xfrm>' +
                 '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
                 '<p:txBody>' +
-                '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
+                '<a:bodyPr wrap="none" rtlCol="0" anchor="ctr"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
                 '<a:p>' +
                 '<a:r><a:rPr lang="ko-KR" altLang="en-US" sz="1400" dirty="0" err="1" smtClean="0" />' +
                 '<a:t>' + item.text + '</a:t>' +
@@ -353,6 +353,14 @@ function XMLDownload() {
             }
         });
     //<code> page 2 </code>
+
+    //<code> page 3 </code>
+    var page_3_content = "";
+    //<code> page 3 </code>
+
+    //<code> page 4 </code>
+    var page_4_content = "";
+    //<code> page 4 </code>
 
     content +=
         '<pkg:part pkg:name="/ppt/slides/slide1.xml" pkg:contentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml">' +
@@ -2507,7 +2515,7 @@ function XMLDownload() {
 
     var xmlContent = [header, content];
     var blob = new Blob(xmlContent, {
-        type: 'text/xml;charset=UTF-8',
+        type: 'application/xml;charset=UTF-8',
         encoding: "UTF-8"
     });
 
@@ -2515,7 +2523,7 @@ function XMLDownload() {
     var link = document.getElementById("menu_save");
 
     link.setAttribute('href', url);
-    //    window.location.href = link.href;
+    link.download = "BrainPot PPT";
 
     console.log(blob.size);
     console.log(blob.type);
