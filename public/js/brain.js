@@ -51,7 +51,8 @@ $(document).ready(function () {
 
     //페이지를 나가는 경우
     $(window).on("beforeunload", function () {
-        UserInfo.left(myID, myNickname);
+        if (!UserInfo.isKicked)
+            UserInfo.left(myID, myNickname);
     });
 });
     //<summary> function define </summary>
@@ -71,4 +72,31 @@ function render () {
     brainField.setActiveGroup(new f.Group(brainField.getObjects()));
     brainField.deactivateAll();
     brainField.renderAll();
+}
+
+function getCookie (name) {
+    name = "=";
+
+    var cookieData = document.cookie;
+    var start = cookieData.indexOf(name);
+    var value = "";
+
+    if (start !== -1) {
+        start += name.length;
+        var end = cookieData.indexOf(";", start);
+
+        if (end === -1)
+            end = cookieData.length;
+
+        value = cookieData.substring(start, end);
+    }
+
+    return unescape(value);
+}
+
+function deleteCookie(name) {
+    var expireDate = new Date();
+  
+    expireDate.setDate(expireDate.getDate() - 1);
+    document.cookie = name + "= " + "; expires=" + expireDate.toGMTString() + "; path=/";
 }
