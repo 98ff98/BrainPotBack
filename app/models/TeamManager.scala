@@ -34,7 +34,7 @@ object TeamManager{
           val tempList = (userID, actorRef) :: this.users(teamID)
           this.users(teamID) = tempList
           //Logger.debug("유저 추가작동, 팀ID:" + teamID + "유저ID :" + userID)
-          loadTeamDatas(teamID,actorRef).map(unit => unit)
+          synchronizedLoadTeamData(teamID,actorRef)
           true
         }
       }
@@ -97,5 +97,24 @@ object TeamManager{
         Logger.info(Json.stringify(userListJSON))
       }
     }
+  }
+
+  //해당 actorRef에 팀 데이터들을 동기식으로 전송한다.
+  def synchronizedLoadTeamData(teamID: Int, actorRef: ActorRef) : Unit = {
+    val userList = mySQLConnection.getUserList(teamID)
+
+    implicit val userWrites = new Writes[UserData] {
+      def writes(user: UserData) = Json.obj(
+        "userID" -> user.id,
+        "userNickname" -> user.nickname
+      )
+    }
+
+    val userListJSON = Json.obj(
+      "event" -> "load_users",
+      "users" -> userList
+    )
+    actorRef ! Json.stringify(userListJSON)
+    Logger.info(Json.stringify(userListJSON))
   }
 }

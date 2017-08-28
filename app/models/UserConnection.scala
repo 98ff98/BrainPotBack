@@ -23,5 +23,5 @@ trait UserConnection {
   def getUserData(id: Int): Future[UserData]
 
   //해당 팀의 모든 유저들의 리스트를 가져온다.
-  def getUserList(teamID: Int) : Future[List[UserData]]
+  def getUserList(teamID: Int) : List[UserData]
 }

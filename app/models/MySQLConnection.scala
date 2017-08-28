@@ -169,11 +169,9 @@ class MySQLConnection(dbName: String) extends TeamConnection with UserConnection
     }
   }
 
-  override def getUserList(teamID: Int): Future[List[UserData]] = {
-    Future{
-      DB.withConnection{ implicit  conn =>
-        SQL("CALL `GET_USER_LIST`({ID})").on('ID -> teamID).as(userParser *)
-      }
+  override def getUserList(teamID: Int): List[UserData] = {
+    DB.withConnection{ implicit  conn =>
+      SQL("CALL `GET_USER_LIST`({ID})").on('ID -> teamID).as(userParser *)
     }
   }
 
