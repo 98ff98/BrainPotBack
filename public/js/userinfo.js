@@ -1,5 +1,6 @@
 var UserInfo = {
     list: [],
+    isKicked:false,
     //유저 데이터 추가
     add: (json) => {
         var user = {
@@ -32,8 +33,10 @@ var UserInfo = {
     //유저 데이터 제거
     remove: (json) => {
         UserInfo.list.forEach (function (item, index) {
+            //내가 추방 당하는 경우
             if (json.id === myID) {
-                //강제퇴장
+                UserInfo.isKicked = true;
+                deleteCookie("BrainPotLogin");
             }
 
             if (json.id === item.id) {
