@@ -32,8 +32,14 @@ var socket = {
 				case "load_users" :
 					var users = json.users;
 
-					for (var i = users.length; i > 0; i--)
-						UserInfo.add(users[i]);
+					for (var i = users.length; i > 0; i--) {
+						var user = {
+							id : users[i].userID,
+							nickname : users[i].userNickname
+						};
+
+						UserInfo.add(user);
+					}
 					break;
 				case "chat" :
 					chat.write(json);
