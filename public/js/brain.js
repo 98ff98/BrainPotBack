@@ -28,15 +28,19 @@ $(document).ready(function () {
     $("#menu_capture").click(function () {
         html2canvas($("#brain_field_" + level), {
             onrendered: function (canvas) {
-                var img = canvas.toDataURL();
-                window.open(img, "_blank");
+                var url = canvas.toDataURL();
+                var link = document.createElement('a');
+
+                link.setAttribute('href', url);
+                link.download = "BrainPot Image";
+                link.click();
             }
         });
     });
 
-    //json 다운로드 (데이터 세이브)
+    //PPT 다운로드
     $("#menu_save").click(function () {
-        
+        XMLDownload();
     });
 
     //방장이 아닌 경우
