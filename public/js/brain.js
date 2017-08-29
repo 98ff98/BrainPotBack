@@ -54,6 +54,20 @@ $(document).ready(function () {
         if (!UserInfo.isKicked)
             UserInfo.left(myID, myNickname);
     });
+
+    //뒤로가기 브라우저 버튼 방지
+    history.pushState(null, null, "#noback");
+    $(window).bind("hashchange", function () {
+        history.pushState(null, null, "#noback");
+    });
+
+    //새로고침 F5 방지
+    $(window).keydown(function (event) {
+        var key = event.key;
+
+        if (key === "F5")
+            event.preventDefault();
+    });
 });
     //<summary> function define </summary>
 function toast(text) {

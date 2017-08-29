@@ -33,7 +33,7 @@ var socket = {
 					var users = json.users;
 
 					users.forEach(function (item) {
-						if (!item.userID === myID) {
+						if (item.userID !== myID) {
 							var user = {
 								id : item.userID,
 								nickname : item.userNickname
