@@ -74,6 +74,17 @@ var UserInfo = {
             if (json.id === item.id) {
                 toast(json.nickname + "님이 퇴장하였습니다.");
                 UserInfo.list.splice(index, 1);
+
+                for (var i = 0; i < $(".user_list_item").length; i++) {
+                    if($($(".user_list_item")[i]).attr("data-id") == json.id) {
+                        var userList = $("#user_list")[0];
+                        var deleteUser = $(".user_list_item")[i];
+
+                        userList.removeChild(deleteUser);
+
+                        break;
+                    }
+                }
             }
         });
     },

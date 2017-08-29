@@ -1,6 +1,8 @@
 function XMLDownload() {
     var header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
     var content = "";
+    var date = new Date();
+
 
     //content write
     content +=
@@ -135,10 +137,10 @@ function XMLDownload() {
 
     if (Idea.list)
         Idea.list.forEach(function (item, index) {
-            var x = getXMLLocation(item.left, item.top).x;
-            var y = getXMLLocation(item.left, item.top).y;
-            var width = getXMLLocation(item.width, item.height).x;
-            var height = getXMLLocation(item.width, item.height).y;
+            var x = getXMLLocation(item.left).x;
+            var y = getXMLLocation(item.top).y;
+            var width = getXMLLocation(item.width).x;
+            var height = getXMLLocation(item.height).y;
 
             page_1_content += '<p:sp>' +
                 '<p:nvSpPr>' +
@@ -169,34 +171,34 @@ function XMLDownload() {
                 var group = item.getObjects();
                 var color = (item.category === "root") ? "FFDD33" : "33D3E5";
                 var fontSize = (item.category === "root") ? 1400 : 1200;
-                var x = getXMLLocation(item.left, item.top).x;
-                var y = getXMLLocation(item.left, item.top).y;
+                var x = getXMLLocation(item.left).x;
+                var y = getXMLLocation(item.top).y;
 
                 var mainBox = {
                     text: group[1].text,
                     x: x,
                     y: y,
-                    width: getXMLLocation(group[0].width, group[0].height).x,
-                    height: getXMLLocation(group[0].width, group[0].height).y
+                    width: getXMLLocation(group[0].width).x,
+                    height: getXMLLocation(group[0].height).y
                 };
-                mainBox.y = (item.category === "root") ? mainBox.y - getXMLLocation(item.originalLeft, item.originalTop).y : y;
+                mainBox.y = (item.category === "root") ? mainBox.y - getXMLLocation(item.originalTop).y : y;
                 var leftLine = {
                     x: x,
                     y: y,
-                    width: getXMLLocation(group[2].width, group[2].height).x,
-                    height: getXMLLocation(group[2].width, group[2].height).y
+                    width: getXMLLocation(group[2].width).x,
+                    height: getXMLLocation(group[2].height).y
                 };
                 var rightLine = {
-                    x: x + mainBox.width - getXMLLocation(1, 1).x,
+                    x: x + mainBox.width - getXMLLocation(1).x,
                     y: y,
-                    width: getXMLLocation(group[3].width, group[3].height).x,
-                    height: getXMLLocation(group[3].width, group[3].height).y
+                    width: getXMLLocation(group[3].width).x,
+                    height: getXMLLocation(group[3].height).y
                 };
                 var bottomLine = {
-                    x: x + getXMLLocation(1, 1).x,
-                    y: y + leftLine.height - getXMLLocation(2, 2).y,
-                    width: getXMLLocation(group[4].width, group[4].height).x,
-                    height: getXMLLocation(group[4].width, group[4].height).y
+                    x: x + getXMLLocation(1).x,
+                    y: y + leftLine.height - getXMLLocation(2).y,
+                    width: getXMLLocation(group[4].width).x,
+                    height: getXMLLocation(group[4].height).y
                 };
 
                 page_2_content += '<p:grpSp>' +
@@ -311,10 +313,10 @@ function XMLDownload() {
                     '</p:sp>' +
                     '</p:grpSp>';
             } else {
-                var x = getXMLLocation(item.left, item.top).x;
-                var y = getXMLLocation(item.left, item.top).y;
-                var width = getXMLLocation(item.width, item.height).x;
-                var height = getXMLLocation(item.width, item.height).y;
+                var x = getXMLLocation(item.left).x;
+                var y = getXMLLocation(item.top).y;
+                var width = getXMLLocation(item.width).x;
+                var height = getXMLLocation(item.height).y;
 
                 page_2_content +=
                     '<p:sp>' +
@@ -356,6 +358,195 @@ function XMLDownload() {
 
     //<code> page 3 </code>
     var page_3_content = "";
+
+    for (var i = 0; i < $(".mean_list").length; i++) {
+        var div = {
+            x: getXMLLocation($($(".mean_list_item")[i]).offset().left - $("#brain_field_3").offset().left).x,
+            y: getXMLLocation($($(".mean_list_item")[i]).offset().top - $("#brain_field_3").offset().top).y,
+            width: getXMLLocation($($(".mean_list_item")[i]).width()).x,
+            height: getXMLLocation($($(".mean_list_item")[i]).height()).y
+        };
+        var text = {
+            text: $($(".mean_title")[i]).text(),
+            x: getXMLLocation($($(".mean_title")[i]).offset().left - $("#brain_field_3").offset().left).x,
+            y: getXMLLocation($($(".mean_title")[i]).offset().top - $("#brain_field_3").offset().top).y,
+            width: getXMLLocation($($(".mean_title")[i]).width()).x,
+            height: getXMLLocation($($(".mean_title")[i]).height()).y
+        };
+        var divider = {
+            x: getXMLLocation($($(".mean_line")[i]).offset().left - $("#brain_field_3").offset().left).x,
+            y: getXMLLocation($($(".mean_line")[i]).offset().top - $("#brain_field_3").offset().top).y,
+            width: getXMLLocation($($(".mean_line")[i]).width()).x,
+            height: getXMLLocation($($(".mean_line")[i]).height()).y
+        };
+        var inputField;
+
+        page_3_content += '<p:grpSp>' +
+            '<p:nvGrpSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="그룹 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvGrpSpPr/>' +
+            '<p:nvPr/></p:nvGrpSpPr>' +
+            '<p:grpSpPr>' +
+            '<a:xfrm><a:off x="' + div.x + '" y="' + div.y + '" /><a:ext cx="' + div.width + '" cy="' + div.height + '" /><a:chOff x="' + div.x + '" y="' + div.y + '" /><a:chExt cx="' + div.width + '" cy="' + div.height + '" /></a:xfrm>' +
+            '</p:grpSpPr>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr/>' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + div.x + '" y="' + div.y + '" /><a:ext cx="' + div.width + '" cy="' + div.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+            '<a:solidFill><a:schemeClr val="bg1" /></a:solidFill>' +
+            '<a:ln>' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="bg1"><a:lumMod val="95000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="2">' +
+            '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+            '</a:lnRef>' +
+            '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+            '</p:style>' +
+            '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+            '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="TextBox ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr txBox="1" />' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + text.x + '" y="' + text.y + '" /><a:ext cx="' + text.width + '" cy="' + text.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+            '<p:txBody>' +
+            '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
+            '<a:p>' +
+            '<a:r>' +
+            '<a:rPr lang="en-US" altLang="ko-KR" sz="2000" dirty="0" smtClean="0">' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="tx1"><a:lumMod val="85000" /><a:lumOff val="15000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:rPr>' +
+            '<a:t>' + text.text + '</a:t>' +
+            '</a:r>' +
+            '<a:endParaRPr lang="ko-KR" altLang="en-US" sz="2000" dirty="0">' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="tx1"><a:lumMod val="85000" /><a:lumOff val="15000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:endParaRPr>' +
+            '</a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '<p:cxnSp>' +
+            '<p:nvCxnSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직선 연결선 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvCxnSpPr/>' +
+            '<p:nvPr/></p:nvCxnSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm flipV="1"><a:off x="' + divider.x + '" y="' + divider.y + '" /><a:ext cx="' + divider.width + '" cy="' + divider.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="line"><a:avLst/></a:prstGeom>' +
+            '<a:ln w="1270">' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="bg1"><a:lumMod val="85000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="1"><a:schemeClr val="accent1" /></a:lnRef>' +
+            '<a:fillRef idx="0"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="tx1" /></a:fontRef>' +
+            '</p:style>' +
+            '</p:cxnSp>' +
+            '</p:grpSp>';
+
+        for (var j = 0; j < $($(".ideas")[i]).children().length; j++) {
+            var item = $($(".ideas")[i]).children()[j];
+            item = {
+                text: $(item).text(),
+                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x,
+                y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
+                width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
+                height: getXMLLocation($(item).height()).y
+            };
+
+            page_3_content += '<p:sp>' +
+                '<p:nvSpPr>' +
+                '<p:cNvPr id="' + ++idIncrement + '" name="모서리가 둥근 직사각형 ' + (idIncrement - 1) + '" />' +
+                '<p:cNvSpPr/>' +
+                '<p:nvPr/></p:nvSpPr>' +
+                '<p:spPr>' +
+                '<a:xfrm><a:off x="' + item.x + '" y="' + item.y + '" /><a:ext cx="' + item.width + '" cy="' + item.height + '" /></a:xfrm>' +
+                '<a:prstGeom prst="roundRect">' +
+                '<a:avLst><a:gd name="adj" fmla="val 50000" /></a:avLst>' +
+                '</a:prstGeom>' +
+                '<a:solidFill><a:srgbClr val="6494B5" /></a:solidFill>' +
+                '<a:ln><a:noFill/></a:ln>' +
+                '</p:spPr>' +
+                '<p:style>' +
+                '<a:lnRef idx="2">' +
+                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                '</a:lnRef>' +
+                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                '</p:style>' +
+                '<p:txBody><a:bodyPr wrap="none" rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                '<a:p><a:pPr algn="ctr" />' +
+                '<a:r><a:rPr lang="en-US" altLang="ko-KR" sz="900" dirty="0" smtClean="0" />' +
+                '<a:t>' + item.text + '</a:t>' +
+                '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" sz="1200" dirty="0" /></a:p>' +
+                '</p:txBody>' +
+                '</p:sp>';
+        }
+
+        for (var j = 0; j < $($(".comments")[i]).children().length; j++) {
+            var item = $($(".comments")[i]).children()[j];
+            item = {
+                text: $(item).text(),
+                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x,
+                y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
+                width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
+                height: getXMLLocation($(item).height()).y
+            };
+
+            page_3_content += '<p:sp>' +
+                '<p:nvSpPr>' +
+                '<p:cNvPr id="' + ++idIncrement + '" name="모서리가 둥근 직사각형 ' + (idIncrement - 1) + '" />' +
+                '<p:cNvSpPr/>' +
+                '<p:nvPr/></p:nvSpPr>' +
+                '<p:spPr>' +
+                '<a:xfrm><a:off x="' + item.x + '" y="' + item.y + '" /><a:ext cx="' + item.width + '" cy="' + item.height + '" /></a:xfrm>' +
+                '<a:prstGeom prst="roundRect">' +
+                '<a:avLst><a:gd name="adj" fmla="val 50000" /></a:avLst>' +
+                '</a:prstGeom>' +
+                '<a:solidFill><a:srgbClr val="8064B5" /></a:solidFill>' +
+                '<a:ln><a:noFill/></a:ln>' +
+                '</p:spPr>' +
+                '<p:style>' +
+                '<a:lnRef idx="2">' +
+                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                '</a:lnRef>' +
+                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                '</p:style>' +
+                '<p:txBody><a:bodyPr wrap="none" rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                '<a:p><a:pPr algn="ctr" />' +
+                '<a:r><a:rPr lang="en-US" altLang="ko-KR" sz="900" dirty="0" smtClean="0" />' +
+                '<a:t>' + item.text + '</a:t>' +
+                '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" sz="1200" dirty="0" /></a:p>' +
+                '</p:txBody>' +
+                '</p:sp>';
+        }
+    }
+
     //<code> page 3 </code>
 
     //<code> page 4 </code>
@@ -423,6 +614,7 @@ function XMLDownload() {
         '<p:grpSpPr>' +
         '<a:xfrm>' + '<a:off x="0" y="0" />' + '<a:ext cx="0" cy="0" />' + '<a:chOff x="0" y="0" />' + '<a:chExt cx="0" cy="0" />' + '</a:xfrm>' +
         '</p:grpSpPr>' +
+        page_3_content +
         '</p:spTree>' +
         '<p:extLst>' +
         '<p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
@@ -2448,8 +2640,8 @@ function XMLDownload() {
         '<pkg:xmlData>' +
         '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
         '<dc:title>PowerPoint 프레젠테이션</dc:title>' +
-        '<dc:creator>문진호</dc:creator>' +
-        '<cp:lastModifiedBy>문진호</cp:lastModifiedBy>' +
+        '<dc:creator>BrainPot</dc:creator>' +
+        '<cp:lastModifiedBy>BrainPot</cp:lastModifiedBy>' +
         '<cp:revision>6</cp:revision>' +
         '<dcterms:created xsi:type="dcterms:W3CDTF">2017-07-11T05:56:47Z</dcterms:created>' +
         '<dcterms:modified xsi:type="dcterms:W3CDTF">2017-08-24T18:38:56Z</dcterms:modified>' +
@@ -2530,12 +2722,12 @@ function XMLDownload() {
     console.log(blob);
 }
 
-function getXMLLocation(x, y) {
+function getXMLLocation(value) {
     var XMLWidth = 8598;
     var XMLHeight = 7882;
 
     return {
-        x: Math.round(XMLWidth * x),
-        y: Math.round(XMLHeight * y)
+        x: Math.round(XMLWidth * value),
+        y: Math.round(XMLHeight * value)
     }
 }
