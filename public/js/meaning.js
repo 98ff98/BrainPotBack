@@ -21,10 +21,10 @@ var Meaning = {
                     chips += '<div class="chip chip-idea font-jeju text-white">' + node + '</div>';
                 });
 
-                div.innerHTML += '<div class="row center" index="' + index + '">' +
-                    '<div class="col s8 offset-s2 z-depth-1">' +
-                    '<h4 class="left-align font-jeju text">' + item.title + '</h4>' +
-                    '<div class="divider"></div>' +
+                div.innerHTML += '<div class="row center mean_list" index="' + index + '">' +
+                    '<div class="col s8 offset-s2 z-depth-1 mean_list_item">' +
+                    '<h4 class="left-align font-jeju text mean_title">' + item.title + '</h4>' +
+                    '<div class="divider mean_line"></div>' +
                     '<div class="input-field row s6">' +
                     '<input id="test" type="text" class="validate comment_input font-jeju" index="' + index + '">' +
                     '<label for="test" class="font-jeju">' + item.title + '에 대한 의미를 최대 3개까지 부여해주세요.<label>' +
