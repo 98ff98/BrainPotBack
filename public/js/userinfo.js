@@ -75,7 +75,7 @@ $("#user_list").click(function () {
 });
 
 $(".user_list_item").click(function () {
-    if (isAdmin(myID)) {
+    if (UserInfo.isAdmin(myID)) {
         var id = $(this).attr("data-id");
         var nickname = this.innerText;
         var onclick = 'onclick="UserInfo.left(' + id + ', ' + "'" + nickname + "'" + ')"';
