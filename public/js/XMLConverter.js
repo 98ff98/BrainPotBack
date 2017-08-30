@@ -470,7 +470,7 @@ function XMLDownload() {
             var item = $($(".ideas")[i]).children()[j];
             item = {
                 text: $(item).text(),
-                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x,
+                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x - ($(item).css("padding-left").split("px")[0] * 1),
                 y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
                 width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
                 height: getXMLLocation($(item).height()).y
@@ -510,7 +510,7 @@ function XMLDownload() {
             var item = $($(".comments")[i]).children()[j];
             item = {
                 text: $(item).text(),
-                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x,
+                x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x - ($(item).css("padding-left").split("px")[0] * 1),
                 y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
                 width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
                 height: getXMLLocation($(item).height()).y
