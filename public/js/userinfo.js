@@ -18,6 +18,38 @@ var UserInfo = {
             +'><a href="#!">'
             + user.nickname
             + '</a></li>');
+
+        $(".user_list_item").click(function () {
+            if (UserInfo.isAdmin(myID)) {
+                var id = $(this).attr("data-id");
+                var nickname = this.innerText;
+                var onclick = 'onclick="UserInfo.left(' + id + ', ' + "'" + nickname + "'" + ')"';
+
+                if (id != myID) {
+                    $("#modal_kick")[0].innerHTML = '<div class="modal-content">' +
+                        '<h4 class="font-jeju text">추방</h4>' +
+                        '<div class="divider"></div>' +
+                        '<p class="font-jeju text">' + nickname + '님을 강제로 추방합니다.</p>' +
+                        '<p class="font-jeju text">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>' +
+                        '</div>' +
+                        '<div class="modal-footer">' +
+                        '<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju" ' + onclick + '>추방</a>' +
+                        '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
+                        '</div>';
+                } else {
+                    $("#modal_kick")[0].innerHTML = '<div class="modal-content">' +
+                        '<h4 class="font-jeju text">추방</h4>' +
+                        '<div class="divider"></div>' +
+                        '<p class="font-jeju text">자기 자신을 추방할 수는 없습니다!</p>' +
+                        '</div>' +
+                        '<div class="modal-footer">' +
+                        '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
+                        '</div>';
+                }
+
+                $("#modal_kick").modal('open');
+            }
+        });
     },
     //유저 데이터 입장 요청
     join : () => {
@@ -42,6 +74,17 @@ var UserInfo = {
             if (json.id === item.id) {
                 toast(json.nickname + "님이 퇴장하였습니다.");
                 UserInfo.list.splice(index, 1);
+
+                for (var i = 0; i < $(".user_list_item").length; i++) {
+                    if($($(".user_list_item")[i]).attr("data-id") == json.id) {
+                        var userList = $("#user_list")[0];
+                        var deleteUser = $(".user_list_item")[i];
+
+                        userList.removeChild(deleteUser);
+
+                        break;
+                    }
+                }
             }
         });
     },
@@ -72,36 +115,4 @@ var UserInfo = {
 //<summary> event function define </summary>
 $("#user_list").click(function () {
     
-});
-
-$(".user_list_item").click(function () {
-    if (UserInfo.isAdmin(myID)) {
-        var id = $(this).attr("data-id");
-        var nickname = this.innerText;
-        var onclick = 'onclick="UserInfo.left(' + id + ', ' + "'" + nickname + "'" + ')"';
-
-        if (id != myID) {
-            $("#modal_kick")[0].innerHTML = '<div class="modal-content">' +
-                '<h4 class="font-jeju text">추방</h4>' +
-                '<div class="divider"></div>' +
-                '<p class="font-jeju text">' + nickname + '님을 강제로 추방합니다.</p>' +
-                '<p class="font-jeju text">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>' +
-                '</div>' +
-                '<div class="modal-footer">' +
-                '<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju" ' + onclick + '>추방</a>' +
-                '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
-                '</div>';
-        } else {
-            $("#modal_kick")[0].innerHTML = '<div class="modal-content">' +
-                '<h4 class="font-jeju text">추방</h4>' +
-                '<div class="divider"></div>' +
-                '<p class="font-jeju text">자기 자신을 추방할 수는 없습니다!</p>' +
-                '</div>' +
-                '<div class="modal-footer">' +
-                '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
-                '</div>';
-        }
-
-        $("#modal_kick").modal('open');
-    }
 });
