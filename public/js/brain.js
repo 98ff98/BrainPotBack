@@ -11,17 +11,36 @@ $(document).ready(function () {
     $("#menu_next").click(function () {
         var nextLevel = level + 1;
 
-        if (nextLevel === 4) 
-            $('#modal_vote').modal('open');
-        else {
+        switch (nextLevel) {
+            case 2 :
+                if (Idea.list.length < 10)
+                    toast("아이디어는 최소한 10개 이상 제출되어야 합니다.");
+                else {
+                    var json = {
+                        event: "init",
+                        level : nextLevel,
+                        team : teamID
+                    };
 
-            var json = {
-                event: "init",
-                level : nextLevel,
-                team : teamID
-            };
+                    socket.send(json);
+                }
+                break;
+            case 3 :
+                if (Grouping.list.length < 2)
+                    toast("아이디어들을 최소한 2개 이상의 그룹으로 묶어야 합니다.");
+                else {
+                    var json = {
+                        event: "init",
+                        level : nextLevel,
+                        team : teamID
+                    };
 
-            socket.send(json);
+                    socket.send(json);
+                }
+                break;
+            case 4 :
+                $('#modal_vote').modal('open');
+                break;
         }
     });
 

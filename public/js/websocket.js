@@ -126,4 +126,6 @@ var socket = {
 	}
 };
 
-socket.init();
+$(document).ready(function () {
+	socket.init();
+});
