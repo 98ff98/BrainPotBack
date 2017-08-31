@@ -509,7 +509,7 @@ function XMLDownload() {
         for (var j = 0; j < $($(".comments")[i]).children().length; j++) {
             var item = $($(".comments")[i]).children()[j];
             item = {
-                text: $(item).text(),
+                text: item.firstChild,
                 x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x - ($(item).css("padding-left").split("px")[0] * 1),
                 y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
                 width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
