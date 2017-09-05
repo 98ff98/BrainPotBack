@@ -69,6 +69,8 @@ var UserInfo = {
             if (json.id === myID) {
                 UserInfo.isKicked = true;
                 deleteCookie("BrainPotLogin");
+
+                location.href = "../";
             }
 
             if (json.id === item.id) {

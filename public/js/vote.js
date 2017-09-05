@@ -1,6 +1,7 @@
 var Vote = {
     list: undefined,
     type : undefined,
+    title: undefined,
     methods: {
         init: (data) => {
             //data set
@@ -114,8 +115,10 @@ var Vote = {
                 });
             });
         },
-        finish : () => {
+        finish: () => {
             var div = $("#vote_field")[0];
+            var collaps = "";
+            var chart = "";
             var list = "";
             var sumCount = 0;
 
@@ -127,7 +130,44 @@ var Vote = {
                 return b.count - a.count;
             });
             Vote.list.forEach(function (item) {
+                sumCount += item.count;
+            });
+            Vote.list.forEach(function (item, index) {
                 var chips = "";
+                var rank = "filter_9_plus";
+                var votedCount;
+                var votedPercent;
+
+                //등수
+                switch (index) {
+                    case 0:
+                        rank = "filter_1";
+                        break;
+                    case 1:
+                        rank = "filter_2";
+                        break;
+                    case 2:
+                        rank = "filter_3";
+                        break;
+                    case 3:
+                        rank = "filter_4";
+                        break;
+                    case 4:
+                        rank = "filter_5";
+                        break;
+                    case 5:
+                        rank = "filter_6";
+                        break;
+                    case 6:
+                        rank = "filter_7";
+                        break;
+                    case 7:
+                        rank = "filter_8";
+                        break;
+                    case 8:
+                        rank = "filter_9";
+                        break;
+                }
 
                 item.node.forEach(function (node) {
                     chips += '<div class="chip chip-idea font-jeju text-white">' + node + '</div>';
@@ -135,48 +175,66 @@ var Vote = {
                 item.comment.forEach(function (comment) {
                     chips += '<div class="chip chip-comment font-jeju text-white">' + comment + '</div>';
                 });
-
-                sumCount += item.count;
                 list += '<li>' +
-                    '<div class="collapsible-header"><i class="material-icons">filter_drama</i><span class="vote_result_bar">' + item.title + '</span></div>' +
+                    '<div class="collapsible-header"><i class="material-icons">' + rank + '</i><span class="font-jeju">' + item.title + '</span></div>' +
                     '<div class="collapsible-body"><span>' + chips + '</span></div>' +
                     '</li>';
+
+                votedCount = item.count + '/' + sumCount;
+                votedPercent = Math.round(100 * sumCount / item.count);
+                if (!isFinite(votedPercent))
+                    votedPercent = 0;
+
+                chart += '<div class="result vote_result_bar">.</div>';
+                chart += '<div class="result rect">.</div>';
+                chart += '<span class="font-jeju">' + item.title + ' (득표수 : ' + votedCount + ',득표율 : ' + votedPercent + '%)'
+                '</span>';
             });
-            div.innerHTML = "";
-            div.innerHTML += '<ul class="collapsible" data-collapsible="accordion">' +
+            collaps = '<ul class="collapsible" data-collapsible="expandable">' +
                 list +
                 '</ul>';
+            div.innerHTML = "";
+            div.innerHTML += chart + collaps;
 
             Vote.list.forEach(function (item, index) {
                 var percent = 100 / sumCount * item.count;
+                var legnth = $($(".vote_result_bar")[index]).width();
 
                 switch (index % 6) {
                     case 0:
                         $($(".vote_result_bar")[index]).css("background", "#009688");
+                        $($(".rect")[index]).css("background", "#009688");
                         break;
                     case 1:
                         $($(".vote_result_bar")[index]).css("background", "#26a69a");
+                        $($(".rect")[index]).css("background", "#26a69a");
                         break;
                     case 2:
                         $($(".vote_result_bar")[index]).css("background", "#4db6ac");
+                        $($(".rect")[index]).css("background", "#4db6ac");
                         break;
                     case 3:
                         $($(".vote_result_bar")[index]).css("background", "#80cbc4");
+                        $($(".rect")[index]).css("background", "#80cbc4");
                         break;
                     case 4:
                         $($(".vote_result_bar")[index]).css("background", "#b2dfdb");
+                        $($(".rect")[index]).css("background", "#b2dfdb");
                         break;
                     case 5:
                         $($(".vote_result_bar")[index]).css("background", "#e0f2f1");
+                        $($(".rect")[index]).css("background", "#e0f2f1");
                         break;
                 }
 
                 if (percent)
-                    $($(".vote_result_bar")[index]).width(1000 * percent / 100);
+                    $($(".vote_result_bar")[index]).width(legnth * percent / 100);
                 else
-                    $($(".vote_result_bar")[index]).width(10);
+                    $($(".vote_result_bar")[index]).width(3);
             });
-            $(".vote_result_bar").css("display", "inline-block");
+            $('.rect').css("width", "22px");
+
+            //            $(".vote_result_bar").css("display", "inline-block");
             $('.collapsible').collapsible();
 
             toast('이번 브레인스토밍의 최종 아이디어는 "' + Vote.list[0].title + '"로 결정되었습니다.');
