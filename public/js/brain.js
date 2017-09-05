@@ -88,7 +88,8 @@ $(document).ready(function () {
             event.preventDefault();
     });
 });
-    //<summary> function define </summary>
+
+//<summary> function define </summary>
 function toast(text) {
     Materialize.toast(text, 4000);
 }
@@ -105,6 +106,19 @@ function render () {
     brainField.setActiveGroup(new f.Group(brainField.getObjects()));
     brainField.deactivateAll();
     brainField.renderAll();
+}
+
+//<summary> cookie field </summary>
+function setCookie(name, value, day) { //day => 만료일
+    var expire = new Date();
+
+    expire.setDate(expire.getDate() + day);
+    cookies = name + '=' + escape(value) + '; path=/ ';
+
+    if (typeof day != 'undefined')
+        cookies += ';expires=' + expire.toGMTString() + ';';
+
+    document.cookie = cookies;
 }
 
 function getCookie (name) {
@@ -133,3 +147,4 @@ function deleteCookie(name) {
     expireDate.setDate(expireDate.getDate() - 1);
     document.cookie = name + "= " + "; expires=" + expireDate.toGMTString() + "; path=/";
 }
+//Cookie Field
