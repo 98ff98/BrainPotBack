@@ -22,7 +22,7 @@ var UserInfo = {
         $(".user_list_item").click(function () {
             if (UserInfo.isAdmin(myID)) {
                 var id = $(this).attr("data-id");
-                var nickname = this.innerText;
+                var nickname = this.innerText.slice(0, this.innerText.length - 1);
                 var onclick = 'onclick="UserInfo.left(' + id + ', ' + "'" + nickname + "'" + ')"';
 
                 if (id != myID) {
@@ -33,8 +33,8 @@ var UserInfo = {
                         '<p class="font-jeju text">(※주의 : 무작위한 추방은 반란을 일으킬 수 있습니다.)</p>' +
                         '</div>' +
                         '<div class="modal-footer">' +
-                        '<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju" ' + onclick + '>추방</a>' +
-                        '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
+                        '<a class="modal-action modal-close waves-effect waves-green btn-flat text font-jeju" ' + onclick + '>추방</a>' +
+                        '<a class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
                         '</div>';
                 } else {
                     $("#modal_kick")[0].innerHTML = '<div class="modal-content">' +
@@ -43,7 +43,7 @@ var UserInfo = {
                         '<p class="font-jeju text">자기 자신을 추방할 수는 없습니다!</p>' +
                         '</div>' +
                         '<div class="modal-footer">' +
-                        '<a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
+                        '<a class="modal-action modal-close waves-effect waves-red btn-flat text font-jeju">취소</a>' +
                         '</div>';
                 }
 
@@ -69,6 +69,8 @@ var UserInfo = {
             if (json.id === myID) {
                 UserInfo.isKicked = true;
                 deleteCookie("BrainPotLogin");
+
+                location.href = "../";
             }
 
             if (json.id === item.id) {

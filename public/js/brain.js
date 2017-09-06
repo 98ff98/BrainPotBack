@@ -11,17 +11,36 @@ $(document).ready(function () {
     $("#menu_next").click(function () {
         var nextLevel = level + 1;
 
-        if (nextLevel === 4) 
-            $('#modal_vote').modal('open');
-        else {
+        switch (nextLevel) {
+            case 2 :
+                if (Idea.list.length < 10)
+                    toast("아이디어는 최소한 10개 이상 제출되어야 합니다.");
+                else {
+                    var json = {
+                        event: "init",
+                        level : nextLevel,
+                        team : teamID
+                    };
 
-            var json = {
-                event: "init",
-                level : nextLevel,
-                team : teamID
-            };
+                    socket.send(json);
+                }
+                break;
+            case 3 :
+                if (Grouping.list.length < 2)
+                    toast("아이디어들을 최소한 2개 이상의 그룹으로 묶어야 합니다.");
+                else {
+                    var json = {
+                        event: "init",
+                        level : nextLevel,
+                        team : teamID
+                    };
 
-            socket.send(json);
+                    socket.send(json);
+                }
+                break;
+            case 4 :
+                $('#modal_vote').modal('open');
+                break;
         }
     });
 
@@ -69,7 +88,8 @@ $(document).ready(function () {
             event.preventDefault();
     });
 });
-    //<summary> function define </summary>
+
+//<summary> function define </summary>
 function toast(text) {
     Materialize.toast(text, 4000);
 }
@@ -86,6 +106,19 @@ function render () {
     brainField.setActiveGroup(new f.Group(brainField.getObjects()));
     brainField.deactivateAll();
     brainField.renderAll();
+}
+
+//<summary> cookie field </summary>
+function setCookie(name, value, day) { //day => 만료일
+    var expire = new Date();
+
+    expire.setDate(expire.getDate() + day);
+    cookies = name + '=' + escape(value) + '; path=/ ';
+
+    if (typeof day != 'undefined')
+        cookies += ';expires=' + expire.toGMTString() + ';';
+
+    document.cookie = cookies;
 }
 
 function getCookie (name) {
@@ -114,3 +147,4 @@ function deleteCookie(name) {
     expireDate.setDate(expireDate.getDate() - 1);
     document.cookie = name + "= " + "; expires=" + expireDate.toGMTString() + "; path=/";
 }
+//Cookie Field
