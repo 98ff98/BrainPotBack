@@ -3,6 +3,7 @@ function XMLDownload() {
     var content = "";
     var date = new Date();
 
+    toast("회의 내용을 스캔중입니다...");
 
     //content write
     content +=
@@ -359,6 +360,11 @@ function XMLDownload() {
     //<code> page 3 </code>
     var page_3_content = "";
 
+    if (level === 4) {
+        $("#tab_3").removeClass("disabled");
+        $("ul.tabs").tabs("select_tab", "brain_field_3");
+    }
+
     for (var i = 0; i < $(".mean_list").length; i++) {
         var div = {
             x: getXMLLocation($($(".mean_list_item")[i]).offset().left - $("#brain_field_3").offset().left).x,
@@ -509,7 +515,7 @@ function XMLDownload() {
         for (var j = 0; j < $($(".comments")[i]).children().length; j++) {
             var item = $($(".comments")[i]).children()[j];
             item = {
-                text: item.firstChild,
+                text: $(item).text(),
                 x: getXMLLocation($(item).offset().left - $("#brain_field_3").offset().left).x - ($(item).css("padding-left").split("px")[0] * 1),
                 y: getXMLLocation($(item).offset().top - $("#brain_field_3").offset().top).y,
                 width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
@@ -547,10 +553,240 @@ function XMLDownload() {
         }
     }
 
+    if (level === 4) {
+        $("ul.tabs").tabs("select_tab", "brain_field_4");
+        $("#tab_3").addClass("disabled");
+    }
+
     //<code> page 3 </code>
 
     //<code> page 4 </code>
     var page_4_content = "";
+    var chart = "";
+    var collaps = "";
+    var chips = "";
+
+    for (var i = 0; i < $(".vote_result_bar").length; i++) {
+        var mainBar = {
+            x: getXMLLocation($($(".vote_result_bar")[i]).offset().left - $("#brain_field_4").offset().left).x,
+            y: getXMLLocation($($(".vote_result_bar")[i]).offset().top - $("#brain_field_4").offset().top).y,
+            width: getXMLLocation($($(".vote_result_bar")[i]).width()).x,
+            height: getXMLLocation($($(".vote_result_bar")[i]).height()).y
+        };
+        var subBar = {
+            x: getXMLLocation($($(".rect")[i]).offset().left - $("#brain_field_4").offset().left).x,
+            y: getXMLLocation($($(".rect")[i]).offset().top - $("#brain_field_4").offset().top).y,
+            width: getXMLLocation($($(".rect")[i]).width()).x,
+            height: getXMLLocation($($(".rect")[i]).height()).y
+        };
+        var text = {
+            text: $($(".vote_result_text")[i]).text(),
+            x: getXMLLocation($($(".vote_result_text")[i]).offset().left - $("#brain_field_4").offset().left).x - 10,
+            y: getXMLLocation($($(".vote_result_text")[i]).offset().top - $("#brain_field_4").offset().top).y - 10,
+            width: getXMLLocation($($(".vote_result_text")[i]).width()).x,
+            height: getXMLLocation($($(".vote_result_text")[i]).height()).y
+        }
+        var color = "009688";
+        var collapsHeader = {
+            text: $($(".collaps-text")[i]).text(),
+            x: getXMLLocation($($(".collapsible-header")[i]).offset().left - $("#brain_field_4").offset().left + 20).x,
+            y: getXMLLocation($($(".collapsible-header")[i]).offset().top - $("#brain_field_4").offset().top).y,
+            width: getXMLLocation($($(".collapsible-header")[i]).width()).x,
+            height: getXMLLocation($($(".collapsible-header")[i]).height()).y
+        };
+        var collapsBody = {
+            x: getXMLLocation($($(".collapsible-body")[i]).offset().left - $("#brain_field_4").offset().left + 20).x,
+            y: getXMLLocation($($(".collapsible-body")[i]).offset().top - $("#brain_field_4").offset().top).y,
+            width: getXMLLocation($($(".collapsible-body")[i]).width()).x,
+            height: getXMLLocation($($(".collapsible-body")[i]).height() + 60).y
+        }
+
+        chart += '<p:grpSp>' +
+            '<p:nvGrpSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="그룹 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvGrpSpPr/>' +
+            '<p:nvPr/></p:nvGrpSpPr>' +
+            '<p:grpSpPr>' +
+            '<a:xfrm><a:off x="' + mainBar.x + '" y="' + mainBar.y + '" /><a:ext cx="9000000" cy="674817" /><a:chOff x="' + mainBar.x + '" y="' + mainBar.y + '" /><a:chExt cx="9000000" cy="674817" /></a:xfrm>' +
+            '</p:grpSpPr>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr/>' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + mainBar.x + '" y="' + mainBar.y + '" /><a:ext cx="' + mainBar.width + '" cy="' + mainBar.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+            '<a:ln><a:noFill/></a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="2">' +
+            '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+            '</a:lnRef>' +
+            '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+            '</p:style>' +
+            '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+            '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr/>' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + subBar.x + '" y="' + subBar.y + '" /><a:ext cx="' + subBar.width + '" cy="' + subBar.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
+            '<a:ln><a:noFill/></a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="2">' +
+            '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+            '</a:lnRef>' +
+            '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+            '</p:style>' +
+            '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+            '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="TextBox ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr txBox="1" />' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + text.x + '" y="' + text.y + '" /><a:ext cx="' + text.width + '" cy="' + text.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+            '<p:txBody>' +
+            '<a:bodyPr wrap="none" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
+            '<a:p>' +
+            '<a:r><a:rPr lang="en-US" altLang="ko-KR" dirty="0" sz="900" smtClean="0" />' +
+            '<a:t>' + text.text + '</a:t>' +
+            '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '</p:grpSp>';
+
+        collaps += '<p:grpSp>' +
+            '<p:nvGrpSpPr>' +
+            '<p:cNvPr id="' + idIncrement + '" name="그룹 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvGrpSpPr/>' +
+            '<p:nvPr/></p:nvGrpSpPr>' +
+            '<p:grpSpPr>' +
+            '<a:xfrm><a:off x="' + collapsHeader.x + '" y="' + collapsHeader.y + '" /><a:ext cx="' + collapsHeader.width + '" cy="' + (collapsHeader.height + collapsBody.height) + '" /><a:chOff x="' + collapsHeader.x + '" y="' + collapsHeader.y + '" /><a:chExt cx="' + collapsHeader.width + '" cy="' + (collapsHeader.height + collapsBody.height) + '" /></a:xfrm>' +
+            '</p:grpSpPr>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직사각형 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr/>' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + collapsHeader.x + '" y="' + collapsHeader.y + '" /><a:ext cx="' + collapsHeader.width + '" cy="' + (collapsHeader.height + collapsBody.height) + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/>' +
+            '<a:ln w="19050">' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="bg1"><a:lumMod val="85000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="2">' +
+            '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+            '</a:lnRef>' +
+            '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+            '</p:style>' +
+            '<p:txBody><a:bodyPr rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+            '<a:p><a:pPr algn="ctr" /><a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '<p:cxnSp>' +
+            '<p:nvCxnSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="직선 연결선 ' + (idIncrement - 1) + '" />' +
+            '<p:cNvCxnSpPr/>' +
+            '<p:nvPr/></p:nvCxnSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + collapsHeader.x + '" y="' + collapsBody.y + '" /><a:ext cx="' + collapsHeader.width + '" cy="0" /></a:xfrm>' +
+            '<a:prstGeom prst="line"><a:avLst/></a:prstGeom>' +
+            '<a:ln w="19050">' +
+            '<a:solidFill>' +
+            '<a:schemeClr val="bg1"><a:lumMod val="85000" /></a:schemeClr>' +
+            '</a:solidFill>' +
+            '</a:ln>' +
+            '</p:spPr>' +
+            '<p:style>' +
+            '<a:lnRef idx="1"><a:schemeClr val="accent1" /></a:lnRef>' +
+            '<a:fillRef idx="0"><a:schemeClr val="accent1" /></a:fillRef>' +
+            '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+            '<a:fontRef idx="minor"><a:schemeClr val="tx1" /></a:fontRef>' +
+            '</p:style>' +
+            '</p:cxnSp>' +
+            '<p:sp>' +
+            '<p:nvSpPr>' +
+            '<p:cNvPr id="' + ++idIncrement + '" name="TextBox ' + (idIncrement - 1) + '" />' +
+            '<p:cNvSpPr txBox="1" />' +
+            '<p:nvPr/></p:nvSpPr>' +
+            '<p:spPr>' +
+            '<a:xfrm><a:off x="' + (collapsHeader.x + getXMLLocation(50).x) + '" y="' + collapsHeader.y + '" /><a:ext cx="' + collapsHeader.width + '" cy="' + collapsHeader.height + '" /></a:xfrm>' +
+            '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+            '<p:txBody>' +
+            '<a:bodyPr wrap="square" rtlCol="0"><a:spAutoFit/></a:bodyPr><a:lstStyle/>' +
+            '<a:p>' +
+            '<a:r><a:rPr lang="en-US" altLang="ko-KR" sz="1400" dirty="0" smtClean="0" />' +
+            '<a:t>' + collapsHeader.text + '</a:t>' +
+            '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" dirty="0" /></a:p>' +
+            '</p:txBody>' +
+            '</p:sp>' +
+            '</p:grpSp>';
+
+        for (var j = 0; j < $($($(".collapsible-body")[i]).children()).children().length; j++) {
+            var item = $($($(".collapsible-body")[i]).children()).children()[j];
+            var color = ($(item).hasClass("chip-idea")) ? "6494B5" : "8064B5";
+            item = {
+                text: $(item).text(),
+                x: getXMLLocation($(item).offset().left - $("#brain_field_4").offset().left).x - ($(item).css("padding-left").split("px")[0] * 1),
+                y: getXMLLocation($(item).offset().top - $("#brain_field_4").offset().top).y,
+                width: getXMLLocation($(item).width() + ($(item).css("padding-left").split("px")[0] * 2)).x,
+                height: getXMLLocation($(item).height()).y
+            };
+
+            page_4_content += '<p:sp>' +
+                '<p:nvSpPr>' +
+                '<p:cNvPr id="' + ++idIncrement + '" name="모서리가 둥근 직사각형 ' + (idIncrement - 1) + '" />' +
+                '<p:cNvSpPr/>' +
+                '<p:nvPr/></p:nvSpPr>' +
+                '<p:spPr>' +
+                '<a:xfrm><a:off x="' + item.x + '" y="' + item.y + '" /><a:ext cx="' + item.width + '" cy="' + item.height + '" /></a:xfrm>' +
+                '<a:prstGeom prst="roundRect">' +
+                '<a:avLst><a:gd name="adj" fmla="val 50000" /></a:avLst>' +
+                '</a:prstGeom>' +
+                '<a:solidFill><a:srgbClr val="' + color + '" /></a:solidFill>' +
+                '<a:ln><a:noFill/></a:ln>' +
+                '</p:spPr>' +
+                '<p:style>' +
+                '<a:lnRef idx="2">' +
+                '<a:schemeClr val="accent1"><a:shade val="50000" /></a:schemeClr>' +
+                '</a:lnRef>' +
+                '<a:fillRef idx="1"><a:schemeClr val="accent1" /></a:fillRef>' +
+                '<a:effectRef idx="0"><a:schemeClr val="accent1" /></a:effectRef>' +
+                '<a:fontRef idx="minor"><a:schemeClr val="lt1" /></a:fontRef>' +
+                '</p:style>' +
+                '<p:txBody><a:bodyPr wrap="none" rtlCol="0" anchor="ctr" /><a:lstStyle/>' +
+                '<a:p><a:pPr algn="ctr" />' +
+                '<a:r><a:rPr lang="en-US" altLang="ko-KR" sz="900" dirty="0" smtClean="0" />' +
+                '<a:t>' + item.text + '</a:t>' +
+                '</a:r><a:endParaRPr lang="ko-KR" altLang="en-US" sz="1200" dirty="0" /></a:p>' +
+                '</p:txBody>' +
+                '</p:sp>';
+        }
+    }
+
+    page_4_content += chart + collaps;
     //<code> page 4 </code>
 
     content +=
@@ -638,6 +874,7 @@ function XMLDownload() {
         '<p:grpSpPr>' +
         '<a:xfrm>' + '<a:off x="0" y="0" />' + '<a:ext cx="0" cy="0" />' + '<a:chOff x="0" y="0" />' + '<a:chExt cx="0" cy="0" />' + '</a:xfrm>' +
         '</p:grpSpPr>' +
+        page_4_content +
         '</p:spTree>' +
         '<p:extLst>' +
         '<p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
@@ -2720,6 +2957,8 @@ function XMLDownload() {
     console.log(blob.size);
     console.log(blob.type);
     console.log(blob);
+
+    toast("PPT 파일로 변환이 완료되었습니다.");
 }
 
 function getXMLLocation(value) {
