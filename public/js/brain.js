@@ -13,7 +13,7 @@ $(document).ready(function () {
 
         switch (nextLevel) {
             case 2 :
-                if (Idea.list.length < 10)
+                if (Idea.list.length < 10 || Idea.list === undefined)
                     toast("아이디어는 최소한 10개 이상 제출되어야 합니다.");
                 else {
                     var json = {
@@ -26,7 +26,7 @@ $(document).ready(function () {
                 }
                 break;
             case 3 :
-                if (Grouping.list.length < 2)
+                if (Grouping.list.length < 2 || Grouping.list === undefined)
                     toast("아이디어들을 최소한 2개 이상의 그룹으로 묶어야 합니다.");
                 else {
                     var json = {

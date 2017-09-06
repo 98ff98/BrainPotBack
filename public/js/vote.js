@@ -176,7 +176,7 @@ var Vote = {
                     chips += '<div class="chip chip-comment font-jeju text-white">' + comment + '</div>';
                 });
                 list += '<li>' +
-                    '<div class="collapsible-header"><i class="material-icons">' + rank + '</i><span class="font-jeju">' + item.title + '</span></div>' +
+                    '<div class="collapsible-header"><i class="material-icons">' + rank + '</i><span class="font-jeju collaps-text">' + item.title + '</span></div>' +
                     '<div class="collapsible-body"><span>' + chips + '</span></div>' +
                     '</li>';
 
@@ -187,8 +187,7 @@ var Vote = {
 
                 chart += '<div class="result vote_result_bar">.</div>';
                 chart += '<div class="result rect">.</div>';
-                chart += '<span class="font-jeju">' + item.title + ' (득표수 : ' + votedCount + ',득표율 : ' + votedPercent + '%)'
-                '</span>';
+                chart += '<span class="font-jeju vote_result_text">' + item.title + ' (득표수 : ' + votedCount + ',득표율 : ' + votedPercent + '%)</span>';
             });
             collaps = '<ul class="collapsible" data-collapsible="expandable">' +
                 list +
@@ -231,6 +230,8 @@ var Vote = {
                     $($(".vote_result_bar")[index]).width(legnth * percent / 100);
                 else
                     $($(".vote_result_bar")[index]).width(3);
+
+                $('.collapsible').collapsible('open', index);
             });
             $('.rect').css("width", "22px");
 
