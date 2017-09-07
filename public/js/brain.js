@@ -26,7 +26,14 @@ $(document).ready(function () {
                 }
                 break;
             case 3 :
-                if (Grouping.list.length < 2 || Grouping.list === undefined)
+                var groupCount = 0;
+
+                Grouping.list.forEach(function (item) {
+                    if (item.isGroup)
+                        groupCount++;
+                });
+
+                if (groupCount < 3) //root 그룹을 제외한 갯수
                     toast("아이디어들을 최소한 2개 이상의 그룹으로 묶어야 합니다.");
                 else {
                     var json = {

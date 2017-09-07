@@ -37,12 +37,12 @@ var MindMap = {
             $(".upper-canvas").removeClass("z-depth-2");
 
             //create
-            brainField = new f.Canvas(name);
+            mindField = new f.Canvas(name);
 
             //init
-            MindMap.width = brainField.width;
-            MindMap.height = brainField.height;
-            MindMap.list = brainField._objects;
+            MindMap.width = mindField.width;
+            MindMap.height = mindField.height;
+            MindMap.list = mindField._objects;
 
             var text = new f.IText(teamTopic, {
                 fontSize: 18,
@@ -70,9 +70,9 @@ var MindMap = {
             MindMap.keyCount++;
             root.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
-            brainField.add(root);
+            mindField.add(root);
             //object select
-            brainField.on("mouse:down", function (event) {
+            mindField.on("mouse:down", function (event) {
                 var object = event.target;
 
                 MindMap.methods.removeButtons();
@@ -132,8 +132,8 @@ var MindMap = {
                     addButton.setControlsVisibility(MindMap.control.selectionUnableOptions);
                     removeButton.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
-                    brainField.add(addButton);
-                    brainField.add(removeButton);
+                    mindField.add(addButton);
+                    mindField.add(removeButton);
 
                     MindMap.control.addButton = addButton;
                     MindMap.control.removeButton = removeButton;
@@ -156,8 +156,8 @@ var MindMap = {
                 //<code>remove button pressed</code>
             });
             //object double click -> text editing mode enter
-            f.util.addListener(brainField.upperCanvasEl, 'dblclick', function (event) {
-                var object = brainField.getActiveObject();
+            f.util.addListener(mindField.upperCanvasEl, 'dblclick', function (event) {
+                var object = mindField.getActiveObject();
                 var items = [];
 
                 MindMap.methods.removeButtons();
@@ -183,7 +183,7 @@ var MindMap = {
                         var leftLine = object.leftLine;
                         var rightLine = object.rightLine;
 
-                        brainField.remove(object);
+                        mindField.remove(object);
 
                         text.left = object.left;
                         rect.left = object.left;
@@ -200,8 +200,8 @@ var MindMap = {
                         MindMap.control.ungroupedNode.rightLine = rightLine;
 
 
-                        brainField.add(text);
-                        brainField.add(rect);
+                        mindField.add(text);
+                        mindField.add(rect);
 
                         text.enterEditing();
                         text.text = "";
@@ -213,7 +213,7 @@ var MindMap = {
                 }
             });
             //object moving
-            brainField.on("object:moving", function (event) {
+            mindField.on("object:moving", function (event) {
                 var object = event.target;
                 var addButton = MindMap.control.addButton;
                 var removeButton = MindMap.control.removeButton;
@@ -236,7 +236,7 @@ var MindMap = {
                 //<code>add / remove button move </code>
             });
             //object moving (data send)
-            brainField.on("object:modified", function (event) {
+            mindField.on("object:modified", function (event) {
                 var object = event.target;
 
                 if (object.category === "node") {
@@ -253,7 +253,7 @@ var MindMap = {
                 }
             });
             //text changed
-            brainField.on("text:changed", function (event) {
+            mindField.on("text:changed", function (event) {
                 var object = event.target;
 
                 if (!object)
@@ -263,7 +263,7 @@ var MindMap = {
                     MindMap.control.ungroupedNode.rect.width = object.width;
             });
             //text editing mode exit
-            brainField.on("text:editing:exited", function (event) {
+            mindField.on("text:editing:exited", function (event) {
                 var rect = MindMap.control.ungroupedNode.rect;
                 var text = MindMap.control.ungroupedNode.text;
                 var key = MindMap.control.ungroupedNode.key;
@@ -273,8 +273,8 @@ var MindMap = {
                 var leftLine = MindMap.control.ungroupedNode.leftLine;
                 var rightLine = MindMap.control.ungroupedNode.rightLine;
 
-                brainField.remove(rect);
-                brainField.remove(text);
+                mindField.remove(rect);
+                mindField.remove(text);
 
                 var node = new f.Group([rect, text], {
                     key: key,
@@ -292,7 +292,7 @@ var MindMap = {
                 node.skewY = 0;
                 node.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
-                brainField.add(node);
+                mindField.add(node);
 
                 MindMap.control.ungroupedNode = {
                     rect: undefined,
@@ -627,7 +627,7 @@ var MindMap = {
             node.setControlsVisibility(MindMap.control.selectionUnableOptions);
             MindMap.keyCount++;
 
-            brainField.add(node);
+            mindField.add(node);
 
             var parentRightPoint = new RightPoint(parent);
             var nodeLeftPoint = new LeftPoint(node);
@@ -649,7 +649,7 @@ var MindMap = {
                 parent.leftLine.push(line);
             }
 
-            brainField.add(line);
+            mindField.add(line);
 
             MindMap.methods.layoutSort(parent);
             MindMap.methods.objectMoving(parent);
@@ -677,8 +677,8 @@ var MindMap = {
 
                         if (MindMap.list[j].category === "node") {
                             if (MindMap.list[j].parent === keys[i]) {
-                                if (brainField.getActiveObject() === MindMap.list[j])
-                                    brainField.setActiveObject(MindMap.list[0]);
+                                if (mindField.getActiveObject() === MindMap.list[j])
+                                    mindField.setActiveObject(MindMap.list[0]);
 
                                 keys.push(MindMap.list[j].key);
                                 MindMap.list.splice(j, 1);
@@ -694,7 +694,7 @@ var MindMap = {
                         }
                     }
 
-                brainField.renderAll();
+                mindField.renderAll();
         },
         node_update_content : (key, changedText) => {
             var object = MindMap.methods.getObject(key);
@@ -712,7 +712,7 @@ var MindMap = {
             var leftLine = object.leftLine;
             var rightLine = object.rightLine;
 
-            brainField.remove(object);
+            mindField.remove(object);
 
             text.set({
                 left : object.left,
@@ -741,7 +741,7 @@ var MindMap = {
             node.skewY = 0;
             node.setControlsVisibility(MindMap.control.selectionUnableOptions);
 
-            brainField.add(node);
+            mindField.add(node);
             MindMap.methods.objectMoving(node);
         },
         node_update_loc : (key, x, y) => {
@@ -778,7 +778,7 @@ var MindMap = {
             }
 
             MindMap.methods.objectMoving(object);
-            brainField.renderAll();
+            mindField.renderAll();
         }
     }
 };
