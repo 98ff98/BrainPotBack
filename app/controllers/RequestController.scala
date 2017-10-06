@@ -34,6 +34,10 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
     Ok(views.html.newIndex())
   }
 
+  def bye = Action{
+    Ok(views.html.newIndex()).withCookies(Cookie("BrainPotLogin", "", Some(-1)))
+  }
+
   //방을 새로 생성하려는 POST 요청을 처리하는 메소드
   def createTeam = Action.async{ implicit request =>
     val receivedData = createTeamDataForm.bindFromRequest()
@@ -119,7 +123,7 @@ class RequestController @Inject()(actorSystem: ActorSystem) extends Controller {
   }
 
   //어드민이 아닌 유저가 기존 방에 들어가기 위해서 서버로 전송하는 POST 파라미터를 파싱하는 폼
-  val joinTeamDataForm = Form(
+  val joinTeamDataForm = Form(  `
     mapping(
       "NICKNAME" -> nonEmptyText(1,10),
       "CODE" -> nonEmptyText(5,5)

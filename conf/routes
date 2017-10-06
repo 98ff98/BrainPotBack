@@ -2,6 +2,9 @@
 #index page
 GET     /                        @controllers.RequestController.index()
 
+#for sign-out
+GET     /bye                     @controllers.RequestController.bye()
+
 #web-app
 GET      /app                    @controllers.RequestController.app()
 
